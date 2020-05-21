@@ -13,4 +13,4 @@ class MyClient(discord.Client):
             await message.channel.send('coming soon.')
 
 client = MyClient()
-client.run('NzA1MTc2NjYyMzY2NDg2NTI5.Xqn5AQ.FUYBk7XlBP-6RglVFrNLAC8lDVA')
+client.run('your token')
