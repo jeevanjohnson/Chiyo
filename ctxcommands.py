@@ -11,11 +11,11 @@ import random
 #config :
 
 prefix = ';'
-token = 'NzA1MTc2NjYyMzY2NDg2NTI5.Xqn5AQ.FUYBk7XlBP-6RglVFrNLAC8lDVA'
+token = 'your token'
 #the bot's game it is playing.
 botgame = 'on your mother'
 #This is your id for your logs channel so the bot logs what happens.
-log = 711736896832929862
+log = your log channel id
 
 #-----------------------------------------
 
