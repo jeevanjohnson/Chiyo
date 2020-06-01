@@ -10,6 +10,7 @@ Commands:
 ;relax {akatsuki name}
 ;reg {akatsuki name}
 ;taiko {akatsuki name}
+;rxtaiko {akatsuki name}
 ;recent {akatsuki name}
 ;taikorecent {akatsuki name}
 ;rxtaikorecent {akatsuki name}
