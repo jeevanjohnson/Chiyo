@@ -23,3 +23,4 @@ Commands:
 ;rxtaikotop {akatsuki name}
 ;roll
 ;ping
+;cmds
