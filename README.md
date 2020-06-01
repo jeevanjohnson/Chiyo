@@ -6,6 +6,8 @@ You can invite pogbot [right here](https://discord.com/api/oauth2/authorize?clie
 
 Work in Progress if you have any questions or bugs you want to report contact me on discord ``Cover#8860``
 
+If people actually like it I will add mania and ctb support
+
 Commands:
 
 ```;relaxtaiko {akatsuki name}
