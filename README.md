@@ -24,3 +24,4 @@ Commands:
 ;roll
 ;ping
 ;cmds
+;donate
