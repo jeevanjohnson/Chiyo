@@ -27,3 +27,10 @@ Commands:
 ;ping
 ;cmds
 ;donate
+```
+Changes:
+
+6/6/20: Added Mods finally thx cmyui O_O
+
+
+
