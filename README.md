@@ -31,6 +31,6 @@ Commands:
 Changes:
 
 6/6/20: Added Mods finally thx cmyui O_O
-
+6/7/20: url changes in code cause akatsuki devs like rewriting akatsuki or smth
 
 
