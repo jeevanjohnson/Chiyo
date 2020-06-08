@@ -18,8 +18,8 @@ Commands:
 ;recent {akatsuki name}
 ;taikorecent {akatsuki name}
 ;rxtaikorecent {akatsuki name}
-;rxrecent {akatsuki name}
-;rxtop {akatsuki name}
+;relaxrecent {akatsuki name}
+;relaxtop {akatsuki name}
 ;top {akatsuki name}
 ;taikotop {akatsuki name}
 ;rxtaikotop {akatsuki name}
@@ -32,3 +32,4 @@ Changes:
 ```
 6/6/20: Added Mods finally thx cmyui O_O
 6/7/20: url changes in code cause akatsuki devs like rewriting akatsuki or smth
+6/7/20: Made cogs so code cleaner O_O
