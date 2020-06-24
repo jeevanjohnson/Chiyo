@@ -14,19 +14,17 @@ Commands:
 ;relax {akatsuki name}
 ;reg {akatsuki name}
 ;taiko {akatsuki name}
-;rxtaiko {akatsuki name}
+;relaxtaiko {akatsuki name}
 ;recent {akatsuki name}
 ;taikorecent {akatsuki name}
-;rxtaikorecent {akatsuki name}
+;relaxtaikorecent {akatsuki name}
 ;relaxrecent {akatsuki name}
 ;relaxtop {akatsuki name}
 ;top {akatsuki name}
 ;taikotop {akatsuki name}
-;rxtaikotop {akatsuki name}
+;relaxtaikotop {akatsuki name}
 ;roll
 ;ping
-;cmds
-;donate
 ```
 Changes:
 ```
