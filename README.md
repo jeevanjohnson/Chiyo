@@ -25,7 +25,7 @@ Commands:
 ;relaxtaikotop {akatsuki name unless u connected ur account}
 ;roll
 ;ping
-;connect
+;connect {akatsuki name}
 ```
 Changes:
 ```
