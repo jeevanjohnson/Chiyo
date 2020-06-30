@@ -32,7 +32,7 @@ Changes:
 6/6/20: Added Mods finally thx cmyui O_O
 6/7/20: url changes in code cause akatsuki devs like rewriting akatsuki or smth
 6/7/20: Made cogs so code cleaner O_O
-6/27/2020 Made ;connect / rewrote Chiyo / Pogbot -> Chiyo! / Made Database! / embeds cleaner /
+6/27/20 Made ;connect / rewrote Chiyo / Pogbot -> Chiyo! / Made Database! / embeds cleaner /
 ```
 # Goals
 ```
