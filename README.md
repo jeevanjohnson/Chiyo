@@ -4,9 +4,7 @@ This bot features osu commands for [akatsuki!](https://akatsuki.pw/)
 
 You can invite chiyo [right here](https://discord.com/api/oauth2/authorize?client_id=705176662366486529&permissions=8&scope=bot)
 
-Work in Progress if you have any questions or bugs you want to report contact me on discord ``Cover#8860``
-
-If people actually like it I will add mania and ctb support
+If you have any questions or bugs you want to report contact me on discord ``Cover#8860``
 
 Commands:
 
