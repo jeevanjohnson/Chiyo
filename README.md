@@ -23,9 +23,10 @@ Commands:
 ;top {akatsuki name unless u connected ur account}
 ;taikotop {akatsuki name unless u connected ur account}
 ;relaxtaikotop {akatsuki name unless u connected ur account}
-;roll
-;ping
 ;connect {akatsuki name}
+;roll
+;slots
+;about
 ```
 Changes:
 ```
@@ -34,8 +35,3 @@ Changes:
 6/7/20: Made cogs so code cleaner O_O
 6/27/20 Made ;connect / rewrote Chiyo / Pogbot -> Chiyo! / Made Database! / embeds cleaner /
 ```
-# Goals
-```
-add pp if fc []
-add other server support [ not sure if I will do this]
-rewrite pogbot again (learned functions) []
