@@ -1,3 +1,7 @@
+# You Code is Garbage!
+YES I KNOW THAT
+I was planning to rewrite it so it looked clean but lost motivation to continue working on it,
+
 # Chiyo!
 
 This bot features osu commands for [akatsuki!](https://akatsuki.pw/)
