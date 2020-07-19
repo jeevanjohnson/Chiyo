@@ -8,7 +8,7 @@ import enum
 import os
 from enum import IntEnum
 
-cluster = pymongo.MongoClient(f'mongodb+srv://Cover:{config.dbpassword}@chiyo-y6grb.mongodb.net/{config.dbname}?retryWrites=true&w=majority')
+cluster = pymongo.MongoClient(f'mongodb+srv://USERNAME:{config.dbpassword}@DBNAME-y6grb.mongodb.net/{config.dbname}?retryWrites=true&w=majority')
 db = cluster['Akatsuki']
 collation = db['Akatsuki']
 
