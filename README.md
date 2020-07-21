@@ -1,4 +1,4 @@
-# You Code is Garbage!
+# Your Code is Garbage!
 YES I KNOW THAT
 I was planning to rewrite it so it looked clean but lost motivation to continue working on it,
 
