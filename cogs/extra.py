@@ -1,61 +1,64 @@
 import discord
-import config
-import requests
-import random
 from discord.ext import commands
-import enum
-import pymongo
-from pymongo import *
-from enum import IntEnum
+import requests
+import os
+import akatsukiapi
+import Chiyo
 
-cluster = pymongo.MongoClient(f'mongodb+srv://Cover:{config.dbpassword}@chiyo-y6grb.mongodb.net/{config.dbname}?retryWrites=true&w=majority')
-db = cluster['Akatsuki']
-collation = db['Akatsuki']
+collation = Chiyo.collation
 
-class extra(commands.Cog):
+class Extra(commands.Cog):
 
-	def __init___(self, client):
-		self.client = client
+    def __int__(self, client):
+        self.client = client
 
-	@commands.command()
-	async def about(self, ctx):
-		await ctx.send('https://coverosu.tk/chiyo')
+    @commands.command()
+    async def connect(self, ctx, *args):
+    	if len(args) == 0:
+    		return await ctx.send('You must provide an argument!!')
+    	msg = '{}'.format(' '.join(args))
+    	b = collation.find_one({"_id": ctx.message.author.id})
+    	
+    	if b == None:
+    		d = requests.get(f'https://akatsuki.pw/api/v1/users/full?name={msg}')
+    		if not d:
+    			return await ctx.send(f'{msg} is not a valid user!!')
+    		post = {"_id": ctx.message.author.id, "name": msg}
+    		collation.insert_one(post)
+    		return await ctx.send(f'User {msg} was connected to your discord account!')
+    	else:
+    		d = requests.get(f'https://akatsuki.pw/api/v1/users/full?name={msg}')
+    		if not d:
+    			return await ctx.send(f'{msg} is not a valid user!!')
+    		newvalues = { "$set": { "name": msg } }
+    		collation.update_one(b, newvalues)
+    		return await ctx.send(f'User {msg} was connected to your discord account!')
 
-	@commands.command()
-	async def roll(self, ctx):
-		number = random.randint(1, 100)
-		await ctx.send(f'{number} out of 100')
+    @commands.command()
+    async def about(self, ctx):
+        await ctx.send('https://coverosu.tk/chiyo')
 
-	@commands.command()
-	async def connect(self, ctx, *, arg):
+    @commands.command()
+    async def roll(self, ctx, *args):
+        number = random.randint(1, 100)
+        await ctx.send(f'{number} out of 100 <@!{ctx.message.author.id}>')
 
-		b = collation.find_one({"_id": ctx.message.author.id})
-		yoo = print(b)
+    @commands.command()
+    async def slots(self, ctx, *args):
 
-		if b == yoo:
-			post = {"_id": ctx.message.author.id, "name": arg}
-			collation.insert_one(post)
-			await ctx.send(f'User {arg} was connected to your discord account!')
-		else:
-			newvalues = { "$set": { "name": arg } }
-			collation.update_one(b, newvalues)
-			await ctx.send(f'User {arg} was connected to your discord account!')
+        h = ['🍎','🍊','🍐','🍋','🍉','🍇','🍓','🍒']
 
-	@commands.command()
-	async def slots(self, ctx, *args):
+        b = random.choice(h)
+        c = random.choice(h)
+        d = random.choice(h)
 
-		h = ['🍎','🍊','🍐','🍋','🍉','🍇','🍓','🍒']
+        if b == c == d:
+            return await ctx.send(f'[{b}{c}{d}] \n 3/3! <@!{ctx.message.author.id}>')
+        elif b == c or b == d or c == b or c == d or d == b or d == c:
+            return await ctx.send(f'[{b}{c}{d}] \n 2/3! <@!{ctx.message.author.id}>')
+        else:
+            return await ctx.send(f'[{b}{c}{d}] \n lol you suck <@!{ctx.message.author.id}>')
 
-		b = random.choice(h)
-		c = random.choice(h)
-		d = random.choice(h)
 
-		if b == c == d:
-			return await ctx.send(f'[{b}{c}{d}] \n 3/3!')
-		elif b == c or b == d or c == b or c == d or d == b or d == c:
-			return await ctx.send(f'[{b}{c}{d}] \n 2/3!')
-		else:
-			return await ctx.send(f'[{b}{c}{d}] \n lol you suck')
-			
 def setup(client):
-	client.add_cog(extra(client))
+    client.add_cog(Extra(client))
