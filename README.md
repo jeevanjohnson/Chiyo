@@ -2,7 +2,7 @@
 
 So this was a project I was doing when I first started python. 
 
-Today I decided to rewrite to there are more features!
+Today I decided it, but now there are more features!
 
 To see all commands you can do ``;help`` to see all the commands!
 
