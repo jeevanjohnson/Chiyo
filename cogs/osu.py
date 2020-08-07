@@ -34,7 +34,7 @@ class Akatsuki(commands.Cog):
             accuracy = info[7]
             playcount = info[3]
             embed=discord.Embed(description=f'▸ Official Rank: {official_rank} ({country}#{country_rank}) \n▸ Level: {level}\n▸ Total PP: {pp} \n▸ Accuracy: {accuracy}% \n▸ Playcount: {playcount}', color=0xb6ebf1)
-            embed.set_author(name=f"osu! Standard Profile for {username}", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
+            embed.set_author(name=f"osu! Standard Profile for {username.replace('ygfviasfa',' ')} ", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
             embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_footer(text=f"Player on Akatsuki!")
             return await ctx.send(embed=embed)
@@ -57,7 +57,7 @@ class Akatsuki(commands.Cog):
             accuracy = info[7]
             playcount = info[3]
             embed=discord.Embed(description=f'▸ Official Rank: {official_rank} ({country}#{country_rank}) \n▸ Level: {level}\n▸ Total PP: {pp} \n▸ Accuracy: {accuracy}% \n▸ Playcount: {playcount}', color=0xb6ebf1)
-            embed.set_author(name=f"osu! Standard Profile for {username}", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
+            embed.set_author(name=f"osu! Standard Profile for {username.replace('ygfviasfa',' ')} ", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
             embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_footer(text=f"Player on Akatsuki!")
             return await ctx.send(embed=embed)
@@ -76,7 +76,7 @@ class Akatsuki(commands.Cog):
             accuracy = info[7]
             playcount = info[3]
             embed=discord.Embed(description=f'▸ Official Rank: {official_rank} ({country}#{country_rank}) \n▸ Level: {level}\n▸ Total PP: {pp} \n▸ Accuracy: {accuracy}% \n▸ Playcount: {playcount}', color=0xb6ebf1)
-            embed.set_author(name=f"osu! Standard Profile for {username}", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
+            embed.set_author(name=f"osu! Standard Profile for {username.replace('ygfviasfa',' ')} ", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
             embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_footer(text=f"Player on Akatsuki!")
             return await ctx.send(embed=embed)
@@ -103,7 +103,7 @@ class Akatsuki(commands.Cog):
             accuracy = info[7]
             playcount = info[3]
             embed=discord.Embed(description=f'▸ Official Rank: {official_rank} ({country}#{country_rank}) \n▸ Level: {level}\n▸ Total PP: {pp} \n▸ Accuracy: {accuracy}% \n▸ Playcount: {playcount}', color=0xb6ebf1)
-            embed.set_author(name=f"osu! Relax Standard Profile for {username}", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
+            embed.set_author(name=f"osu! Relax Standard Profile for {username.replace('ygfviasfa',' ')} ", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
             embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_footer(text=f"Player on Akatsuki!")
             return await ctx.send(embed=embed)
@@ -126,7 +126,7 @@ class Akatsuki(commands.Cog):
             accuracy = info[7]
             playcount = info[3]
             embed=discord.Embed(description=f'▸ Official Rank: {official_rank} ({country}#{country_rank}) \n▸ Level: {level}\n▸ Total PP: {pp} \n▸ Accuracy: {accuracy}% \n▸ Playcount: {playcount}', color=0xb6ebf1)
-            embed.set_author(name=f"osu! Relax Standard Profile for {username}", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
+            embed.set_author(name=f"osu! Relax Standard Profile for {username.replace('ygfviasfa',' ')} ", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
             embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_footer(text=f"Player on Akatsuki!")
             return await ctx.send(embed=embed)
@@ -145,7 +145,7 @@ class Akatsuki(commands.Cog):
             accuracy = info[7]
             playcount = info[3]
             embed=discord.Embed(description=f'▸ Official Rank: {official_rank} ({country}#{country_rank}) \n▸ Level: {level}\n▸ Total PP: {pp} \n▸ Accuracy: {accuracy}% \n▸ Playcount: {playcount}', color=0xb6ebf1)
-            embed.set_author(name=f"osu! Relax Standard Profile for {username}", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
+            embed.set_author(name=f"osu! Relax Standard Profile for {username.replace('ygfviasfa',' ')} ", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
             embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_footer(text=f"Player on Akatsuki!")
             return await ctx.send(embed=embed)
@@ -172,7 +172,7 @@ class Akatsuki(commands.Cog):
             accuracy = info[7]
             playcount = info[3]
             embed=discord.Embed(description=f'▸ Official Rank: {official_rank} ({country}#{country_rank}) \n▸ Level: {level}\n▸ Total PP: {pp} \n▸ Accuracy: {accuracy}% \n▸ Playcount: {playcount}', color=0xb6ebf1)
-            embed.set_author(name=f"osu! Relax Taiko Profile for {username}", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
+            embed.set_author(name=f"osu! Relax Taiko Profile for {username.replace('ygfviasfa',' ')} ", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
             embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_footer(text=f"Player on Akatsuki!")
             return await ctx.send(embed=embed)
@@ -195,7 +195,7 @@ class Akatsuki(commands.Cog):
             accuracy = info[7]
             playcount = info[3]
             embed=discord.Embed(description=f'▸ Official Rank: {official_rank} ({country}#{country_rank}) \n▸ Level: {level}\n▸ Total PP: {pp} \n▸ Accuracy: {accuracy}% \n▸ Playcount: {playcount}', color=0xb6ebf1)
-            embed.set_author(name=f"osu! Relax Taiko Profile for {username}", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
+            embed.set_author(name=f"osu! Relax Taiko Profile for {username.replace('ygfviasfa',' ')} ", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
             embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_footer(text=f"Player on Akatsuki!")
             return await ctx.send(embed=embed)
@@ -214,7 +214,7 @@ class Akatsuki(commands.Cog):
             accuracy = info[7]
             playcount = info[3]
             embed=discord.Embed(description=f'▸ Official Rank: {official_rank} ({country}#{country_rank}) \n▸ Level: {level}\n▸ Total PP: {pp} \n▸ Accuracy: {accuracy}% \n▸ Playcount: {playcount}', color=0xb6ebf1)
-            embed.set_author(name=f"osu! Relax Taiko Profile for {username}", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
+            embed.set_author(name=f"osu! Relax Taiko Profile for {username.replace('ygfviasfa',' ')}", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
             embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_footer(text=f"Player on Akatsuki!")
             return await ctx.send(embed=embed)
@@ -241,7 +241,7 @@ class Akatsuki(commands.Cog):
             accuracy = info[7]
             playcount = info[3]
             embed=discord.Embed(description=f'▸ Official Rank: {official_rank} ({country}#{country_rank}) \n▸ Level: {level}\n▸ Total PP: {pp} \n▸ Accuracy: {accuracy}% \n▸ Playcount: {playcount}', color=0xb6ebf1)
-            embed.set_author(name=f"osu! Taiko Profile for {username}", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
+            embed.set_author(name=f"osu! Taiko Profile for {username.replace('ygfviasfa',' ')} ", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
             embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_footer(text=f"Player on Akatsuki!")
             return await ctx.send(embed=embed)
@@ -264,7 +264,7 @@ class Akatsuki(commands.Cog):
             accuracy = info[7]
             playcount = info[3]
             embed=discord.Embed(description=f'▸ Official Rank: {official_rank} ({country}#{country_rank}) \n▸ Level: {level}\n▸ Total PP: {pp} \n▸ Accuracy: {accuracy}% \n▸ Playcount: {playcount}', color=0xb6ebf1)
-            embed.set_author(name=f"osu! Taiko Profile for {username}", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
+            embed.set_author(name=f"osu! Taiko Profile for {username.replace('ygfviasfa',' ')} ", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
             embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_footer(text=f"Player on Akatsuki!")
             return await ctx.send(embed=embed)
@@ -283,7 +283,7 @@ class Akatsuki(commands.Cog):
             accuracy = info[7]
             playcount = info[3]
             embed=discord.Embed(description=f'▸ Official Rank: {official_rank} ({country}#{country_rank}) \n▸ Level: {level}\n▸ Total PP: {pp} \n▸ Accuracy: {accuracy}% \n▸ Playcount: {playcount}', color=0xb6ebf1)
-            embed.set_author(name=f"osu! Taiko Profile for {username}", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
+            embed.set_author(name=f"osu! Taiko Profile for {username.replace('ygfviasfa',' ')} ", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
             embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_footer(text=f"Player on Akatsuki!")
             return await ctx.send(embed=embed)
@@ -331,7 +331,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Most Recent osu! Standard Play for {username}")
+            embed.set_footer(text=f"Most Recent osu! Standard Play for {username.replace('ygfviasfa',' ')} ")
             await ctx.send(embed=embed)
         elif completemessage == 0:
             b = collation.find_one({"_id": ctx.message.author.id})
@@ -373,7 +373,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Most Recent osu! Standard Play for {username}")
+            embed.set_footer(text=f"Most Recent osu! Standard Play for {username.replace('ygfviasfa',' ')} ")
             await ctx.send(embed=embed)
         else: 
             msg = '{}'.format(' '.join(args))
@@ -411,7 +411,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Most Recent osu! Standard Play for {username}")
+            embed.set_footer(text=f"Most Recent osu! Standard Play for {username.replace('ygfviasfa',' ')} ")
             await ctx.send(embed=embed)
 
     @commands.command()
@@ -457,7 +457,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Most Recent osu! Relax Standard Play for {username}")
+            embed.set_footer(text=f"Most Recent osu! Relax Standard Play for {username.replace('ygfviasfa',' ')} ")
             await ctx.send(embed=embed)
         elif completemessage == 0:
             b = collation.find_one({"_id": ctx.message.author.id})
@@ -499,7 +499,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Most Recent osu! Relax Standard Play for {username}")
+            embed.set_footer(text=f"Most Recent osu! Relax Standard Play for {username.replace('ygfviasfa',' ')} ")
             await ctx.send(embed=embed)
         else: 
             msg = '{}'.format(' '.join(args))
@@ -537,7 +537,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Most Recent osu! Relax Standard Play for {username}")
+            embed.set_footer(text=f"Most Recent osu! Relax Standard Play for {username.replace('ygfviasfa',' ')} ")
             await ctx.send(embed=embed)
 
     @commands.command()
@@ -583,7 +583,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Most Recent osu! Taiko Play for {username}")
+            embed.set_footer(text=f"Most Recent osu! Taiko Play for {username.replace('ygfviasfa',' ')} ")
             await ctx.send(embed=embed)
         elif completemessage == 0:
             b = collation.find_one({"_id": ctx.message.author.id})
@@ -625,7 +625,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Most Recent osu! Taiko Play for {username}")
+            embed.set_footer(text=f"Most Recent osu! Taiko Play for {username.replace('ygfviasfa',' ')} ")
             await ctx.send(embed=embed)
         else: 
             msg = '{}'.format(' '.join(args))
@@ -663,7 +663,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Most Recent osu! Taiko Play for {username}")
+            embed.set_footer(text=f"Most Recent osu! Taiko Play for {username.replace('ygfviasfa',' ')} ")
             await ctx.send(embed=embed)
 
     @commands.command()
@@ -709,7 +709,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Most Recent osu! Relax Taiko Play for {username}")
+            embed.set_footer(text=f"Most Recent osu! Relax Taiko Play for {username.replace('ygfviasfa',' ')} ")
             await ctx.send(embed=embed)
         elif completemessage == 0:
             b = collation.find_one({"_id": ctx.message.author.id})
@@ -751,7 +751,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Most Recent osu! Relax Taiko Play for {username}")
+            embed.set_footer(text=f"Most Recent osu! Relax Taiko Play for {username.replace('ygfviasfa',' ')} ")
             return await ctx.send(embed=embed)
         else: 
             msg = '{}'.format(' '.join(args))
@@ -789,7 +789,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Most Recent osu! Relax Taiko Play for {username}")
+            embed.set_footer(text=f"Most Recent osu! Relax Taiko Play for {username.replace('ygfviasfa',' ')} ")
             await ctx.send(embed=embed)
 
     @commands.command()
@@ -835,7 +835,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Top osu! Standard Play for {username}")
+            embed.set_footer(text=f"Top osu! Standard Play for {username.replace('ygfviasfa',' ')} ")
             await ctx.send(embed=embed)
         elif completemessage == 0:
             b = collation.find_one({"_id": ctx.message.author.id})
@@ -877,7 +877,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Top osu! Standard Play for {username}")
+            embed.set_footer(text=f"Top osu! Standard Play for {username.replace('ygfviasfa',' ')} ")
             return await ctx.send(embed=embed)
         else: 
             msg = '{}'.format(' '.join(args))
@@ -915,7 +915,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Top osu! Standard Play for {username}")
+            embed.set_footer(text=f"Top osu! Standard Play for {username.replace('ygfviasfa',' ')} ")
             await ctx.send(embed=embed)
 
     @commands.command()
@@ -961,7 +961,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Top osu! Relax Standard Play for {username}")
+            embed.set_footer(text=f"Top osu! Relax Standard Play for {username.replace('ygfviasfa',' ')} ")
             await ctx.send(embed=embed)
         elif completemessage == 0:
             b = collation.find_one({"_id": ctx.message.author.id})
@@ -1003,7 +1003,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Top osu! Relax Standard Play for {username}")
+            embed.set_footer(text=f"Top osu! Relax Standard Play for {username.replace('ygfviasfa',' ')} ")
             return await ctx.send(embed=embed)
         else: 
             msg = '{}'.format(' '.join(args))
@@ -1041,7 +1041,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Top osu! Relax Standard Play for {username}")
+            embed.set_footer(text=f"Top osu! Relax Standard Play for {username.replace('ygfviasfa',' ')} ")
             await ctx.send(embed=embed)
 
     @commands.command()
@@ -1087,7 +1087,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Top osu! Relax Taiko Play for {username}")
+            embed.set_footer(text=f"Top osu! Relax Taiko Play for {username.replace('ygfviasfa',' ')} ")
             await ctx.send(embed=embed)
         elif completemessage == 0:
             b = collation.find_one({"_id": ctx.message.author.id})
@@ -1129,7 +1129,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Top osu! Relax Taiko Play for {username}")
+            embed.set_footer(text=f"Top osu! Relax Taiko Play for {username.replace('ygfviasfa',' ')} ")
             return await ctx.send(embed=embed)
         else: 
             msg = '{}'.format(' '.join(args))
@@ -1167,7 +1167,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Top osu! Relax Taiko Play for {username}")
+            embed.set_footer(text=f"Top osu! Relax Taiko Play for {username.replace('ygfviasfa',' ')} ")
             await ctx.send(embed=embed)
 
     @commands.command()
@@ -1213,7 +1213,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Top osu! Taiko Play for {username}")
+            embed.set_footer(text=f"Top osu! Taiko Play for {username.replace('ygfviasfa',' ')} ")
             await ctx.send(embed=embed)
         elif completemessage == 0:
             b = collation.find_one({"_id": ctx.message.author.id})
@@ -1255,7 +1255,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Top osu! Taiko Play for {username}")
+            embed.set_footer(text=f"Top osu! Taiko Play for {username.replace('ygfviasfa',' ')} ")
             return await ctx.send(embed=embed)
         else: 
             msg = '{}'.format(' '.join(args))
@@ -1293,7 +1293,7 @@ class Akatsuki(commands.Cog):
             embed=discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=0xb6ebf1)
             embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
             embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
-            embed.set_footer(text=f"Top osu! Taiko Play for {username}")
+            embed.set_footer(text=f"Top osu! Taiko Play for {username.replace('ygfviasfa',' ')} ")
             await ctx.send(embed=embed)
 
 def setup(client):
