@@ -87,7 +87,12 @@ def stats(user: str):
     stats = requests.get(f'https://akatsuki.pw/api/v1/users/full?name={user}')
     if not stats:
         return 'error'
-    username = stats.json()['username']
+    usernamee = stats.json()['username']
+
+    if ' ' in usernamee:
+        username = usernamee.replace(' ','ygfviasfa')
+    else:
+        username = usernamee
     rankedscore = stats.json()['stats'][0]['std']['ranked_score']
     totalscore = stats.json()['stats'][0]['std']['total_score']
     playcount = stats.json()['stats'][0]['std']['playcount']
@@ -139,7 +144,12 @@ def relaxstats(user: str):
     stats = requests.get(f'https://akatsuki.pw/api/v1/users/full?name={user}')
     if not stats:
         return 'error'
-    username = stats.json()['username']
+    usernamee = stats.json()['username']
+
+    if ' ' in usernamee:
+        username = usernamee.replace(' ','ygfviasfa')
+    else:
+        username = usernamee
     rankedscore = stats.json()['stats'][1]['std']['ranked_score']
     totalscore = stats.json()['stats'][1]['std']['total_score']
     playcount = stats.json()['stats'][1]['std']['playcount']
@@ -163,7 +173,7 @@ def relaxstats(user: str):
     clanid = stats.json()['clan']['id']
     return f'{username} {rankedscore} {totalscore} {playcount} {playtime} {replayswatched} {level} {accuracy} {pp} {globalrank} {countryrank} {country} {userid} {registered} {lastonline} {clan} {clantag} {clanDescription} {followers} {clanid}'.split()
 
-def relaxtaikostats(user: str):
+def relaxtaikostats(user):
     """
     gets regular stats from akatsuki!
     example: relaxtaikostats('Cover')
@@ -188,10 +198,17 @@ def relaxtaikostats(user: str):
     18 = followers
     19 = clan id
     """
+
     stats = requests.get(f'https://akatsuki.pw/api/v1/users/full?name={user}')
     if not stats:
         return 'error'
-    username = stats.json()['username']
+    usernamee = stats.json()['username']
+
+    if ' ' in usernamee:
+        username = usernamee.replace(' ','ygfviasfa')
+    else:
+        username = usernamee
+
     rankedscore = stats.json()['stats'][1]['taiko']['ranked_score']
     totalscore = stats.json()['stats'][1]['taiko']['total_score']
     playcount = stats.json()['stats'][1]['taiko']['playcount']
@@ -243,7 +260,12 @@ def taikostats(user: str):
     stats = requests.get(f'https://akatsuki.pw/api/v1/users/full?name={user}')
     if not stats:
         return 'error'
-    username = stats.json()['username']
+    usernamee = stats.json()['username']
+
+    if ' ' in usernamee:
+        username = usernamee.replace(' ','ygfviasfa')
+    else:
+        username = usernamee
     rankedscore = stats.json()['stats'][0]['taiko']['ranked_score']
     totalscore = stats.json()['stats'][0]['taiko']['total_score']
     playcount = stats.json()['stats'][0]['taiko']['playcount']
