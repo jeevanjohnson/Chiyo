@@ -1,3 +1,9 @@
+# License
+You are allowed to use this code for your own use. 
+
+All I ask for is some credit in someone that the code was originated by me.
+
+
 # Chiyo!
 
 So this was a project I was doing when I first started Python. 
