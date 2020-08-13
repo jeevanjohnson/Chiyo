@@ -4,7 +4,7 @@ So this was a project I was doing when I first started Python.
 
 Today I decided to rewrite it ,but with more features!
 
-Thx for commiting [Bert](https://github.com/1800yungbert) and [Jackson](https://github.com/jacksonisiah)!
+Thx for contributing [Bert](https://github.com/1800yungbert) and [Jackson](https://github.com/jacksonisiah)!
 
 To see all commands you can do ``;help`` to see all the commands!
 
