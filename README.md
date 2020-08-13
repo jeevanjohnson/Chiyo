@@ -2,7 +2,7 @@
 
 So this was a project I was doing when I first started Python. 
 
-Today I decided to rewrite it ,but with more features!
+Today I decided to rewrite it, but with more features!
 
 Thx for contributing [Bert](https://github.com/1800yungbert) and [Jackson](https://github.com/jacksonisiah)!
 
