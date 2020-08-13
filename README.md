@@ -1,7 +1,7 @@
 # License
 You are allowed to use this code for your own use. 
 
-All I ask for is some credit in someone that the code was originated by me.
+All I ask for is some credit in some way so that people know the code was originated by me.
 
 
 # Chiyo!
