@@ -4,6 +4,8 @@ So this was a project I was doing when I first started Python.
 
 Today I decided to rewrite it ,but with more features!
 
+Thx for commiting [Bert](https://github.com/1800yungbert) and [Jackson](https://github.com/jacksonisiah)!
+
 To see all commands you can do ``;help`` to see all the commands!
 
 You can invite Chiyo [right here.](https://discord.com/api/oauth2/authorize?client_id=705176662366486529&permissions=8&scope=bot)
