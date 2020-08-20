@@ -45,28 +45,30 @@ async def on_message(message):
     await client.process_commands(message)
 
     if message.content.startswith(';cb') == True:
-        msg = message.content.replace(';cb', '').replace(';cb ', '')
+        msg = message.content.replace(';cb', '')
         comepletemessage = len(msg)
-        if message.mentions:
+        if message.mentions[0].id:
             b = collation.find_one({"_id": message.mentions[0].id})
             if b == None:
                 await message.channel.send(f"User couldn't be found for {message.mentions[0]}!\n{message.mentions[0]} try connecting your account to a valid user like `;connect <Akatsuki Username>`")
             a = b['name']
             c = str(a)
+            method = 0
         elif comepletemessage == 0:
             b = collation.find_one({"_id": message.author.id})
             if b == None:
                 await message.channel.send(f"User couldn't be found!\nTry connecting your account to a valid user like `;connect <Akatsuki Username>`")
             a = b['name']
             c = str(a)
+            method = 0
         else:
             c = msg
+            method = 1
 
-        print(c)
         if message.channel.id not in cache:
             await message.channel.send('Couldnt find map in this place!')
 
-        beatmapid = cache[2]
+        beatmapid = cache[2].replace(' -taiko','')
         mode = cache[3]
         beatmapset_id = cache[4]
         songname = cache[5]
@@ -76,8 +78,11 @@ async def on_message(message):
         od = cache[9]
         full_combo = cache[10]
 
-        info = akatsukiapi.compare(c, beatmapid, mode, rx)
-
+        if method == 1:
+        	info = akatsukiapi.compare(c[1:], beatmapid, mode)
+        else:
+        	info = akatsukiapi.compare(c, beatmapid, mode)
+        
         if info == 'no user found':
             return await message.channel.send('No user found!')
 
@@ -94,7 +99,7 @@ async def on_message(message):
             else:
                 mods = just_some_mods_lol
 
-        userid = info['user_id']
+        userid = int(info['user_id'])
         rank = info['rank']
         pppp = info['pp']
         ppp = float(pppp)
@@ -122,10 +127,8 @@ async def on_message(message):
             )) / (total * 300.0)
 
         acc = round(accc, 2)
-        embed = discord.Embed(
-            description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {acc}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]', color=0xb6ebf1)
-        embed.set_author(name=f"{songname} +{mods} [{difficulty}★]",
-                         url=f"https://akatsuki.pw/b/{beatmapid}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
+        embed = discord.Embed(description=f'▸ {rank} ▸ {pp}PP [AR: {ar} OD: {od}] ▸ {acc}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]', color=0xb6ebf1)
+        embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmapid}", icon_url=f"https://a.akatsuki.pw/{userid}.png")
         embed.set_thumbnail(url=f"https://b.ppy.sh/thumb/{beatmapset_id}l.jpg")
         embed.set_footer(text=f"Top Play for {username} on this map!")
         await message.channel.send(embed=embed)
@@ -168,7 +171,7 @@ async def on_message(message):
         embed.set_image(
             url=f'https://assets.ppy.sh/beatmaps/{id_sb}/covers/cover.jpg')
         await message.channel.send(embed=embed)
-    if 'https://akatsuki.pw/b/' in message.content:
+    if 'https://akatsuki.pw/b/' in message.content and '-taiko' not in message.content:
         c = message.content
         b = c.replace('https://akatsuki.pw/b/', '')
         d = b.replace('?mode=0', '')
@@ -207,7 +210,7 @@ async def on_message(message):
         embed.set_image(
             url=f'https://assets.ppy.sh/beatmaps/{id_sb}/covers/cover.jpg')
         await message.channel.send(embed=embed)
-    if 'https://akatsuki.pw/d/' in message.content:
+    if 'https://akatsuki.pw/d/' in message.content and '-taiko' not in message.content:
         c = message.content
         b = c.replace('https://akatsuki.pw/d/', '')
         d = b.replace('?mode=0', '')
