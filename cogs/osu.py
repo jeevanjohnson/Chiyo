@@ -4,7 +4,6 @@ import requests
 import os
 import akatsukiapi
 import Chiyo
-from pp import ppcal
 
 collation = Chiyo.collation
 global cache
