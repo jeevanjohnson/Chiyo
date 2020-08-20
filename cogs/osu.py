@@ -4,6 +4,7 @@ import requests
 import os
 import akatsukiapi
 import Chiyo
+from pp import ppcal
 
 collation = Chiyo.collation
 global cache
@@ -727,7 +728,7 @@ class Akatsuki(commands.Cog):
 
     @commands.command()
     async def c(self, ctx, *args):
-        """compare map
+        """compare map | ;cb to compare specific map
         """
         completemessage = len(args)
         if ctx.message.mentions:
