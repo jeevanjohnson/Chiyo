@@ -45,12 +45,12 @@ async def on_message(message):
     await client.process_commands(message)
 
     if message.content.startswith(';cb') == True:
-        msg = message.content.replace(';cb', '')
+        msg = message.content.replace(';cb', '').replace(';cb ', '')
         comepletemessage = len(msg)
         if message.mentions:
             b = collation.find_one({"_id": message.mentions[0].id})
             if b == None:
-                await message.channel.send(f"User couldn't be found for {ctx.message.mentions[0]}!\n{ctx.message.mentions[0]} try connecting your account to a valid user like `;connect <Akatsuki Username>`")
+                await message.channel.send(f"User couldn't be found for {message.mentions[0]}!\n{message.mentions[0]} try connecting your account to a valid user like `;connect <Akatsuki Username>`")
             a = b['name']
             c = str(a)
         elif comepletemessage == 0:
@@ -155,7 +155,7 @@ async def on_message(message):
         cache[3] = 1
         cache[4] = id_sb
         cache[5] = title
-        cache[7] = round(int(difficulty), 2)
+        cache[7] = round(float(difficulty), 2)
         cache[8] = t.json()[0]['diff_approach']
         cache[9] = t.json()[0]['diff_overall']
         cache[10] = max_combo
@@ -232,7 +232,7 @@ async def on_message(message):
         cache[3] = 0
         cache[4] = id_sb
         cache[5] = title
-        cache[7] = round(int(difficulty), 2)
+        cache[7] = round(float(difficulty), 2)
         cache[8] = t.json()[0]['diff_approach']
         cache[9] = t.json()[0]['diff_overall']
         cache[10] = max_combo
@@ -271,7 +271,7 @@ async def on_message(message):
         cache[3] = 1
         cache[4] = id_sb
         cache[5] = title
-        cache[7] = round(int(difficulty), 2)
+        cache[7] = round(float(difficulty), 2)
         cache[8] = t.json()[0]['diff_approach']
         cache[9] = t.json()[0]['diff_overall']
         cache[10] = max_combo
