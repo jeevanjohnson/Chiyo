@@ -47,7 +47,7 @@ async def on_message(message):
     if message.content.startswith(';cb') == True:
         msg = message.content.replace(';cb', '')
         comepletemessage = len(msg)
-        if message.mentions[0].id:
+        if message.mentions:
             b = collation.find_one({"_id": message.mentions[0].id})
             if b == None:
                 await message.channel.send(f"User couldn't be found for {message.mentions[0]}!\n{message.mentions[0]} try connecting your account to a valid user like `;connect <Akatsuki Username>`")
