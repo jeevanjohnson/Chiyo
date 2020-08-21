@@ -792,14 +792,17 @@ def taikotop(user: str):
     difficulty = round(diff, 2)
     return f'{score} {max_combo} {full_combo} {mods} {count_300} {count_100} {count_50} {count_miss} {accuracy} {pp} {rank} {completed} {beatmap_id} {beatmapset_id} {ar} {od} {difficulty}'.split()
 
-def compare(username: str, bmid: int, mode: int, rx: int):
+def compare(username: str, bmid: int, mode: int):
 
     user = requests.get(f'https://akatsuki.pw/api/v1/users/whatid?name={username}')
     if not user:
         return 'no user found'
     userid = user.json()['id']
-    info = requests.get(f'https://akatsuki.pw/api/get_scores?b={bmid}&m={mode}&u={userid}&limit=1&')
+    info = requests.get(f'https://akatsuki.pw/api/get_scores?b={bmid}&m={mode}&u={userid}&limit=1')
     if not info:
         return 'no score found'
 
-    return info.json()[0]
+    try:
+    	return info.json()[0]
+    except TypeError:
+    	return 'no score found'
