@@ -30,7 +30,7 @@ for filename in os.listdir('./cogs'):
 @client.event
 async def on_ready():
     print(
-        f'Kimitzuni Today at 12:20 PM "UwUUUUUU Im online daddyyyy"\nChiyo is currently in {str(len(client.guilds))} servers!')
+        f'Chiyo is online\nChiyo is currently in {str(len(client.guilds))} servers!')
     await client.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.playing,
                                                                                          name=f'in {str(len(client.guilds))} Servers!'))
 # @client.event
