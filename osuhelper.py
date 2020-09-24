@@ -83,8 +83,10 @@ class Helper:
 
 		if not t:
 			return 'error'
-
-		return t.json()['scores'][scoreid - 1 if scoreid > 0 else scoreid]
+		try:
+			return t.json()['scores'][scoreid - 1 if scoreid > 0 else scoreid]
+		except:
+			return 'error'
 
 	def recent(self, mode = 0, relax = 0, scoreid = 0):
 
@@ -92,16 +94,20 @@ class Helper:
 
 		if not t:
 			return 'error'
-
-		return t.json()['scores'][scoreid]
+		try:
+			return t.json()['scores'][scoreid - 1 if scoreid > 0 else scoreid]
+		except:
+			return 'error'
 
 	def compare(self, beatmapid, mode = 0, relax = 0, scoreid = 0):
 
 		info = requests.get(f'https://akatsuki.pw/api/get_scores?b={beatmapid}&m={mode}&u={self.userid}&rx={relax}')
 		if not info:
 			return 'no score found'
-		
-		return info.json()[scoreid - 1 if scoreid > 0 else scoreid]
+		try:
+			return info.json()[scoreid - 1 if scoreid > 0 else scoreid]
+		except:
+			return 'no score found'
 
 	def profile(self, mode = 0, relax = 0):
 
@@ -117,18 +123,21 @@ class Helper:
 			3: 'mania'
 		}
 		
-		
-		username = t.json()['username']
-		registered_on = t.json()['registered_on'].replace('T',' ').replace('Z','')
-		latest_activity = t.json()['latest_activity'].replace('T',' ').replace('Z','')
-		country = t.json()['country']
-		stats = t.json()['stats'][relax][switcher.get(mode)]
-		return {
-			'username': username,
-			'registered_on': registered_on,
-			'latest_activity': latest_activity,
-			'country': country,
-			'stats': stats
-		}
-		
-
+		#e = Helper(1000)
+		#how = e.profile()
+		#print(how['stats']['ranked_score'])
+		try:
+			username = t.json()['username']
+			registered_on = t.json()['registered_on'].replace('T',' ').replace('Z','')
+			latest_activity = t.json()['latest_activity'].replace('T',' ').replace('Z','')
+			country = t.json()['country']
+			stats = t.json()['stats'][relax][switcher.get(mode)]
+			return {
+				'username': username,
+				'registered_on': registered_on,
+				'latest_activity': latest_activity,
+				'country': country,
+				'stats': stats
+			}
+		except:
+			return 'error'
