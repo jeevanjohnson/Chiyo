@@ -1,7 +1,7 @@
 # Chiyo!
 osu!Akatsuki discord bot!
 
-Thx for contributing [Bert](https://github.com/1800yungbert) and [Jackson](https://github.com/jacksonisiah)!
+Thx for contributing [Bert](https://github.com/heyimbert) and [Jackson](https://github.com/jacksonisiah)!
 
 To see all commands you can do ``;help`` to see all the commands! 
 
