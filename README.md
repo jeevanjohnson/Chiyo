@@ -1,14 +1,5 @@
-# License
-You are allowed to use this code for your own use. 
-
-All I ask for is some credit in some way so that people know the code was originated by me.
-
-
 # Chiyo!
-
-So this was a project I was doing when I first started Python. 
-
-Today I decided to rewrite it, but with more features!
+osu!Akatsuki discord bot!
 
 Thx for contributing [Bert](https://github.com/1800yungbert) and [Jackson](https://github.com/jacksonisiah)!
 
@@ -25,3 +16,8 @@ This was made for [Python 3.6.](https://www.python.org/downloads/release/python-
 2. Run the main file! ``python3 Chiyo.py``
 
 If there are any errors or you just have a question ask me on discord! ``Cover#8860``
+
+# License
+You are allowed to use this code for your own use. 
+
+All I ask for is some credit in some way so that people know the code was originated by me.
