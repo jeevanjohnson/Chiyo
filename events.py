@@ -60,7 +60,7 @@ class Chiyo:
 				cache[message.channel.id] = {'beatmap_id': id_b, 'ar': t.json()[0]['diff_approach'], 'od': t.json()[0]['diff_overall'], 'full_combo': max_combo, 'songname': '{title} [{bruh}]'.format(title=title, bruh=t.json()[0]['version']) , 'difficulty': difficulty, 'beatmapset_id': id_sb, 'mode': 1}
 
 				embed = discord.Embed(
-					description=f'â–¸ Bloodcat: https://bloodcat.com/osu/{id_b} \nâ–¸ Old Osu: https://old.ppy.sh/s/{id_sb}\nâ–¸ Osu: https://osu.ppy.sh/b/{id_b} \nâ–¸ Gatari: https://osu.gatari.pw/b/{id_b} \nâ–¸ Max Combo: {max_combo} \nâ–¸ BPM: {bpm}', color=color)
+					description=f'▸ Bloodcat: https://bloodcat.com/osu/{id_b} \n▸ Old Osu: https://old.ppy.sh/s/{id_sb}\n▸ Osu: https://osu.ppy.sh/b/{id_b} \n▸ Gatari: https://osu.gatari.pw/b/{id_b} \n▸ Max Combo: {max_combo} \n▸ BPM: {bpm}', color=color)
 				embed.set_author(name=f"{artist} - {title}", url=f"https://akatsuki.pw/b/{id_b}",
 								 icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
 				embed.set_image(
@@ -88,7 +88,7 @@ class Chiyo:
 				cache[message.channel.id] = {'beatmap_id': id_b, 'ar': t.json()[0]['diff_approach'], 'od': t.json()[0]['diff_overall'], 'full_combo': max_combo, 'songname': '{title} [{bruh}]'.format(title=title, bruh=t.json()[0]['version']) , 'difficulty': difficulty, 'beatmapset_id': id_sb, 'mode': 1}
 
 				embed = discord.Embed(
-					description=f'â–¸ Bloodcat: https://bloodcat.com/osu/{id_b} \nâ–¸ Old Osu: https://old.ppy.sh/s/{id_sb}\nâ–¸ Osu: https://osu.ppy.sh/b/{id_b} \nâ–¸ Gatari: https://osu.gatari.pw/b/{id_b} \nâ–¸ Max Combo: {max_combo} \nâ–¸ BPM: {bpm}', color=color)
+					description=f'▸ Bloodcat: https://bloodcat.com/osu/{id_b} \n▸ Old Osu: https://old.ppy.sh/s/{id_sb}\n▸ Osu: https://osu.ppy.sh/b/{id_b} \n▸ Gatari: https://osu.gatari.pw/b/{id_b} \n▸ Max Combo: {max_combo} \n▸ BPM: {bpm}', color=color)
 				embed.set_author(name=f"{artist} - {title}", url=f"https://akatsuki.pw/b/{id_b}",
 								 icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
 				embed.set_image(
@@ -116,7 +116,7 @@ class Chiyo:
 				cache[message.channel.id] = {'beatmap_id': id_b, 'ar': t.json()[0]['diff_approach'], 'od': t.json()[0]['diff_overall'], 'full_combo': max_combo, 'songname': '{title} [{bruh}]'.format(title=title, bruh=t.json()[0]['version']) , 'difficulty': difficulty, 'beatmapset_id': id_sb, 'mode': 1}
 
 				embed = discord.Embed(
-					description=f'â–¸ Bloodcat: https://bloodcat.com/osu/{id_b} \nâ–¸ Old Osu: https://old.ppy.sh/s/{id_sb}\nâ–¸ Osu: https://osu.ppy.sh/b/{id_b} \nâ–¸ Gatari: https://osu.gatari.pw/b/{id_b} \nâ–¸ Max Combo: {max_combo} \nâ–¸ BPM: {bpm}', color=color)
+					description=f'▸ Bloodcat: https://bloodcat.com/osu/{id_b} \n▸ Old Osu: https://old.ppy.sh/s/{id_sb}\n▸ Osu: https://osu.ppy.sh/b/{id_b} \n▸ Gatari: https://osu.gatari.pw/b/{id_b} \n▸ Max Combo: {max_combo} \n▸ BPM: {bpm}', color=color)
 				embed.set_author(name=f"{artist} - {title}", url=f"https://akatsuki.pw/b/{id_b}",
 								 icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
 				embed.set_image(
@@ -144,7 +144,7 @@ class Chiyo:
 				cache[message.channel.id] = {'beatmap_id': id_b, 'ar': t.json()[0]['diff_approach'], 'od': t.json()[0]['diff_overall'], 'full_combo': max_combo, 'songname': '{title} [{bruh}]'.format(title=title, bruh=t.json()[0]['version']) , 'difficulty': difficulty, 'beatmapset_id': id_sb, 'mode': 1}
 
 				embed = discord.Embed(
-					description=f'â–¸ Bloodcat: https://bloodcat.com/osu/{id_b} \nâ–¸ Old Osu: https://old.ppy.sh/s/{id_sb}\nâ–¸ Osu: https://osu.ppy.sh/b/{id_b} \nâ–¸ Gatari: https://osu.gatari.pw/b/{id_b} \nâ–¸ Max Combo: {max_combo} \nâ–¸ BPM: {bpm}', color=color)
+					description=f'▸ Bloodcat: https://bloodcat.com/osu/{id_b} \n▸ Old Osu: https://old.ppy.sh/s/{id_sb}\n▸ Osu: https://osu.ppy.sh/b/{id_b} \n▸ Gatari: https://osu.gatari.pw/b/{id_b} \n▸ Max Combo: {max_combo} \n▸ BPM: {bpm}', color=color)
 				embed.set_author(name=f"{artist} - {title}", url=f"https://akatsuki.pw/b/{id_b}",
 								 icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
 				embed.set_image(
@@ -270,8 +270,8 @@ class Chiyo:
 
 			username = osuhelper.get_username(userid)
 
-			embed=discord.Embed(description=f'â–¸ {pp}PP [AR: {ar} OD: {od}] â–¸ {accuracy}%\nâ–¸ {score} â–¸ {max_combo}x/{full_combo}x â–¸ [{count_300}/{count_100}/{count_50}/{count_miss}]', color=color)
-			embed.set_author(name=f"{songname} +{mods} [{difficulty}â˜…]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=rank)
+			embed=discord.Embed(description=f'▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]', color=color)
+			embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=rank)
 			embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
 			embed.set_image(url=f"https://assets.ppy.sh/beatmaps/{beatmapset_id}/covers/cover.jpg")
 			embed.set_footer(text=f"osu!{hahaha} {text} Plays for {username} ")
@@ -375,8 +375,8 @@ class Chiyo:
 
 			cache[ctx.message.channel.id] = {'beatmap_id': beatmap_id, 'ar': ar, 'od': od, 'full_combo': full_combo, 'songname': songname, 'difficulty': difficulty, 'beatmapset_id': beatmapset_id, 'mode': mode}
 
-			embed=discord.Embed(description=f'â–¸ {pp}PP [AR: {ar} OD: {od}] â–¸ {accuracy}%\nâ–¸ {score} â–¸ {max_combo}x/{full_combo}x â–¸ [{count_300}/{count_100}/{count_50}/{count_miss}]\nâ–¸ Map Completed: {completed}', color=color)
-			embed.set_author(name=f"{songname} +{mods} [{difficulty}â˜…]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=rank)
+			embed=discord.Embed(description=f'▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=color)
+			embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=rank)
 			embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
 			embed.set_image(url=f"https://assets.ppy.sh/beatmaps/{beatmapset_id}/covers/cover.jpg")
 			embed.set_footer(text=f"Top osu!{hahaha} {text} Play for {username} ")
@@ -480,8 +480,8 @@ class Chiyo:
 
 			cache[ctx.message.channel.id] = {'beatmap_id': beatmap_id, 'ar': ar, 'od': od, 'full_combo': full_combo, 'songname': songname, 'difficulty': difficulty, 'beatmapset_id': beatmapset_id, 'mode': mode}
 
-			embed=discord.Embed(description=f'â–¸ {pp}PP [AR: {ar} OD: {od}] â–¸ {accuracy}%\nâ–¸ {score} â–¸ {max_combo}x/{full_combo}x â–¸ [{count_300}/{count_100}/{count_50}/{count_miss}]\nâ–¸ Map Completed: {completed}', color=color)
-			embed.set_author(name=f"{songname} +{mods} [{difficulty}â˜…]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=rank)
+			embed=discord.Embed(description=f'▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=color)
+			embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=rank)
 			embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
 			embed.set_image(url=f"https://assets.ppy.sh/beatmaps/{beatmapset_id}/covers/cover.jpg")
 			embed.set_footer(text=f"Most Recent osu!{hahaha} {text} Play for {username} ")
@@ -551,7 +551,7 @@ class Chiyo:
 			accuracy = round(b['stats']['accuracy'], 2)
 			playcount = b['stats']['playcount']
 			username = b['username']
-			embed=discord.Embed(description=f'â–¸ Official Rank: {official_rank} ({country}#{country_rank}) \nâ–¸ Level: {level}\nâ–¸ Total PP: {pp} \nâ–¸ Accuracy: {accuracy}% \nâ–¸ Playcount: {playcount}', color=color)
+			embed=discord.Embed(description=f'▸ Official Rank: {official_rank} ({country}#{country_rank}) \n▸ Level: {level}\n▸ Total PP: {pp} \n▸ Accuracy: {accuracy}% \n▸ Playcount: {playcount}', color=color)
 			embed.set_author(name=f"osu!{hahaha} {text} Profile for {username} ", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
 			embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
 			embed.set_footer(text=f"Player on Akatsuki!")
@@ -613,7 +613,7 @@ Optional = () Required = []
 		@Chiyo.command()
 		async def slots(ctx, *args):
 
-			h = ['ðŸŽ','ðŸŠ','ðŸ','ðŸ‹','ðŸ‰','ðŸ‡','ðŸ“','ðŸ’']
+			h = ['🍎','🍊','🍐','🍋','🍉','🍇','🍓','🍒']
 
 			b = random.choice(h)
 			c = random.choice(h)
