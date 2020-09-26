@@ -53,7 +53,7 @@ class Chiyo:
 			# this was old code that worked I could make it cleaner but im so lazy lol
 			
 			if message.content == '<@!705176662366486529>':
-				await message.channel.send(f'The prefix for this server is `{get_prefix(Chiyo, message)}` (Custom Prefixes coming soon)')
+				await message.channel.send(f'The prefix for this server is `{get_prefix(Chiyo, message)}`')
 
 			if 'https://akatsuki.pw/b/' in message.content and '-taiko' in message.content:
 				user_id = message.author.id
