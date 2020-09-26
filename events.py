@@ -6,7 +6,6 @@ from datetime import datetime
 import requests
 import osuhelper
 import random
-import string
 
 class Chiyo:
 
@@ -51,9 +50,6 @@ class Chiyo:
 			
 			if message.content == '<@!705176662366486529>':
 				await message.channel.send(f'The prefix for this server is `{get_prefix(Chiyo, message)}`')
-
-			#if '<@!705176662366486529>' in message.content.lower() and 'gender' in message.content.lower() and message.author.id != 705176662366486529:
-				#await message.channel.send(f'''Gender: {random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}''')
 
 			if 'https://akatsuki.pw/b/' in message.content and '-taiko' in message.content:
 				user_id = message.author.id
