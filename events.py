@@ -6,6 +6,7 @@ from datetime import datetime
 import requests
 import osuhelper
 import random
+import string
 
 class Chiyo:
 
@@ -22,15 +23,11 @@ class Chiyo:
 
 		def get_prefix(client, message):
 
-			if message.guild.id in cache:
-				return cache[message.guild.id]['prefix']		
 			how = db.get(User.guild_id == message.guild.id)
 
 			if how == None:
-				cache[message.guild.id] = {'prefix': prefix}
 				return prefix
 			else:
-				cache[message.guild.id] = {'prefix': how['prefix']}
 				return how['prefix']
 
 		Chiyo = commands.Bot(command_prefix = get_prefix, case_insensitive=True, help_command=None)
@@ -54,6 +51,9 @@ class Chiyo:
 			
 			if message.content == '<@!705176662366486529>':
 				await message.channel.send(f'The prefix for this server is `{get_prefix(Chiyo, message)}`')
+
+			#if '<@!705176662366486529>' in message.content.lower() and 'gender' in message.content.lower() and message.author.id != 705176662366486529:
+				#await message.channel.send(f'''Gender: {random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}{random.choice(string.ascii_letters)}''')
 
 			if 'https://akatsuki.pw/b/' in message.content and '-taiko' in message.content:
 				user_id = message.author.id
@@ -176,14 +176,13 @@ class Chiyo:
 			owo = db.search(User.guild_id == ctx.guild.id)
 
 			something = ''.join(args)
-		
+
 			if str(owo) == '[]':
 				db.insert({'guild_id': ctx.guild.id, 'prefix': something})
 			else:
 				db.update({'prefix': something}, User.guild_id == ctx.guild.id)
 
 			return await ctx.send(f'Prefix was changed! The new prefix is: {something}')
-
 
 		@Chiyo.command(aliases=['compare', 'c'])
 		async def _compare(ctx, *args):
