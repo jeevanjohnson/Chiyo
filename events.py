@@ -1,6 +1,5 @@
 import discord
 from discord.ext import commands
-import sys
 from tinydb import TinyDB, Query
 from config import ownerid, prefix
 from datetime import datetime
@@ -22,12 +21,16 @@ class Chiyo:
 		print('Connected to database!')
 
 		def get_prefix(client, message):
-			
+
+			if message.guild.id in cache:
+				return cache[message.guild.id]['prefix']		
 			how = db.get(User.guild_id == message.guild.id)
 
 			if how == None:
+				cache[message.guild.id] = {'prefix': prefix}
 				return prefix
 			else:
+				cache[message.guild.id] = {'prefix': how['prefix']}
 				return how['prefix']
 
 		Chiyo = commands.Bot(command_prefix = get_prefix, case_insensitive=True, help_command=None)
