@@ -21,7 +21,16 @@ class Chiyo:
 		User = Query()
 		print('Connected to database!')
 
-		Chiyo = commands.Bot(command_prefix = prefix, case_insensitive=True, help_command=None)
+		def get_prefix(client, message):
+			
+			how = db.get(User.guild_id == message.guild.id)
+
+			if how == None:
+				return prefix
+			else:
+				return how['prefix']
+
+		Chiyo = commands.Bot(command_prefix = get_prefix, case_insensitive=True, help_command=None)
 
 		@Chiyo.event
 		async def on_ready():
@@ -39,6 +48,10 @@ class Chiyo:
 			await Chiyo.process_commands(message)
 			print(f"[{datetime.now().time()}] [{message.guild}] [{message.channel}] {message.author}: {message.content}")
 			# this was old code that worked I could make it cleaner but im so lazy lol
+			
+			if message.content == '<@!705176662366486529>':
+				await message.channel.send(f'The prefix for this server is `{get_prefix(Chiyo, message)}` (Custom Prefixes coming soon)')
+
 			if 'https://akatsuki.pw/b/' in message.content and '-taiko' in message.content:
 				user_id = message.author.id
 				author = message.guild.get_member(user_id)
@@ -149,7 +162,25 @@ class Chiyo:
 								 icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
 				embed.set_image(
 					url=f'https://assets.ppy.sh/beatmaps/{id_sb}/covers/cover.jpg')
-				await message.channel.send(embed=embed)		
+				await message.channel.send(embed=embed)
+
+		@Chiyo.command(aliases=['prefix'])
+		async def custom_prefix(ctx, *args):
+
+			if len(args) == 0:
+				return await ctx.send("Must provide a prefix!")
+
+			owo = db.search(User.guild_id == ctx.guild.id)
+
+			something = ''.join(args)
+		
+			if str(owo) == '[]':
+				db.insert({'guild_id': ctx.guild.id, 'prefix': something})
+			else:
+				db.update({'prefix': something}, User.guild_id == ctx.guild.id)
+
+			return await ctx.send(f'Prefix was changed! The new prefix is: {something}')
+
 
 		@Chiyo.command(aliases=['compare', 'c'])
 		async def _compare(ctx, *args):
@@ -271,7 +302,7 @@ class Chiyo:
 			username = osuhelper.get_username(userid)
 
 			embed=discord.Embed(description=f'▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]', color=color)
-			embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=rank)
+			embed.set_author(name=f"{songname} +{mods} [{difficulty}?]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=rank)
 			embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
 			embed.set_image(url=f"https://assets.ppy.sh/beatmaps/{beatmapset_id}/covers/cover.jpg")
 			embed.set_footer(text=f"osu!{hahaha} {text} Plays for {username} ")
@@ -376,7 +407,7 @@ class Chiyo:
 			cache[ctx.message.channel.id] = {'beatmap_id': beatmap_id, 'ar': ar, 'od': od, 'full_combo': full_combo, 'songname': songname, 'difficulty': difficulty, 'beatmapset_id': beatmapset_id, 'mode': mode}
 
 			embed=discord.Embed(description=f'▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=color)
-			embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=rank)
+			embed.set_author(name=f"{songname} +{mods} [{difficulty}?]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=rank)
 			embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
 			embed.set_image(url=f"https://assets.ppy.sh/beatmaps/{beatmapset_id}/covers/cover.jpg")
 			embed.set_footer(text=f"Top osu!{hahaha} {text} Play for {username} ")
@@ -481,7 +512,7 @@ class Chiyo:
 			cache[ctx.message.channel.id] = {'beatmap_id': beatmap_id, 'ar': ar, 'od': od, 'full_combo': full_combo, 'songname': songname, 'difficulty': difficulty, 'beatmapset_id': beatmapset_id, 'mode': mode}
 
 			embed=discord.Embed(description=f'▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=color)
-			embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=rank)
+			embed.set_author(name=f"{songname} +{mods} [{difficulty}?]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=rank)
 			embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
 			embed.set_image(url=f"https://assets.ppy.sh/beatmaps/{beatmapset_id}/covers/cover.jpg")
 			embed.set_footer(text=f"Most Recent osu!{hahaha} {text} Play for {username} ")
@@ -589,16 +620,17 @@ class Chiyo:
 			color = ctx.guild.get_member(ctx.message.author.id).roles[len(ctx.guild.get_member(ctx.message.author.id).roles) - 1].color
 			embed=discord.Embed(colour = color)
 			embed.set_author(name="Chiyo | osu!Akatsuki discord bot!", url="https://coverosu.tk/chiyo", icon_url="https://cdn.discordapp.com/attachments/484532623792930820/758598838834429972/ezgif-7-4a5a55482300.jpg")
-			embed.add_field(name="Commands!", value="""
+			embed.add_field(name="Commands!", value=f"""
 ```
 Optional = () Required = []
-;connect [username]
-;slots
-;roll
-;[recent | rc | rs | r] [top | t] [osu | p | profile]
+{get_prefix(Chiyo, ctx.message)}connect [username]
+{get_prefix(Chiyo, ctx.message)}slots
+{get_prefix(Chiyo, ctx.message)}roll
+{get_prefix(Chiyo, ctx.message)}[recent | rc | rs | r] [top | t] [osu | p | profile]
 (-p (number)) (@someone | username) (-taiko | -mania | -ctb | by default it is Standard) (-rx)
 ```
 	""", inline=False)
+			embed.set_footer(text=f"Made by Cover#8860 dm if there is any problems")
 			return await ctx.send(embed=embed)
 
 		@Chiyo.command()
@@ -629,4 +661,4 @@ Optional = () Required = []
 		Chiyo.run(self.token)
 
 	def run(self):
-		self.Nyoko()	
+		self.Nyoko()
