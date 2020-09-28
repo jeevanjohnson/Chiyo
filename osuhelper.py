@@ -60,17 +60,87 @@ def readableMods(m: int) -> str:
 	d = ''.join(r)
 	return d.replace('DT','') if 'NC' in d else d
 
-def get_id(username):
-	w = requests.get(f'https://akatsuki.pw/api/v1/users/whatid?name={username}')
+def get_id(username, url = 'akatsuki.pw'):
+	w = requests.get(f'https://{url}/api/v1/users/whatid?name={username}')
 	if not w:
 		return "Couldn't find user!"
 	return w.json()['id']
 
-def get_username(userid):
-	w = requests.get(f'https://akatsuki.pw/api/v1/users/full?id={userid}')
+def get_username(userid, url = 'akatsuki.pw'):
+	w = requests.get(f'https://{url}/api/v1/users/full?id={userid}')
 	if not w:
 		return "Couldn't find user!"
 	return w.json()['username']
+
+class Ainu:
+	
+	def __init__(self, userid):
+		self.userid = userid
+
+	def top(self, mode = 0, relax = 0, scoreid = 0):
+
+		t = requests.get(f'https://ainu.pw/api/v1/users/scores/best?id={self.userid}&rx={relax}&mode={mode}')
+
+		if not t:
+			return 'error'
+		try:
+			return t.json()['scores'][scoreid - 1 if scoreid > 0 else scoreid]
+		except:
+			return 'error'
+
+	def recent(self, mode = 0, relax = 0, scoreid = 0):
+
+		t = requests.get(f'https://ainu.pw/api/v1/users/scores/recent?id={self.userid}&rx={relax}&mode={mode}')
+
+		if not t:
+			return 'error'
+		try:
+			return t.json()['scores'][scoreid - 1 if scoreid > 0 else scoreid]
+		except:
+			return 'error'
+
+	def compare(self, beatmapid, mode = 0, relax = 0, scoreid = 0):
+
+		info = requests.get(f'https://ainu.pw/api/get_scores?b={beatmapid}&m={mode}&u={self.userid}&rx={relax}')
+		if not info:
+			return 'no score found'
+		try:
+			return info.json()[scoreid - 1 if scoreid > 0 else scoreid]
+		except:
+			return 'no score found'
+
+	def profile(self, mode = 0, relax = 0):
+
+		t = requests.get(f'https://ainu.pw/api/v1/users/full?id={self.userid}')
+
+		if not t:
+			return 'error'
+
+		switcher = {
+			0: 'std',
+			1: 'taiko',
+			2: 'ctb',
+			3: 'mania'
+		}
+		
+		#e = Helper(1000)
+		#how = e.profile()
+		#print(how['stats']['ranked_score'])
+		try:
+			username = t.json()['username']
+			registered_on = t.json()['registered_on'].replace('T',' ').replace('Z','')
+			latest_activity = t.json()['latest_activity'].replace('T',' ').replace('Z','')
+			country = t.json()['country']
+			stats = t.json()['stats'][relax][switcher.get(mode)]
+			return {
+				'username': username,
+				'registered_on': registered_on,
+				'latest_activity': latest_activity,
+				'country': country,
+				'stats': stats
+			}
+		except:
+			return 'error'
 
 class Helper:
 
@@ -141,3 +211,4 @@ class Helper:
 			}
 		except:
 			return 'error'
+
