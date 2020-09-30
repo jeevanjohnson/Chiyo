@@ -161,8 +161,8 @@ class Chiyo:
 				msg.remove('-mania')
 				mode, relax = 3, 0
 
-			hahaha = another_switcher.get(relax)
-			text = switcher.get(mode)
+			hahaha = another_switcher[relax]
+			text = switcher[mode]
 
 			if ctx.message.mentions:
 				e = db.get(User.id == ctx.message.mentions[0].id)
@@ -258,8 +258,8 @@ class Chiyo:
 				msg.remove('-mania')
 				mode, relax = 3, 0
 
-			hahaha = another_switcher.get(relax)
-			text = switcher.get(mode)
+			hahaha = another_switcher[relax]
+			text = switcher[mode]
 
 			if ctx.message.mentions:
 				e = db.get(User.id == ctx.message.mentions[0].id)
@@ -297,7 +297,7 @@ class Chiyo:
 			completed = 'Yes' if stats['completed'] == 3 or stats['completed'] == 2 else 'No'
 			songname = stats['beatmap']['song_name']
 			mods = 'NM' if stats['mods'] == 0 else osuhelper.readableMods(stats['mods'])
-			difficulty = round(stats['beatmap']['difficulty2'][man.get(mode)], 2)
+			difficulty = round(stats['beatmap']['difficulty2'][man[mode]], 2)
 			beatmap_id = stats['beatmap']['beatmap_id']
 			beatmapset_id = stats['beatmap']['beatmapset_id']
 			username = osuhelper.get_username(userid)
@@ -338,8 +338,8 @@ class Chiyo:
 				msg.remove('-mania')
 				mode, relax = 3, 0
 
-			hahaha = another_switcher.get(relax)
-			text = switcher.get(mode)
+			hahaha = another_switcher[relax]
+			text = switcher[mode]
 
 			if ctx.message.mentions:
 				e = db.get(User.id == ctx.message.mentions[0].id)
@@ -377,7 +377,7 @@ class Chiyo:
 			completed = 'Yes' if stats['completed'] == 3 or stats['completed'] == 2 else 'No'
 			songname = stats['beatmap']['song_name']
 			mods = 'NM' if stats['mods'] == 0 else osuhelper.readableMods(stats['mods'])
-			difficulty = round(stats['beatmap']['difficulty2'][man.get(mode)], 2)
+			difficulty = round(stats['beatmap']['difficulty2'][man[mode]], 2)
 			beatmap_id = stats['beatmap']['beatmap_id']
 			beatmapset_id = stats['beatmap']['beatmapset_id']
 			username = osuhelper.get_username(userid)
@@ -414,8 +414,8 @@ class Chiyo:
 				msg.remove('-mania')
 				mode, relax = 3, 0
 
-			hahaha = another_switcher.get(relax)
-			text = switcher.get(mode)
+			hahaha = another_switcher[relax]
+			text = switcher[mode]
 
 			if ctx.message.mentions:
 				e = db.get(User.id == ctx.message.mentions[0].id)
