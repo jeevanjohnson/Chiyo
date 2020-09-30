@@ -7,16 +7,21 @@ from datetime import datetime
 import requests
 import osuhelper
 import random
+import re
+
+beatmap = r'\b\d+\b'
 
 class Chiyo:
 
 	def __init__(self, token):
-		super().__init__()
 		self.token = token
 
 	def Nyoko(self):
 
 		cache = {}
+		man = {0: 'std', 1: 'taiko', 2: 'ctb', 3: 'mania'}
+		switcher = {0: 'Standard', 1: 'Taiko', 2: 'Catch The Beat', 3: 'Mania'}
+		another_switcher = {0: '', 1: ' Relax'}
 		db = TinyDB('db.json')
 		User = Query()
 		print('Connected to database!')
@@ -47,114 +52,60 @@ class Chiyo:
 			await Chiyo.wait_until_ready()  
 			await Chiyo.process_commands(message)
 			print(f"[{datetime.now().time()}] [{message.guild}] [{message.channel}] {message.author}: {message.content}")
-			# this was old code that worked I could make it cleaner but im so lazy lol
 			
 			if message.content == f'<@!{Chiyo.user.id}>':
 				await message.channel.send(f'The prefix for this server is `{get_prefix(Chiyo, message)}`')
 
-			if 'https://akatsuki.pw/b/' in message.content and '-taiko' in message.content:
+			if 'https://akatsuki.pw/' in message.content and message.author.id != Chiyo.user.id:
 				color = message.author.roles[len(message.author.roles) - 1].color
 
-				urlid = message.content.split('b/')[1]
-				t = requests.get(
-					f'https://akatsuki.pw/api/get_beatmaps?limit=1&b={urlid}&m=1')
-				if not t:
-					return
-				title = t.json()[0]['title']
-				id_b = t.json()[0]['beatmap_id']
-				id_sb = t.json()[0]['beatmapset_id']
-				artist = t.json()[0]['artist']
-				max_combo = t.json()[0]['max_combo']
-				bpm = t.json()[0]['bpm']
-				difficulty = round(float(t.json()[0]['difficultyrating']), 2)
+				for mapid in re.findall(beatmap, message.content):
+					mode = 0
+					if '-taiko' in message.content:
+						mode = 1
+					elif '-std' in message.content:
+						mode = 0
+					if '/b/' in message.content:
+						how = 'b'
+					elif '/d/' in message.content:
+						how = 's'
+					params = {
+						'limit': 1,
+						f'{how}': int(mapid),
+						'm': mode
+					}
+					t = requests.get(f'https://akatsuki.pw/api/get_beatmaps?', params=params)
+					
+					if not t:
+						continue
+					
+					dude = t.json()[0]
 
-				cache[message.channel.id] = {'beatmap_id': id_b, 'ar': t.json()[0]['diff_approach'], 'od': t.json()[0]['diff_overall'], 'full_combo': max_combo, 'songname': '{title} [{bruh}]'.format(title=title, bruh=t.json()[0]['version']) , 'difficulty': difficulty, 'beatmapset_id': id_sb, 'mode': 1}
+					title = dude['title']
+					id_b = dude['beatmap_id']
+					id_sb = dude['beatmapset_id']
+					artist = dude['artist']
+					max_combo = dude['max_combo']
+					bpm = dude['bpm']
+					difficulty = round(float(dude['difficultyrating']), 2)
 
-				embed = discord.Embed(
-					description=f'▸ Bloodcat: https://bloodcat.com/osu/{id_b} \n▸ Old Osu: https://old.ppy.sh/s/{id_sb}\n▸ Osu: https://osu.ppy.sh/b/{id_b} \n▸ Gatari: https://osu.gatari.pw/b/{id_b} \n▸ Max Combo: {max_combo} \n▸ BPM: {bpm}', color=color)
-				embed.set_author(name=f"{artist} - {title}", url=f"https://akatsuki.pw/b/{id_b}",
-								 icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
-				embed.set_image(
-					url=f'https://assets.ppy.sh/beatmaps/{id_sb}/covers/cover.jpg')
-				await message.channel.send(embed=embed)
-			if 'https://akatsuki.pw/b/' in message.content and '-taiko' not in message.content:
-				color = message.author.roles[len(message.author.roles) - 1].color
+					cache[message.channel.id] = dude
 
-				urlid = message.content.split('b/')[1]
-				t = requests.get(
-					f'https://akatsuki.pw/api/get_beatmaps?limit=1&b={urlid}&m=0')
-				if not t:
-					return
-				title = t.json()[0]['title']
-				id_b = t.json()[0]['beatmap_id']
-				id_sb = t.json()[0]['beatmapset_id']
-				artist = t.json()[0]['artist']
-				max_combo = t.json()[0]['max_combo']
-				bpm = t.json()[0]['bpm']
-
-				difficulty = round(float(t.json()[0]['difficultyrating']), 2)
-
-				cache[message.channel.id] = {'beatmap_id': id_b, 'ar': t.json()[0]['diff_approach'], 'od': t.json()[0]['diff_overall'], 'full_combo': max_combo, 'songname': '{title} [{bruh}]'.format(title=title, bruh=t.json()[0]['version']) , 'difficulty': difficulty, 'beatmapset_id': id_sb, 'mode': 0}
-
-				embed = discord.Embed(
-					description=f'▸ Bloodcat: https://bloodcat.com/osu/{id_b} \n▸ Old Osu: https://old.ppy.sh/s/{id_sb}\n▸ Osu: https://osu.ppy.sh/b/{id_b} \n▸ Gatari: https://osu.gatari.pw/b/{id_b} \n▸ Max Combo: {max_combo} \n▸ BPM: {bpm}', color=color)
-				embed.set_author(name=f"{artist} - {title}", url=f"https://akatsuki.pw/b/{id_b}",
-								 icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
-				embed.set_image(
-					url=f'https://assets.ppy.sh/beatmaps/{id_sb}/covers/cover.jpg')
-				await message.channel.send(embed=embed)
-			if 'https://akatsuki.pw/d/' in message.content and '-taiko' not in message.content:
-				color = message.author.roles[len(message.author.roles) - 1].color
-
-				urlid = message.content.split('d/')[1]
-				t = requests.get(
-					f'https://akatsuki.pw/api/get_beatmaps?limit=1&s={urlid}&m=0')
-				if not t:
-					return
-				title = t.json()[0]['title']
-				id_b = t.json()[0]['beatmap_id']
-				id_sb = t.json()[0]['beatmapset_id']
-				artist = t.json()[0]['artist']
-				max_combo = t.json()[0]['max_combo']
-				bpm = t.json()[0]['bpm']
-
-				difficulty = round(float(t.json()[0]['difficultyrating']), 2)
-
-				cache[message.channel.id] = {'beatmap_id': id_b, 'ar': t.json()[0]['diff_approach'], 'od': t.json()[0]['diff_overall'], 'full_combo': max_combo, 'songname': '{title} [{bruh}]'.format(title=title, bruh=t.json()[0]['version']) , 'difficulty': difficulty, 'beatmapset_id': id_sb, 'mode': 0}
-
-				embed = discord.Embed(
-					description=f'▸ Bloodcat: https://bloodcat.com/osu/{id_b} \n▸ Old Osu: https://old.ppy.sh/s/{id_sb}\n▸ Osu: https://osu.ppy.sh/b/{id_b} \n▸ Gatari: https://osu.gatari.pw/b/{id_b} \n▸ Max Combo: {max_combo} \n▸ BPM: {bpm}', color=color)
-				embed.set_author(name=f"{artist} - {title}", url=f"https://akatsuki.pw/b/{id_b}",
-								 icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
-				embed.set_image(
-					url=f'https://assets.ppy.sh/beatmaps/{id_sb}/covers/cover.jpg')
-				await message.channel.send(embed=embed)
-			if 'https://akatsuki.pw/d/' in message.content and '-taiko' in message.content:
-				color = message.author.roles[len(message.author.roles) - 1].color
-
-				urlid = message.content.split('d/')[1]
-				t = requests.get(
-					f'https://akatsuki.pw/api/get_beatmaps?limit=1&s={urlid}&m=1')
-				if not t:
-					return
-				title = t.json()[0]['title']
-				id_b = t.json()[0]['beatmap_id']
-				id_sb = t.json()[0]['beatmapset_id']
-				artist = t.json()[0]['artist']
-				max_combo = t.json()[0]['max_combo']
-				bpm = t.json()[0]['bpm']
-
-				difficulty = round(float(t.json()[0]['difficultyrating']), 2)
-
-				cache[message.channel.id] = {'beatmap_id': id_b, 'ar': t.json()[0]['diff_approach'], 'od': t.json()[0]['diff_overall'], 'full_combo': max_combo, 'songname': '{title} [{bruh}]'.format(title=title, bruh=t.json()[0]['version']) , 'difficulty': difficulty, 'beatmapset_id': id_sb, 'mode': 1}
-
-				embed = discord.Embed(
-					description=f'▸ Bloodcat: https://bloodcat.com/osu/{id_b} \n▸ Old Osu: https://old.ppy.sh/s/{id_sb}\n▸ Osu: https://osu.ppy.sh/b/{id_b} \n▸ Gatari: https://osu.gatari.pw/b/{id_b} \n▸ Max Combo: {max_combo} \n▸ BPM: {bpm}', color=color)
-				embed.set_author(name=f"{artist} - {title}", url=f"https://akatsuki.pw/b/{id_b}",
-								 icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
-				embed.set_image(
-					url=f'https://assets.ppy.sh/beatmaps/{id_sb}/covers/cover.jpg')
-				await message.channel.send(embed=embed)
+					embed = discord.Embed(
+					description=f'▸ Bloodcat: https://bloodcat.com/osu/{id_b}\n'\
+					f'▸ Old Osu: https://old.ppy.sh/s/{id_sb}\n'\
+					f'▸ Osu: https://osu.ppy.sh/b/{id_b}\n'\
+					f'▸ Gatari: https://osu.gatari.pw/b/{id_b}\n' \
+					f'▸ Max Combo: {max_combo}\n' \
+					f'▸ BPM: {bpm}', 
+					color=color)
+					embed.set_author(
+					name=f"{artist} - {title}", url=f"https://akatsuki.pw/b/{id_b}",
+					icon_url=config.server_icon_url)
+					embed.set_image(
+					url=f'https://assets.ppy.sh/beatmaps/{id_sb}/covers/cover.jpg'
+					)
+					await message.channel.send(embed=embed)
 
 		@Chiyo.command(aliases=['prefix'])
 		@has_permissions(administrator=True)
@@ -178,7 +129,7 @@ class Chiyo:
 		async def _compare(ctx, *args):
 			color = ctx.message.author.roles[len(ctx.message.author.roles) - 1].color
 			try:	
-				relax, mode, scoreid = 0, cache[ctx.message.channel.id]['mode'], 0
+				relax, mode, scoreid = 0, int(cache[ctx.message.channel.id]['mode']), 0
 			except:
 				return await ctx.send("Couldn't find a map in this channel!")
 			msg = ctx.message.content.split(' ')[1:]
@@ -190,39 +141,31 @@ class Chiyo:
 				scoreid = int(msg[msg.index('-p') + 1])
 				msg.remove(msg[msg.index('-p') + 1])
 				msg.remove('-p')
-			if '-taiko' in msg:
+			if '-std' in msg:
+				msg.remove('-std')
+				mode = 0
+			elif '-taiko' in msg:
 				msg.remove('-taiko')
 				mode = 1
-			if '-ctb' in msg:
+			elif '-ctb' in msg:
 				msg.remove('-ctb')
 				mode = 2
-			if '-mania' in msg:
+			elif '-mania' in msg:
 				msg.remove('-mania')
 				mode, relax = 3, 0
 
-			switcher = {
-				0: 'Standard',
-				1: 'Taiko',
-				2: 'Catch The Beat',
-				3: 'Mania'
-			}
-
-			another_switcher = {
-				0: '',
-				1: ' Relax'
-			}
 			hahaha = another_switcher.get(relax)
 			text = switcher.get(mode)
 
 			if ctx.message.mentions:
 				e = db.get(User.id == ctx.message.mentions[0].id)
 				if e == None:
-					return await ctx.send("User couldn't be found in our database! Try connecting a user to our database by doing `;connect user`")
+					return await ctx.send(f"User couldn't be found in our database! Try connecting a user to our database by doing `{get_prefix(Chiyo, ctx.message)}connect user`")
 				userid = e['akatsuki']
 			elif len(msg) == 0:
 				e = db.get(User.id == ctx.message.author.id)
 				if e == None:
-					return await ctx.send("User couldn't be found in our database! Try connecting a user to our database by doing `;connect user`")
+					return await ctx.send(f"User couldn't be found in our database! Try connecting a user to our database by doing `{get_prefix(Chiyo, ctx.message)}connect user`")
 				userid = e['akatsuki']
 			else:
 				if osuhelper.get_id(' '.join(msg)) == "Couldn't find user!":
@@ -237,38 +180,21 @@ class Chiyo:
 			
 			if stats == 'no score found':
 				return await ctx.send("Couldn't find a score for this user!")
-			
-			letters = {
-				'SSH': 'https://cdn.discordapp.com/emojis/724849277406281728.png?v=1',
-				'SH': 'https://cdn.discordapp.com/emojis/724847645142810624.png?v=1',
-				'SS': 'https://cdn.discordapp.com/emojis/724849299300548680.png?v=1',
-				'S': 'https://cdn.discordapp.com/emojis/724847668953874493.png?v=1',
-				'A': 'https://cdn.discordapp.com/emojis/724841194517037137.png?v=1',
-				'B': 'https://cdn.discordapp.com/emojis/724841229602521109.png?v=1',
-				'C': 'https://cdn.discordapp.com/emojis/724841244530049095.png?v=1',
-				'D': 'https://cdn.discordapp.com/emojis/724841263727116379.png?v=1'
-			}
-			man = {
-				0: 'std',
-				1: 'taiko',
-				2: 'ctb',
-				3: 'mania'
-			}
 
-			rank = letters.get(stats['rank'])
+			rank = config.letters.get(stats['rank'])
 			pp = round(float(stats['pp']), 2)
-			ar = cache[ctx.message.channel.id]['ar']
-			od = cache[ctx.message.channel.id]['od']
+			ar = cache[ctx.message.channel.id]['diff_approach']
+			od = cache[ctx.message.channel.id]['diff_overall']
 			score = stats['score']
 			max_combo = stats['maxcombo']
-			full_combo = cache[ctx.message.channel.id]['full_combo']
+			full_combo = cache[ctx.message.channel.id]['max_combo']
 			count_300 = stats['count300']
 			count_100 = stats['count100']
 			count_50 = stats['count50']
 			count_miss = stats['countmiss']
-			songname = cache[ctx.message.channel.id]['songname']
+			songname = cache[ctx.message.channel.id]['title']
 			mods = 'NM' if int(stats['enabled_mods']) == 0 else osuhelper.readableMods(int(stats['enabled_mods']))
-			difficulty = cache[ctx.message.channel.id]['difficulty']
+			difficulty = round(float(cache[ctx.message.channel.id]['difficultyrating']), 2)
 			beatmap_id = cache[ctx.message.channel.id]['beatmap_id']
 			beatmapset_id = cache[ctx.message.channel.id]['beatmapset_id']
 			if mode == 0:
@@ -312,67 +238,44 @@ class Chiyo:
 				scoreid = int(msg[msg.index('-p') + 1])
 				msg.remove(msg[msg.index('-p') + 1])
 				msg.remove('-p')
-			if '-taiko' in msg:
+			if '-std' in msg:
+				msg.remove('-std')
+				mode = 0
+			elif '-taiko' in msg:
 				msg.remove('-taiko')
 				mode = 1
-			if '-ctb' in msg:
+			elif '-ctb' in msg:
 				msg.remove('-ctb')
 				mode = 2
-			if '-mania' in msg:
+			elif '-mania' in msg:
 				msg.remove('-mania')
 				mode, relax = 3, 0
 
-			switcher = {
-				0: 'Standard',
-				1: 'Taiko',
-				2: 'Catch The Beat',
-				3: 'Mania'
-			}
-
-			another_switcher = {
-				0: '',
-				1: ' Relax'
-			}
 			hahaha = another_switcher.get(relax)
 			text = switcher.get(mode)
 
 			if ctx.message.mentions:
 				e = db.get(User.id == ctx.message.mentions[0].id)
 				if e == None:
-					return await ctx.send("User couldn't be found in our database! Try connecting a user to our database by doing `;connect user`")
+					return await ctx.send(f"User couldn't be found in our database! Try connecting a user to our database by doing `{get_prefix()}connect user`")
 				userid = e['akatsuki']
 			elif len(msg) == 0:
 				e = db.get(User.id == ctx.message.author.id)
 				if e == None:
-					return await ctx.send("User couldn't be found in our database! Try connecting a user to our database by doing `;connect user`")
+					return await ctx.send(f"User couldn't be found in our database! Try connecting a user to our database by doing `{get_prefix(Chiyo, ctx.message)}connect user`")
 				userid = e['akatsuki']
 			else:
-				if osuhelper.get_id(' '.join(msg)) == "Couldn't find user!":
+				c = osuhelper.get_id(' '.join(msg))
+				if c == "Couldn't find user!":
 					return await ctx.send("Couldn't find this user!")
-				userid = osuhelper.get_id(' '.join(msg))
+				userid = c
 
 			info = osuhelper.Helper(userid)
 			stats = info.top(mode=mode, relax=relax, scoreid=scoreid)
 			if stats == 'error':
 				return await ctx.send("Error has occured!")
-
-			letters = {
-				'SSH': 'https://cdn.discordapp.com/emojis/724849277406281728.png?v=1',
-				'SH': 'https://cdn.discordapp.com/emojis/724847645142810624.png?v=1',
-				'SS': 'https://cdn.discordapp.com/emojis/724849299300548680.png?v=1',
-				'S': 'https://cdn.discordapp.com/emojis/724847668953874493.png?v=1',
-				'A': 'https://cdn.discordapp.com/emojis/724841194517037137.png?v=1',
-				'B': 'https://cdn.discordapp.com/emojis/724841229602521109.png?v=1',
-				'C': 'https://cdn.discordapp.com/emojis/724841244530049095.png?v=1',
-				'D': 'https://cdn.discordapp.com/emojis/724841263727116379.png?v=1'
-			}
-			man = {
-				0: 'std',
-				1: 'taiko',
-				2: 'ctb',
-				3: 'mania'
-			}
-			rank = letters.get(stats['rank'])
+			
+			rank = config.letters.get(stats['rank'])
 			pp = round(stats['pp'], 2)
 			ar = stats['beatmap']['ar']
 			od = stats['beatmap']['od']
@@ -392,8 +295,8 @@ class Chiyo:
 			beatmapset_id = stats['beatmap']['beatmapset_id']
 			username = osuhelper.get_username(userid)
 
-			cache[ctx.message.channel.id] = {'beatmap_id': beatmap_id, 'ar': ar, 'od': od, 'full_combo': full_combo, 'songname': songname, 'difficulty': difficulty, 'beatmapset_id': beatmapset_id, 'mode': mode}
-
+			cache[ctx.message.channel.id] = osuhelper.get_beatmap(beatmap_id, mode)
+			
 			embed=discord.Embed(description=f'▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=color)
 			embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=rank)
 			embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
@@ -415,67 +318,44 @@ class Chiyo:
 				scoreid = int(msg[msg.index('-p') + 1])
 				msg.remove(msg[msg.index('-p') + 1])
 				msg.remove('-p')
-			if '-taiko' in msg:
+			if '-std' in msg:
+				msg.remove('-std')
+				mode = 0
+			elif '-taiko' in msg:
 				msg.remove('-taiko')
 				mode = 1
-			if '-ctb' in msg:
+			elif '-ctb' in msg:
 				msg.remove('-ctb')
 				mode = 2
-			if '-mania' in msg:
+			elif '-mania' in msg:
 				msg.remove('-mania')
 				mode, relax = 3, 0
 
-			switcher = {
-				0: 'Standard',
-				1: 'Taiko',
-				2: 'Catch The Beat',
-				3: 'Mania'
-			}
-
-			another_switcher = {
-				0: '',
-				1: ' Relax'
-			}
 			hahaha = another_switcher.get(relax)
 			text = switcher.get(mode)
 
 			if ctx.message.mentions:
 				e = db.get(User.id == ctx.message.mentions[0].id)
 				if e == None:
-					return await ctx.send("User couldn't be found in our database! Try connecting a user to our database by doing `;connect user`")
+					return await ctx.send(f"User couldn't be found in our database! Try connecting a user to our database by doing `{get_prefix(Chiyo, ctx.message)}connect user`")
 				userid = e['akatsuki']
 			elif len(msg) == 0:
 				e = db.get(User.id == ctx.message.author.id)
 				if e == None:
-					return await ctx.send("User couldn't be found in our database! Try connecting a user to our database by doing `;connect user`")
+					return await ctx.send(f"User couldn't be found in our database! Try connecting a user to our database by doing `{get_prefix(Chiyo, ctx.message)}connect user`")
 				userid = e['akatsuki']
 			else:
-				if osuhelper.get_id(' '.join(msg)) == "Couldn't find user!":
+				e = osuhelper.get_id(' '.join(msg))
+				if e == "Couldn't find user!":
 					return await ctx.send("Couldn't find this user!")
-				userid = osuhelper.get_id(' '.join(msg))
+				userid = e
 
 			info = osuhelper.Helper(userid)
 			stats = info.recent(mode=mode, relax=relax, scoreid=scoreid)
 			if stats == 'error':
 				return await ctx.send("Error has occured!")
 
-			letters = {
-				'SSH': 'https://cdn.discordapp.com/emojis/724849277406281728.png?v=1',
-				'SH': 'https://cdn.discordapp.com/emojis/724847645142810624.png?v=1',
-				'SS': 'https://cdn.discordapp.com/emojis/724849299300548680.png?v=1',
-				'S': 'https://cdn.discordapp.com/emojis/724847668953874493.png?v=1',
-				'A': 'https://cdn.discordapp.com/emojis/724841194517037137.png?v=1',
-				'B': 'https://cdn.discordapp.com/emojis/724841229602521109.png?v=1',
-				'C': 'https://cdn.discordapp.com/emojis/724841244530049095.png?v=1',
-				'D': 'https://cdn.discordapp.com/emojis/724841263727116379.png?v=1'
-			}
-			man = {
-				0: 'std',
-				1: 'taiko',
-				2: 'ctb',
-				3: 'mania'
-			}
-			rank = letters.get(stats['rank'])
+			rank = config.letters.get(stats['rank'])
 			pp = round(stats['pp'], 2)
 			ar = stats['beatmap']['ar']
 			od = stats['beatmap']['od']
@@ -495,7 +375,7 @@ class Chiyo:
 			beatmapset_id = stats['beatmap']['beatmapset_id']
 			username = osuhelper.get_username(userid)
 
-			cache[ctx.message.channel.id] = {'beatmap_id': beatmap_id, 'ar': ar, 'od': od, 'full_combo': full_combo, 'songname': songname, 'difficulty': difficulty, 'beatmapset_id': beatmapset_id, 'mode': mode}
+			cache[ctx.message.channel.id] = osuhelper.get_beatmap(beatmap_id, mode)
 
 			embed=discord.Embed(description=f'▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=color)
 			embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=rank)
@@ -514,39 +394,31 @@ class Chiyo:
 			if '-rx' in msg:
 				msg.remove('-rx')
 				relax = 1
-			if '-taiko' in msg:
+			if '-std' in msg:
+				msg.remove('-std')
+				mode = 0
+			elif '-taiko' in msg:
 				msg.remove('-taiko')
 				mode = 1
-			if '-ctb' in msg:
+			elif '-ctb' in msg:
 				msg.remove('-ctb')
 				mode = 2
-			if '-mania' in msg:
+			elif '-mania' in msg:
 				msg.remove('-mania')
 				mode, relax = 3, 0
 
-			switcher = {
-				0: 'Standard',
-				1: 'Taiko',
-				2: 'Catch The Beat',
-				3: 'Mania'
-			}
-
-			another_switcher = {
-				0: '',
-				1: 'Relax'
-			}
 			hahaha = another_switcher.get(relax)
 			text = switcher.get(mode)
 
 			if ctx.message.mentions:
 				e = db.get(User.id == ctx.message.mentions[0].id)
 				if e == None:
-					return await ctx.send("User couldn't be found in our database! Try connecting a user to our database by doing `;connect user`")
+					return await ctx.send(f"User couldn't be found in our database! Try connecting a user to our database by doing `{get_prefix(Chiyo, ctx.message)}connect user`")
 				userid = e['akatsuki']
 			elif len(msg) == 0:
 				e = db.get(User.id == ctx.message.author.id)
 				if e == None:
-					return await ctx.send("User couldn't be found in our database! Try connecting a user to our database by doing `;connect user`")
+					return await ctx.send(f"User couldn't be found in our database! Try connecting a user to our database by doing `{get_prefix(Chiyo, ctx.message)}connect user`")
 				userid = e['akatsuki']
 			else:
 				if osuhelper.get_id(' '.join(msg)) == "Couldn't find user!":
@@ -567,7 +439,7 @@ class Chiyo:
 			playcount = b['stats']['playcount']
 			username = b['username']
 			embed=discord.Embed(description=f'▸ Official Rank: {official_rank} ({country}#{country_rank}) \n▸ Level: {level}\n▸ Total PP: {pp} \n▸ Accuracy: {accuracy}% \n▸ Playcount: {playcount}', color=color)
-			embed.set_author(name=f"osu!{hahaha} {text} Profile for {username} ", url=f"https://akatsuki.pw/u/{userid}", icon_url=f"https://avatars0.githubusercontent.com/u/45724130?s=200&v=4.png")
+			embed.set_author(name=f"osu!{hahaha} {text} Profile for {username} ", url=f"https://akatsuki.pw/u/{userid}", icon_url=config.server_icon_url)
 			embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
 			embed.set_footer(text=f"Player on Akatsuki!")
 			return await ctx.send(embed=embed)
@@ -587,7 +459,7 @@ class Chiyo:
 
 			owo = db.search(User.id == ctx.message.author.id)
 			
-			if str(owo) == '[]': #https://a.ppy.sh/13028687
+			if str(owo) == '[]':
 				db.insert({'id': ctx.message.author.id, 'akatsuki': userid})
 			else:
 				db.update({'akatsuki': userid}, User.id == ctx.message.author.id)
@@ -601,17 +473,17 @@ class Chiyo:
 		async def _faq(ctx, *args):
 			color = ctx.message.author.roles[len(ctx.message.author.roles) - 1].color
 			embed=discord.Embed(colour = color)
-			embed.set_author(name="Chiyo | osu!Akatsuki discord bot!", url="https://coverosu.tk/chiyo", icon_url="https://cdn.discordapp.com/attachments/484532623792930820/758598838834429972/ezgif-7-4a5a55482300.jpg")
-			embed.add_field(name="Commands!", value=f"""
-```
-Optional = () Required = []
-{get_prefix(Chiyo, ctx.message)}connect [username]
-{get_prefix(Chiyo, ctx.message)}slots
-{get_prefix(Chiyo, ctx.message)}roll
-{get_prefix(Chiyo, ctx.message)}[recent | rc | rs | r] [top | t] [osu | p | profile]
-(-p (number)) (@someone | username) (-taiko | -mania | -ctb | by default it is Standard) (-rx)
-```
-	""", inline=False)
+			embed.set_author(name="Chiyo | osu!Akatsuki discord bot!", url="https://coverosu.tk/chiyo", icon_url=config.bot_icon_url)
+			embed.add_field(name="Commands!", value="""
+			```
+			Optional = () Required = []
+			{hi}connect [username]
+			{hi}slots
+			{hi}roll
+			{hi}[recent | rc | rs | r] [top | t] [osu | p | profile]
+			(-p (number)) (@someone | username) (-taiko | -mania | -ctb | by default it is Standard) (-rx)
+			```
+			""".format(hi=get_prefix(Chiyo, ctx.message)), inline=False)
 			embed.set_footer(text=f"Made by Cover#8860 dm if there is any problems")
 			return await ctx.send(embed=embed)
 

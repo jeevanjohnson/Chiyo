@@ -72,6 +72,19 @@ def get_username(userid):
 		return "Couldn't find user!"
 	return w.json()['username']
 
+def get_beatmap(beatmapid, mode):
+
+	params = {
+		'limit': 1,
+		'b': beatmapid,
+		'm': mode
+	}
+
+	w = requests.get(f'https://akatsuki.pw/api/get_beatmaps?', params=params)
+	if not w:
+		return 'error'
+	return w.json()[0]
+
 class Helper:
 
 	def __init__(self, userid):
