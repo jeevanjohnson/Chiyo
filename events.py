@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands
+from discord.ext.commands import has_permissions
 from tinydb import TinyDB, Query
-from config import ownerid, prefix
+import config
 from datetime import datetime
 import requests
 import osuhelper
@@ -25,7 +26,7 @@ class Chiyo:
 			how = db.get(User.guild_id == message.guild.id)
 
 			if how == None:
-				return prefix
+				return config.prefix
 			else:
 				return how['prefix']
 
@@ -164,6 +165,7 @@ class Chiyo:
 				await message.channel.send(embed=embed)
 
 		@Chiyo.command(aliases=['prefix'])
+		@has_permissions(administrator=True)
 		async def custom_prefix(ctx, *args):
 
 			if len(args) == 0:
