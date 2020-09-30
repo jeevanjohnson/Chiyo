@@ -39,9 +39,11 @@ class Chiyo:
 			else:
 				return how['prefix']
 
-		Chiyo = commands.Bot(command_prefix = get_prefix,
-							 case_insensitive = True,
-							 help_command = None)
+		Chiyo = commands.Bot(
+			command_prefix = get_prefix,
+			case_insensitive = True,
+			help_command = None
+		)
 
 		@Chiyo.event
 		async def on_ready():
