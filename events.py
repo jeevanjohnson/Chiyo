@@ -97,7 +97,7 @@ class Chiyo:
 
 				difficulty = round(float(t.json()[0]['difficultyrating']), 2)
 
-				cache[message.channel.id] = {'beatmap_id': id_b, 'ar': t.json()[0]['diff_approach'], 'od': t.json()[0]['diff_overall'], 'full_combo': max_combo, 'songname': '{title} [{bruh}]'.format(title=title, bruh=t.json()[0]['version']) , 'difficulty': difficulty, 'beatmapset_id': id_sb, 'mode': 1}
+				cache[message.channel.id] = {'beatmap_id': id_b, 'ar': t.json()[0]['diff_approach'], 'od': t.json()[0]['diff_overall'], 'full_combo': max_combo, 'songname': '{title} [{bruh}]'.format(title=title, bruh=t.json()[0]['version']) , 'difficulty': difficulty, 'beatmapset_id': id_sb, 'mode': 0}
 
 				embed = discord.Embed(
 					description=f'▸ Bloodcat: https://bloodcat.com/osu/{id_b} \n▸ Old Osu: https://old.ppy.sh/s/{id_sb}\n▸ Osu: https://osu.ppy.sh/b/{id_b} \n▸ Gatari: https://osu.gatari.pw/b/{id_b} \n▸ Max Combo: {max_combo} \n▸ BPM: {bpm}', color=color)
@@ -125,7 +125,7 @@ class Chiyo:
 
 				difficulty = round(float(t.json()[0]['difficultyrating']), 2)
 
-				cache[message.channel.id] = {'beatmap_id': id_b, 'ar': t.json()[0]['diff_approach'], 'od': t.json()[0]['diff_overall'], 'full_combo': max_combo, 'songname': '{title} [{bruh}]'.format(title=title, bruh=t.json()[0]['version']) , 'difficulty': difficulty, 'beatmapset_id': id_sb, 'mode': 1}
+				cache[message.channel.id] = {'beatmap_id': id_b, 'ar': t.json()[0]['diff_approach'], 'od': t.json()[0]['diff_overall'], 'full_combo': max_combo, 'songname': '{title} [{bruh}]'.format(title=title, bruh=t.json()[0]['version']) , 'difficulty': difficulty, 'beatmapset_id': id_sb, 'mode': 0}
 
 				embed = discord.Embed(
 					description=f'▸ Bloodcat: https://bloodcat.com/osu/{id_b} \n▸ Old Osu: https://old.ppy.sh/s/{id_sb}\n▸ Osu: https://osu.ppy.sh/b/{id_b} \n▸ Gatari: https://osu.gatari.pw/b/{id_b} \n▸ Max Combo: {max_combo} \n▸ BPM: {bpm}', color=color)
