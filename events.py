@@ -49,13 +49,11 @@ class Chiyo:
 			print(f"[{datetime.now().time()}] [{message.guild}] [{message.channel}] {message.author}: {message.content}")
 			# this was old code that worked I could make it cleaner but im so lazy lol
 			
-			if message.content == '<@!705176662366486529>':
+			if message.content == f'<@!{Chiyo.user.id}>':
 				await message.channel.send(f'The prefix for this server is `{get_prefix(Chiyo, message)}`')
 
 			if 'https://akatsuki.pw/b/' in message.content and '-taiko' in message.content:
-				user_id = message.author.id
-				author = message.guild.get_member(user_id)
-				color = author.roles[len(author.roles) - 1].color
+				color = message.author.roles[len(message.author.roles) - 1].color
 
 				urlid = message.content.split('b/')[1]
 				t = requests.get(
@@ -80,9 +78,7 @@ class Chiyo:
 					url=f'https://assets.ppy.sh/beatmaps/{id_sb}/covers/cover.jpg')
 				await message.channel.send(embed=embed)
 			if 'https://akatsuki.pw/b/' in message.content and '-taiko' not in message.content:
-				user_id = message.author.id
-				author = message.guild.get_member(user_id)
-				color = author.roles[len(author.roles) - 1].color
+				color = message.author.roles[len(message.author.roles) - 1].color
 
 				urlid = message.content.split('b/')[1]
 				t = requests.get(
@@ -108,9 +104,7 @@ class Chiyo:
 					url=f'https://assets.ppy.sh/beatmaps/{id_sb}/covers/cover.jpg')
 				await message.channel.send(embed=embed)
 			if 'https://akatsuki.pw/d/' in message.content and '-taiko' not in message.content:
-				user_id = message.author.id
-				author = message.guild.get_member(user_id)
-				color = author.roles[len(author.roles) - 1].color
+				color = message.author.roles[len(message.author.roles) - 1].color
 
 				urlid = message.content.split('d/')[1]
 				t = requests.get(
@@ -136,9 +130,7 @@ class Chiyo:
 					url=f'https://assets.ppy.sh/beatmaps/{id_sb}/covers/cover.jpg')
 				await message.channel.send(embed=embed)
 			if 'https://akatsuki.pw/d/' in message.content and '-taiko' in message.content:
-				user_id = message.author.id
-				author = message.guild.get_member(user_id)
-				color = author.roles[len(author.roles) - 1].color
+				color = message.author.roles[len(message.author.roles) - 1].color
 
 				urlid = message.content.split('d/')[1]
 				t = requests.get(
@@ -184,9 +176,7 @@ class Chiyo:
 
 		@Chiyo.command(aliases=['compare', 'c'])
 		async def _compare(ctx, *args):
-			user_id = ctx.message.author.id
-			author = ctx.guild.get_member(user_id)
-			color = author.roles[len(author.roles) - 1].color
+			color = ctx.message.author.roles[len(ctx.message.author.roles) - 1].color
 			try:	
 				relax, mode, scoreid = 0, cache[ctx.message.channel.id]['mode'], 0
 			except:
@@ -310,9 +300,7 @@ class Chiyo:
 
 		@Chiyo.command(aliases=['top','t','osutop'])
 		async def _top(ctx, *args):
-			user_id = ctx.message.author.id
-			author = ctx.guild.get_member(user_id)
-			color = author.roles[len(author.roles) - 1].color
+			color = ctx.message.author.roles[len(ctx.message.author.roles) - 1].color
 
 			relax, mode, scoreid = 0, 0, 0
 			msg = ctx.message.content.split(' ')[1:]
@@ -415,9 +403,7 @@ class Chiyo:
 
 		@Chiyo.command(aliases=['recent','rs','rc','r'])
 		async def _recent(ctx, *args):
-			user_id = ctx.message.author.id
-			author = ctx.guild.get_member(user_id)
-			color = author.roles[len(author.roles) - 1].color
+			color = ctx.message.author.roles[len(ctx.message.author.roles) - 1].color
 
 			relax, mode, scoreid = 0, 0, 0
 			msg = ctx.message.content.split(' ')[1:]
@@ -520,9 +506,7 @@ class Chiyo:
 		
 		@Chiyo.command(aliases=['osu', 'p', 'profile'])
 		async def _profile(ctx, *args):
-			user_id = ctx.message.author.id
-			author = ctx.guild.get_member(user_id)
-			color = author.roles[len(author.roles) - 1].color
+			color = ctx.message.author.roles[len(ctx.message.author.roles) - 1].color
 
 			relax, mode = 0, 0
 			msg = ctx.message.content.split(' ')[1:]
@@ -590,9 +574,7 @@ class Chiyo:
 
 		@Chiyo.command()
 		async def connect(ctx, *args):
-			user_id = ctx.message.author.id
-			author = ctx.guild.get_member(user_id)
-			color = author.roles[len(author.roles) - 1].color
+			color = ctx.message.author.roles[len(ctx.message.author.roles) - 1].color
 
 			if len(args) == 0:
 				return await ctx.send('Must provide a username!')
@@ -617,7 +599,7 @@ class Chiyo:
 
 		@Chiyo.command(aliases=['help','faq'])
 		async def _faq(ctx, *args):
-			color = ctx.guild.get_member(ctx.message.author.id).roles[len(ctx.guild.get_member(ctx.message.author.id).roles) - 1].color
+			color = ctx.message.author.roles[len(ctx.message.author.roles) - 1].color
 			embed=discord.Embed(colour = color)
 			embed.set_author(name="Chiyo | osu!Akatsuki discord bot!", url="https://coverosu.tk/chiyo", icon_url="https://cdn.discordapp.com/attachments/484532623792930820/758598838834429972/ezgif-7-4a5a55482300.jpg")
 			embed.add_field(name="Commands!", value=f"""
