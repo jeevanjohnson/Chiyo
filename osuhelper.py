@@ -136,9 +136,7 @@ class Helper:
 			3: 'mania'
 		}
 		
-		#e = Helper(1000)
-		#how = e.profile()
-		#print(how['stats']['ranked_score'])
+
 		try:
 			username = t.json()['username']
 			registered_on = t.json()['registered_on'].replace('T',' ').replace('Z','')
