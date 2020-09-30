@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions
@@ -9,25 +11,27 @@ import osuhelper
 import random
 import re
 
-beatmap = r'\b\d+\b'
+import constants
+
+API_BASE = 'https://akatsuki.pw/api'
+BEATMAP_COVER = 'https://assets.ppy.sh/beatmaps/{}/covers/cover.jpg' # setid
 
 class Chiyo:
-
 	def __init__(self, token):
 		self.token = token
 
 	def Nyoko(self):
-
 		cache = {}
-		man = {0: 'std', 1: 'taiko', 2: 'ctb', 3: 'mania'}
-		switcher = {0: 'Standard', 1: 'Taiko', 2: 'Catch The Beat', 3: 'Mania'}
-		another_switcher = {0: '', 1: ' Relax'}
+
+		man = ('std', 'taiko', 'ctb', 'mania')
+		switcher = ('Standard', 'Taiko', 'Catch The Beat', 'Mania')
+		another_switcher = ('', ' Relax')
+
 		db = TinyDB('db.json')
 		User = Query()
 		print('Connected to database!')
 
 		def get_prefix(client, message):
-
 			how = db.get(User.guild_id == message.guild.id)
 
 			if how == None:
@@ -35,82 +39,83 @@ class Chiyo:
 			else:
 				return how['prefix']
 
-		Chiyo = commands.Bot(command_prefix = get_prefix, case_insensitive=True, help_command=None)
+		Chiyo = commands.Bot(command_prefix = get_prefix,
+		                     case_insensitive = True,
+							 help_command = None)
 
 		@Chiyo.event
 		async def on_ready():
 			amount_of_servers = str(len(Chiyo.guilds))
 			print('Chiyo is on and running in {} servers!'.format(amount_of_servers))
 			await Chiyo.change_presence(
-				status=discord.Status.online, 
-				activity=discord.Activity(
-				type=discord.ActivityType.playing, 
-				name=f"in {amount_of_servers} Servers!"))
-		
+				status = discord.Status.online,
+				activity = discord.Activity(
+					type = discord.ActivityType.playing,
+					name = f"in {amount_of_servers} Servers!"
+				)
+			)
+
 		@Chiyo.event
 		async def on_message(message):
-			await Chiyo.wait_until_ready()  
+			await Chiyo.wait_until_ready()
+
+			if message.author.bot or not message.content:
+				return
+
 			await Chiyo.process_commands(message)
 			print(f"[{datetime.now().time()}] [{message.guild}] [{message.channel}] {message.author}: {message.content}")
-			
+
 			if message.content == f'<@!{Chiyo.user.id}>':
 				await message.channel.send(f'The prefix for this server is `{get_prefix(Chiyo, message)}`')
 
-			if 'https://akatsuki.pw/' in message.content and message.author.id != Chiyo.user.id:
-				color = message.author.roles[len(message.author.roles) - 1].color
-
-				for mapid in re.findall(beatmap, message.content):
-					mode = 0
-					if '-taiko' in message.content:
-						mode = 1
-					elif '-std' in message.content:
-						mode = 0
-					if '/b/' in message.content:
-						how = 'b'
-					elif '/d/' in message.content:
-						how = 's'
+			# search for beatmap urls
+			for rgx in constants.regexes['beatmap'].findall(message.content):
+				is_set = rgx[0] == 'd'
+				req = requests.get(
+					url = f'{API_BASE}/get_beatmaps',
 					params = {
+						's' if is_set else 'b' : int(rgx[1]),
 						'limit': 1,
-						f'{how}': int(mapid),
-						'm': mode
+						'm': int('-taiko' in message.content)
 					}
-					t = requests.get(f'https://akatsuki.pw/api/get_beatmaps?', params=params)
-					
-					if not t:
-						continue
-					
-					dude = t.json()[0]
+				)
 
-					title = dude['title']
-					id_b = dude['beatmap_id']
-					id_sb = dude['beatmapset_id']
-					artist = dude['artist']
-					max_combo = dude['max_combo']
-					bpm = dude['bpm']
-					difficulty = round(float(dude['difficultyrating']), 2)
+				if not req or not (_json := req.json()):
+					continue
 
-					cache[message.channel.id] = dude
+				json = _json[0]
+				cache[message.channel.id] = json
 
-					embed = discord.Embed(
-					description=f'▸ Bloodcat: https://bloodcat.com/osu/{id_b}\n'\
-					f'▸ Old Osu: https://old.ppy.sh/s/{id_sb}\n'\
-					f'▸ Osu: https://osu.ppy.sh/b/{id_b}\n'\
-					f'▸ Gatari: https://osu.gatari.pw/b/{id_b}\n' \
-					f'▸ Max Combo: {max_combo}\n' \
-					f'▸ BPM: {bpm}', 
-					color=color)
-					embed.set_author(
-					name=f"{artist} - {title}", url=f"https://akatsuki.pw/b/{id_b}",
-					icon_url=config.server_icon_url)
-					embed.set_image(
-					url=f'https://assets.ppy.sh/beatmaps/{id_sb}/covers/cover.jpg'
-					)
-					await message.channel.send(embed=embed)
+				embed = discord.Embed(
+					description = (
+						'▸ AR{diff_approach} OD{diff_overall} CS{diff_size} HP{diff_drain}\n'
+						'▸ Max Combo: {max_combo}\n'
+						'▸ BPM: {bpm}\n'
+						'[bloodcat](https://bloodcat.com/osu/{beatmap_id}) | '
+						'[osu!gatari](https://osu.gatari.pw/b/{beatmap_id})\n'
+						'[osu!](https://osu.ppy.sh/b/{beatmap_id}) | '
+						'[osu! (old)](https://old.ppy.sh/s/{beatmapset_id})'
+					).format(**json),
+					color = message.author.roles[-1].color
+				)
+
+				author_name = '{artist} - {title}' + ((not is_set and ' [{version}]') or '')
+
+				embed.set_author(
+					name = author_name.format(**json),
+					url = f'https://akatsuki.pw/b/{json["beatmap_id"]}',
+					icon_url = config.server_icon_url
+				)
+
+				embed.set_image(
+					url = BEATMAP_COVER.format(json['beatmapset_id'])
+				)
+
+				await message.channel.send(embed = embed)
 
 		@Chiyo.command(aliases=['prefix'])
 		@has_permissions(administrator=True)
 		async def custom_prefix(ctx, *args):
-
 			if len(args) == 0:
 				return await ctx.send("Must provide a prefix!")
 
@@ -128,7 +133,7 @@ class Chiyo:
 		@Chiyo.command(aliases=['compare', 'c'])
 		async def _compare(ctx, *args):
 			color = ctx.message.author.roles[len(ctx.message.author.roles) - 1].color
-			try:	
+			try:
 				relax, mode, scoreid = 0, int(cache[ctx.message.channel.id]['mode']), 0
 			except:
 				return await ctx.send("Couldn't find a map in this channel!")
@@ -175,9 +180,9 @@ class Chiyo:
 			info = osuhelper.Helper(userid)
 			if ctx.message.channel.id not in cache:
 				return await ctx.send("Couldn't find a map here")
-			
+
 			stats = info.compare(beatmapid=cache[ctx.message.channel.id]['beatmap_id'], mode=mode, relax=relax, scoreid=scoreid)
-			
+
 			if stats == 'no score found':
 				return await ctx.send("Couldn't find a score for this user!")
 
@@ -274,7 +279,7 @@ class Chiyo:
 			stats = info.top(mode=mode, relax=relax, scoreid=scoreid)
 			if stats == 'error':
 				return await ctx.send("Error has occured!")
-			
+
 			rank = config.letters.get(stats['rank'])
 			pp = round(stats['pp'], 2)
 			ar = stats['beatmap']['ar']
@@ -296,7 +301,7 @@ class Chiyo:
 			username = osuhelper.get_username(userid)
 
 			cache[ctx.message.channel.id] = osuhelper.get_beatmap(beatmap_id, mode)
-			
+
 			embed=discord.Embed(description=f'▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=color)
 			embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=rank)
 			embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
@@ -383,7 +388,7 @@ class Chiyo:
 			embed.set_image(url=f"https://assets.ppy.sh/beatmaps/{beatmapset_id}/covers/cover.jpg")
 			embed.set_footer(text=f"Most Recent osu!{hahaha} {text} Play for {username} ")
 			await ctx.send(embed=embed)
-		
+
 		@Chiyo.command(aliases=['osu', 'p', 'profile'])
 		async def _profile(ctx, *args):
 			color = ctx.message.author.roles[len(ctx.message.author.roles) - 1].color
@@ -426,7 +431,7 @@ class Chiyo:
 				userid = osuhelper.get_id(' '.join(msg))
 
 			e = osuhelper.Helper(userid)
-			
+
 			b = e.profile(mode=mode, relax=relax)
 			if b == 'error':
 				return await ctx.send("Error has occured!")
@@ -458,7 +463,7 @@ class Chiyo:
 			userid = osuhelper.get_id(msg)
 
 			owo = db.search(User.id == ctx.message.author.id)
-			
+
 			if str(owo) == '[]':
 				db.insert({'id': ctx.message.author.id, 'akatsuki': userid})
 			else:
@@ -510,8 +515,8 @@ class Chiyo:
 			elif b == c or b == d or c == b or c == d or d == b or d == c:
 				return await ctx.send(f'[{b}{c}{d}] \n 2/3! <@!{ctx.message.author.id}>')
 			else:
-				return await ctx.send(f'[{b}{c}{d}] \n lol you suck <@!{ctx.message.author.id}>')	
-			
+				return await ctx.send(f'[{b}{c}{d}] \n lol you suck <@!{ctx.message.author.id}>')
+
 		Chiyo.run(self.token)
 
 	def run(self):
