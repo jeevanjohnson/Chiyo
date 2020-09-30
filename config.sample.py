@@ -1,5 +1,2 @@
 prefix = ""
-
 token = ""
-
-ownerid = 
