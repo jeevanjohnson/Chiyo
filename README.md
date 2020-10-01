@@ -9,7 +9,7 @@ You can invite Chiyo [right here.](https://discord.com/api/oauth2/authorize?clie
 
 # Installation.
 
-This was made for [Python 3.6.](https://www.python.org/downloads/release/python-360/)
+This was with [Python 3.8.5](https://www.python.org/downloads/release/python-385/)
 
 1. Install requirments. ``pip3 install -r requirement.txt``
 
