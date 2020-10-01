@@ -93,9 +93,9 @@ class Chiyo:
 						'▸ AR: {diff_approach} OD: {diff_overall} CS: {diff_size} HP: {diff_drain}\n'
 						'▸ Max Combo: {max_combo}\n'
 						'▸ BPM: {bpm}\n'
-						'▸ [bloodcat](https://bloodcat.com/osu/{beatmap_id}) ▸ '
+						'▸ [bloodcat](https://bloodcat.com/osu/{beatmap_id}) '
 						'▸ [osu!gatari](https://osu.gatari.pw/b/{beatmap_id})\n'
-						'▸ [osu!](https://osu.ppy.sh/b/{beatmap_id}) ▸ '
+						'▸ [osu!](https://osu.ppy.sh/b/{beatmap_id}) '
 						'▸ [osu! (old)](https://old.ppy.sh/s/{beatmapset_id})'
 					).format(**json),
 					color = message.author.roles[-1].color
