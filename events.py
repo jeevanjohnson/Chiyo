@@ -480,17 +480,23 @@ class Chiyo:
 		async def _faq(ctx, *args):
 			color = ctx.message.author.roles[len(ctx.message.author.roles) - 1].color
 			embed=discord.Embed(colour = color)
-			embed.set_author(name="Chiyo | osu!Akatsuki discord bot!", url="https://coverosu.tk/chiyo", icon_url=config.bot_icon_url)
-			embed.add_field(name="Commands!", value="""
-			```
-			Optional = () Required = []
-			{hi}connect [username]
-			{hi}slots
-			{hi}roll
-			{hi}[recent | rc | rs | r] [top | t] [osu | p | profile]
-			(-p (number)) (@someone | username) (-taiko | -mania | -ctb | by default it is Standard) (-rx)
-			```
-			""".format(hi=get_prefix(Chiyo, ctx.message)), inline=False)
+			embed.set_author(
+			name="Chiyo | osu!Akatsuki discord bot!", 
+			url="https://coverosu.tk/chiyo", 
+			icon_url=config.bot_icon_url)
+			embed.add_field(
+			name="Commands!", 
+			value=
+			(
+			'```'
+			'Optional = () Required = []\n'
+			'{hi}connect [username]\n'
+			'{hi}slots\n'
+			'{hi}roll\n'
+			'{hi}[recent | rc | rs | r] [top | t] [osu | p | profile]\n'\
+			'(-p (number)) (@someone | username) (-taiko | -mania | -ctb | by default it is Standard) (-rx)\n'\
+			'```').format(hi=get_prefix(Chiyo, ctx.message)),
+			inline=False)
 			embed.set_footer(text=f"Made by Cover#8860 dm if there is any problems")
 			return await ctx.send(embed=embed)
 
