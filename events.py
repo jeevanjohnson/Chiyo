@@ -10,9 +10,10 @@ import requests
 import osuhelper
 import random
 import re
+from owoppai import *
 
-import constants
-
+BEATMAP = re.compile(r'https?://akatsuki\.pw/(?P<type>b|d)/(?P<id>\d{1,9})/?')
+OSU_API_BASE = "https://osu.ppy.sh/api"
 API_BASE = 'https://akatsuki.pw/api'
 BEATMAP_COVER = 'https://assets.ppy.sh/beatmaps/{}/covers/cover.jpg' # setid
 
@@ -71,7 +72,7 @@ class Chiyo:
 				await message.channel.send(f'The prefix for this server is `{get_prefix(Chiyo, message)}`')
 
 			# search for beatmap urls
-			for rgx in constants.regexes['beatmap'].findall(message.content):
+			for rgx in BEATMAP.findall(message.content):
 				is_set = rgx[0] == 'd'
 				req = requests.get(
 					url = f'{API_BASE}/get_beatmaps',
@@ -114,6 +115,40 @@ class Chiyo:
 				)
 
 				await message.channel.send(embed = embed)
+
+		@Chiyo.command(aliases=['m','map'])
+		async def calculate(ctx, *args):
+			mode, mods, percent = 0, None, None
+			msg = ctx.message.content.split(' ')[1:]
+
+			if '-mods' in msg:
+				mods = msg[msg.index('-mods') + 1]
+			if '-acc' in msg:
+				percent = msg[msg.index('-acc') + 1]
+
+			cachedinfo = cache[ctx.message.channel.id]
+			if not os.path.exists('{mapdir}/{mapid}.osu'.format(mapdir = config.map_dir, mapid = cachedinfo['beatmap_id'])):
+				with open('{mapdir}/{mapid}.osu'.format(mapdir = config.map_dir, mapid = cachedinfo['beatmap_id']), 'w') as b:
+					d = requests.get("http://osu.ppy.sh/osu/{}".format(cachedinfo['beatmap_id']))
+					b.write(d.content.decode("utf-8"))
+			
+			ppvalues = oppai(cachedinfo['beatmap_id'], mods, percent)
+			
+			embed = discord.Embed(
+				description = '\n'.join(ppvalues),
+				color = ctx.message.author.roles[-1].color
+			)
+			embed.set_author(
+				name = '{artist} - {title} [{version}] + {modds}'.format(artist = cachedinfo['artist'], title = cachedinfo['title'], version = cachedinfo['version'], modds = 'NM' if mods == None else mods),
+				url = f'https://akatsuki.pw/b/{cachedinfo["beatmap_id"]}'
+			)
+
+			embed.set_image(
+				url = BEATMAP_COVER.format(cachedinfo['beatmapset_id'])
+			)
+
+			return await ctx.send(embed=embed)
+
 
 		@Chiyo.command(aliases=['prefix'])
 		@has_permissions(administrator=True)

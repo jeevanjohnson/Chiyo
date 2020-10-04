@@ -2,6 +2,8 @@ prefix = ""
 token = ""
 server_icon_url = ""
 bot_icon_url = ""
+oppai_dir = ""
+map_dir = ""
 letters = {
     'SSH': 'link to image',
     'SH': 'link to image',
