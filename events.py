@@ -127,10 +127,6 @@ class Chiyo:
 				percent = msg[msg.index('-acc') + 1]
 
 			cachedinfo = cache[ctx.message.channel.id]
-			if not os.path.exists('{mapdir}/{mapid}.osu'.format(mapdir = config.map_dir, mapid = cachedinfo['beatmap_id'])):
-				with open('{mapdir}/{mapid}.osu'.format(mapdir = config.map_dir, mapid = cachedinfo['beatmap_id']), 'w') as b:
-					d = requests.get("http://osu.ppy.sh/osu/{}".format(cachedinfo['beatmap_id']))
-					b.write(d.content.decode("utf-8"))
 			
 			ppvalues = oppai(cachedinfo['beatmap_id'], mods, percent)
 			
@@ -139,7 +135,7 @@ class Chiyo:
 				color = ctx.message.author.roles[-1].color
 			)
 			embed.set_author(
-				name = '{artist} - {title} [{version}] + {modds}'.format(artist = cachedinfo['artist'], title = cachedinfo['title'], version = cachedinfo['version'], modds = 'NM' if mods == None else mods),
+				name = '{artist} - {title} [{version}] + {modds}'.format(artist = cachedinfo['artist'], title = cachedinfo['title'], version = cachedinfo['version'], modds = 'NM' if mods == None else mods.upper()),
 				url = f'https://akatsuki.pw/b/{cachedinfo["beatmap_id"]}'
 			)
 
@@ -259,7 +255,7 @@ class Chiyo:
 
 			username = osuhelper.get_username(userid)
 
-			embed=discord.Embed(description=f'▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]', color=color)
+			embed=discord.Embed(description=f'▸ {pp}PP [{"".join(oppai(beatmap_id, mods, accuracy)) if mode == 0 else f"AR: {ar} OD: {od}"}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]', color=color)
 			embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=rank)
 			embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
 			embed.set_image(url=f"https://assets.ppy.sh/beatmaps/{beatmapset_id}/covers/cover.jpg")
@@ -339,7 +335,7 @@ class Chiyo:
 
 			cache[ctx.message.channel.id] = osuhelper.get_beatmap(beatmap_id, mode)
 
-			embed=discord.Embed(description=f'▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=color)
+			embed=discord.Embed(description=f'▸ {pp}PP [{"".join(oppai(beatmap_id, mods, accuracy)) if mode == 0 else f"AR: {ar} OD: {od}"}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=color)
 			embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=rank)
 			embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
 			embed.set_image(url=f"https://assets.ppy.sh/beatmaps/{beatmapset_id}/covers/cover.jpg")
@@ -419,7 +415,7 @@ class Chiyo:
 
 			cache[ctx.message.channel.id] = osuhelper.get_beatmap(beatmap_id, mode)
 
-			embed=discord.Embed(description=f'▸ {pp}PP [AR: {ar} OD: {od}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=color)
+			embed=discord.Embed(description=f'▸ {pp}PP [{"".join(oppai(beatmap_id, mods, accuracy)) if mode == 0 and completed == "Yes" else f"AR: {ar} OD: {od}"}] ▸ {accuracy}%\n▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{count_300}/{count_100}/{count_50}/{count_miss}]\n▸ Map Completed: {completed}', color=color)
 			embed.set_author(name=f"{songname} +{mods} [{difficulty}★]", url=f"https://akatsuki.pw/b/{beatmap_id}", icon_url=rank)
 			embed.set_thumbnail(url=f"https://a.akatsuki.pw/{userid}.png")
 			embed.set_image(url=f"https://assets.ppy.sh/beatmaps/{beatmapset_id}/covers/cover.jpg")
@@ -528,6 +524,7 @@ class Chiyo:
 			'{hi}connect [username]\n'
 			'{hi}slots\n'
 			'{hi}roll\n'
+			'{hi}[m | map] (-acc (accuracy precentage)) (-mods (mod letters like DTHD))\n'
 			'{hi}[recent | rc | rs | r] [top | t] [osu | p | profile]\n'\
 			'(-p (number)) (@someone | username) (-taiko | -mania | -ctb | by default it is Standard) (-rx)\n'\
 			'```').format(hi=get_prefix(Chiyo, ctx.message)),
