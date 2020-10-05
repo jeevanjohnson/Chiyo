@@ -4,11 +4,11 @@ from config import oppai_dir, map_dir
 import os
 import requests
 
-os.chdir(oppai_dir)
-
 acc = [100, 99, 98, 97, 96]
 
 def oppai(beatmap_id, mods = None, accc = None):
+	
+	os.chdir(oppai_dir)
 
 	if not os.path.exists('{mapdir}/{mapid}.osu'.format(mapdir = map_dir, mapid = beatmap_id)):
 		with open('{mapdir}/{mapid}.osu'.format(mapdir = map_dir, mapid = beatmap_id), 'w') as b:

@@ -10,6 +10,7 @@ import requests
 import osuhelper
 import random
 import re
+import os
 from owoppai import *
 
 BEATMAP = re.compile(r'https?://akatsuki\.pw/(?P<type>b|d)/(?P<id>\d{1,9})/?')
@@ -28,7 +29,14 @@ class Chiyo:
 		switcher = ('Standard', 'Taiko', 'Catch The Beat', 'Mania')
 		another_switcher = ('', ' Relax')
 
-		db = TinyDB('db.json')
+		if not os.path.exists(config.map_dir):
+			quit(print('cant find map folder!'))
+		if not os.path.exists(config.oppai_dir):
+			quit(print('cant find oppai folder!'))
+		if not os.path.exists(config.db_location):
+			quit(print('cant find db.json file!'))
+
+		db = TinyDB(config.db_location)
 		User = Query()
 		print('Connected to database!')
 
