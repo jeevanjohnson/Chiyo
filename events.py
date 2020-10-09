@@ -127,12 +127,20 @@ class Chiyo:
 		@Chiyo.command(aliases=['m','map'])
 		async def calculate(ctx, *args):
 			mode, mods, percent = 0, None, None
-			msg = ctx.message.content.split(' ')[1:]
+			
+			msg = ''.join(args)
+			_mods = []
+			_percent = []
+			for char in msg:
+				if char.isnumeric():
+					_percent.append(char)
+				else:
+					_mods.append(char)
 
-			if '-mods' in msg:
-				mods = msg[msg.index('-mods') + 1]
-			if '-acc' in msg:
-				percent = msg[msg.index('-acc') + 1]
+			if _mods:
+				mods = ''.join(_mods).replace('%','')
+			if _percent:
+				percent = ''.join(_percent).replace('%','')
 
 			cachedinfo = cache[ctx.message.channel.id]
 			
