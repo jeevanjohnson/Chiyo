@@ -19,7 +19,7 @@ def oppai(beatmap_id, mods = None, accc = None):
 	command = []
 	ending_acc = []
 	command.append(f'oppai {map_dir}/{beatmap_id}.osu')
-	if accc:
+	if accc != 'None':
 		command.append(f'{accc}%' if not '%' in accc else f'{accc}')
 		
 		if mods:
