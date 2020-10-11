@@ -161,6 +161,48 @@ class Chiyo:
 
 			return await ctx.send(embed=embed)
 
+		@Chiyo.command(aliases=['lb'])
+		async def leaderboard(ctx, *args):
+			color = ctx.message.author.roles[-1].color
+			try:
+				beatmap_id, relax, mode = cache[ctx.message.channel.id]['beatmap_id'], 0, 0
+			except:
+				return #yo mama lol
+			cachedinfo = cache[ctx.message.channel.id]
+			msg = ctx.message.content.split(' ')[1:]
+			
+			if '-rx' in msg:
+				msg.remove('-rx')
+				relax = 1
+			if '-std' in msg:
+				msg.remove('-std')
+				mode = 0
+			elif '-taiko' in msg:
+				msg.remove('-taiko')
+				mode = 1
+			elif '-ctb' in msg:
+				msg.remove('-ctb')
+				mode = 2
+			elif '-mania' in msg:
+				msg.remove('-mania')
+				mode, relax = 3, 0
+
+			info = osuhelper.leaderboard(beatmap_id, mode, relax)
+			embed=discord.Embed(color=color)
+			embed.set_author(name="{artist} - {title} [{version}]".format(**cachedinfo), url="https://akatsuki.pw/b/{beatmap_id}".format(**cachedinfo))
+			embed.set_thumbnail(url="https://assets.ppy.sh/beatmaps/{beatmapset_id}/covers/cover.jpg".format(**cachedinfo))		
+			for x in info:
+				embed.add_field(
+				name='{}.'.format(info.index(x) + 1),
+				value=
+				f"[{x['username']}](https://akatsuki.pw/u/{x['username'].replace(' ', '%20')}) +{'NM' if int(x['enabled_mods']) == 0 else osuhelper.readableMods(int(x['enabled_mods']))}\n"	
+				f"{x['rank']} ▸ {round(float(x['pp']))}PP [AR: {cachedinfo['diff_approach']}"
+				f" OD: {cachedinfo['diff_overall']}] ▸ {osuhelper.calc_acc(mode, x['count300'], x['count100'], x['count50'], x['countmiss'])}% ▸ {x['score']} ▸ {x['maxcombo']}x/{cachedinfo['max_combo']}x ▸ [{x['count300']}/{x['count100']}/{x['count50']}/{x['countmiss']}]"
+				, 
+				inline=False)
+			embed.set_footer(text=f"Leaderboard!")
+			return await ctx.send(embed=embed)
+
 
 		@Chiyo.command(aliases=['prefix'])
 		@has_permissions(administrator=True)

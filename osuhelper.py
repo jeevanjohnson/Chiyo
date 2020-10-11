@@ -60,6 +60,26 @@ def readableMods(m: int) -> str:
 	d = ''.join(r)
 	return d.replace('DT','') if 'NC' in d else d
 
+def calc_acc(mode, count_300, count_100, count_50, count_miss):
+	if mode == 0:
+		total = sum((int(count_300), int(count_100), int(count_50), int(count_miss)))
+		d = 100.0 * sum((
+				int(count_50) * 50.0,
+				int(count_100) * 100.0,
+				int(count_300) * 300.0
+			)) / (total * 300.0)
+		return round(d, 2)
+	elif mode == 1:
+		total = sum((int(count_300), int(count_100), int(count_miss)))
+		d = 100.0 * sum((
+		int(count_100) * 150.0,
+		int(count_300) * 300.0
+		)) / (total * 300.0)
+		return round(d, 2)
+	else:
+		return '0'
+
+
 def get_id(username):
 	w = requests.get(f'https://akatsuki.pw/api/v1/users/whatid?name={username}')
 	if not w:
@@ -71,6 +91,19 @@ def get_username(userid):
 	if not w:
 		return "Couldn't find user!"
 	return w.json()['username']
+
+def leaderboard(beatmapid, mode, relax):
+	params = {
+		'b': beatmapid,
+		'm': mode,
+		'rx': relax
+	}
+
+	w = requests.get(f'https://akatsuki.pw/api/get_scores?', params=params)
+	if not w:
+		raise Exception("Couldn't find da map LAWl")
+	e = w.json()
+	return e[0], e[1], e[2], e[3], e[4]
 
 def get_beatmap(beatmapid, mode):
 
