@@ -31,7 +31,7 @@ def oppai(beatmap_id, mods = None, accc = None):
 		' '.join(command),
 		shell = True, stdout = PIPE, stderr = PIPE)
 		output = loads(process.stdout.decode('utf-8', errors='ignore'))
-		ending_acc.append('{PP}PP for {Acc} FC'.format(PP=round(output["pp"], 2), Acc=accc))
+		ending_acc.append('{PP}PP for {Acc} FC'.format(PP=round(output["pp"], 2), Acc=accc if '%' in accc else f'{accc}%'))
 	else:
 		for accuracy in acc:
 
@@ -47,6 +47,6 @@ def oppai(beatmap_id, mods = None, accc = None):
 			shell = True, stdout = PIPE, stderr = PIPE)
 			
 			output = loads(process.stdout.decode('utf-8', errors='ignore'))
-			ending_acc.append('{PP}PP for {Acc} FC'.format(PP=round(output["pp"], 2), Acc=accuracy))
+			ending_acc.append('{PP}PP for {Acc} FC'.format(PP=round(output["pp"], 2), Acc=accuracy if '%' in accc else f'{accuracy}%'))
 			command.remove(f'{accuracy}%')
 	return ending_acc
