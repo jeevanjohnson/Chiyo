@@ -1,9 +1,1 @@
 __pycache__/
-.vscode/
-config.py
-test.py
-db.json
-*.pem
-*.sh
-maps/
-oppai/
