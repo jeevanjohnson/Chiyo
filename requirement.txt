@@ -2,4 +2,5 @@ coover
 pymongo
 WebLamp
 aiohttp
+dnspython
 discord.py
