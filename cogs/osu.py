@@ -1,356 +1,454 @@
-import discord
-from discord.ext import commands
-import cover
-import config
-from cover import log
+import time
+from ext import glob
+from ext.glob import bot
+from objects import Score
+from discord import Embed
+from objects import Player
+from objects import Server
+from discord.ext.commands import Context
 
-class osu(commands.Cog):
+TWELVEHOURS = 12 * 60 * 60
 
-    def __init__(self, client) -> None:
-        self.client = client
-        self.QUERY = client.db
-        self.cache = client.cache
+@bot.command()
+async def connect(ctx: Context) -> None:
+    server = Server.Bancho
+    msg: list[str] = ctx.message.content.split()[1:]
+    
+    if '-akatsuki' in msg:
+        msg.remove('-akatsuki')
+        server = Server.Akatsuki
+    
+    user = glob.db.find_one({'_id': ctx.author.id})
 
-    @commands.command()
-    async def connect(self, ctx):
-        msg = ctx.message.content.split(' ')[1:]
-        if not len(msg):
-            return await ctx.send("Please provide a user.")
-
-        _username = self.QUERY.find_one({"_id": ctx.message.author.id})
-        username = ' '.join(msg)
-        user = cover.get_profile(username)
-
-        if not user:
-            return ctx.send('no user found.')
-
-        if _username is None:
-            post = {"_id": ctx.message.author.id, 'akatsuki': user['userid']}
-            self.QUERY.insert_one(post)
-        else:
-            newvalues = { "$set": { 'akatsuki': user['userid'] } }
-            self.QUERY.update_one(_username, newvalues)
-
-        embed = discord.Embed(
-            colour = ctx.message.author.roles[len(ctx.message.author.roles) - 1].color
+    name = ' '.join(msg)
+    if not name:
+        await ctx.send("Please provide a name.")
+        return
+    
+    if server == Server.Akatsuki:
+        p = await Player.from_akatsuki(
+            user = name,
         )
+    else:
+        p = await Player.from_bancho(
+            user = name
+        )
+    
+    if not p:
+        await ctx.send("User could not be found!")
+    
+    server_name = server.name.lower()
+    if user is None:
+        post = {
+            "_id": ctx.author.id,
+            server_name: p.id
+        }
+        glob.db.insert_one(post)
+    else:
+        new_values = {
+            "$set": {
+                server_name: p.id
+            }
+        }
+        glob.db.update_one(user, new_values)
+
+    e = Embed(
+        colour = ctx.author.color
+    )
+
+    e.set_author(
+        name = f'{p.name} was connected to your discord account!',
+        url = bot.user.avatar_url
+    )
+
+    e.set_image(
+        url = p.avatar
+    )
+
+    await ctx.send(embed=e)
+    return
+
+@bot.command(aliases=['c'])
+async def compare(ctx: Context) -> None:
+    if ctx.message.channel.id not in glob.cache:
+        await ctx.send("No map was found.")
+        return
+
+    bmap = glob.cache[ctx.message.channel.id][0]
+    relax = mode = index = 0
+    server = Server.Bancho
+    msg: list[str] = ctx.message.content.lower().split()[1:]
+    
+    if '-p' in msg:
+        index = msg[msg.index('-p') + 1]
+        msg.remove('-p')
+        msg.remove(index)
+        if not index.isdecimal():
+            await ctx.send(
+                'Please provide a number for `-p`'
+            )
+            return
+
+        index = int(index)
+        index = index - 1 if index > 0 else index
+
+    if '-std' in msg:
+        msg.remove('-std')
+        mode = 0
+    elif '-taiko' in msg:
+        msg.remove('-taiko')
+        mode = 1
+    elif '-ctb' in msg:
+        msg.remove('-ctb')
+        mode = 2
+    elif '-mania' in msg:
+        msg.remove('-mania')
+        mode = 3
+
+    if '-rx' in msg:
+        msg.remove('-rx')
+        relax = 1
+    
+    if '-akatsuki' in msg:
+        msg.remove('-akatsuki')
+        server = Server.Akatsuki
+
+    name = ' '.join(msg)
+
+    server_name = server.name.lower()
+
+    if ctx.message.mentions:
+        mentioned = ctx.message.mentions[0]
+        user = glob.db.find_one({"_id": mentioned.id})
+        if not user or server_name not in user:
+            await ctx.send(
+                "User couldn't be found in our database! "
+                f"{mentioned.name}, Try connecting a user "
+                "to our database by doing `;connect (your username)`"
+            )
+            return
         
-        embed.set_author(
-            name = f"{user['username']} was connected to your discord account!", 
-            url = config.logo if config.logo else 'https://akatsuki.pw/static/logos/logo.png'
-        )
+        name = user[server_name]
 
-        embed.set_image(
-            url = f"https://a.akatsuki.pw/{user['userid']}"
-        )
-
-        return await ctx.send(embed=embed)
-
-    @commands.command(aliases=['r','rs','rc'])
-    async def recent(self, ctx):
-        relax = scoreid = mode = 0
-        msg = ctx.message.content.lower().split(' ')[1:]
-        if '-p' in msg:
-            scoreid = int(msg[msg.index('-p') + 1])
-            msg.remove(str(scoreid))
-            msg.remove('-p')
-        for _mode in (lawl := ['-std', '-taiko', '-ctb', '-mania']):
-            if _mode in msg:
-                msg.remove(_mode)
-                mode = lawl.index(_mode)
-            if 'mania' in _mode:
-                relax = 0
-        if '-rx' in msg:
-            msg.remove('-rx')
-            relax = 1
-        msg = ' '.join(msg)
-
-        if ctx.message.mentions:
-            _userid = self.QUERY.find_one({"_id": ctx.message.mentions[0].id})
-            if not _userid:
-                return await ctx.send(f"User couldn't be found in our database! Try connecting a user to our database by doing `;connect (your username)`")
-            userinfo = cover.get_recent(
-                user = _userid['akatsuki'],
-                mode = mode,
-                relax = relax,
-                limit = scoreid
+    elif not name:
+        user = glob.db.find_one({"_id": ctx.author.id})
+        if not user or server_name not in user:
+            await ctx.send(
+                "User couldn't be found in our database! "
+                "Try connecting a user to our database"
+                "by doing `;connect (your username)`"
             )
-            if not userinfo:
-                return await ctx.send("Couldn't find a score or user.")
-        elif len(msg) == 0:
-            _userid = self.QUERY.find_one({"_id": ctx.message.author.id})
-            if not _userid:
-                return await ctx.send(f"User couldn't be found in our database! Try connecting a user to our database by doing `;connect (your username)`")
-            userinfo = cover.get_recent(
-                user = _userid['akatsuki'],
-                mode = mode,
-                relax = relax,
-                limit = scoreid
-            )
-            if not userinfo:
-                return await ctx.send("Couldn't find a score or user.")
-        else:
-            userinfo = cover.get_recent(
-                user = msg,
-                mode = mode,
-                relax = relax,
-                limit = scoreid
-            )
-            if not userinfo:
-                return await ctx.send("Couldn't find a score or user.")
+            return
         
-        self.cache[ctx.message.channel.id] = userinfo['beatmap_id']
-        embed=discord.Embed(
-            description = 
-            (
-                '▸ {pp}PP [AR: {ar} OD: {od}] ▸ {acc}%\n'
-                '▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{300s}/{100s}/{50s}/{misses}]\n'
-                '▸ Map Completion: {completion}%'
-            ).format(**userinfo),
-            color = ctx.message.author.roles[len(ctx.message.author.roles) - 1].color
-        )
-        embed.set_author(
-            name =
-            (
-                "{song_name} +{mods} [{difficulty}★]"
-            ).format(**userinfo),
-            url = "https://akatsuki.pw/b/{beatmap_id}".format(**userinfo), 
-            icon_url = userinfo['rank']
-        )
-        embed.set_thumbnail(
-            url = f'https://a.akatsuki.pw/{userinfo["userid"]}'
-        )
-        embed.set_image(
-            url=f"https://assets.ppy.sh/beatmaps/{userinfo['beatmapset_id']}/covers/cover.jpg"
-        )
-        embed.set_footer(text=f"Recent Akatsuki Play for {userinfo['username']} set on {userinfo['time']}")
-        return await ctx.send(embed=embed)
+        name = user[server_name]
+    
+    else:
+        pass
 
-    @commands.command(aliases=['c'])
-    async def compare(self, ctx):
-        relax = scoreid = mode = 0
-        msg = ctx.message.content.lower().split(' ')[1:]
-        if '-p' in msg:
-            scoreid = int(msg[msg.index('-p') + 1])
-            msg.remove(str(scoreid))
-            msg.remove('-p')
-        for _mode in (lawl := ['-std', '-taiko', '-ctb', '-mania']):
-            if _mode in msg:
-                msg.remove(_mode)
-                mode = lawl.index(_mode)
-            if 'mania' in _mode:
-                relax = 0
-        if '-rx' in msg:
-            msg.remove('-rx')
-            relax = 1
-        msg = ' '.join(msg)
+    if server == Server.Akatsuki:
+        p = await Player.from_akatsuki(
+            name, mode, relax
+        )
+        s = await Score.from_akatsuki(
+            user = p,
+            mode = mode,
+            index = index,
+            relax = relax,
+            bmap = bmap
+        )
+    else:
+        p = await Player.from_bancho(
+            name, mode
+        )
+        s = await Score.from_bancho(
+            user = p,
+            mode = mode,
+            index = index,
+            bmap = bmap
+        )
+    
+    if not s:
+        await ctx.send("Score or Player couldn't be found!")
+        return
 
-        if ctx.message.channel.id not in self.cache:
-            return await ctx.send('no map found.')
+    e = s.embed
+    e.colour = ctx.author.color
+    await ctx.send(embed=e)
+    return
 
-        if ctx.message.mentions:
-            _userid = self.QUERY.find_one({"_id": ctx.message.mentions[0].id})
-            if not _userid:
-                return await ctx.send(f"User couldn't be found in our database! Try connecting a user to our database by doing `;connect (your username)`")
-            userinfo = cover.get_scores(
-                user = _userid['akatsuki'],
-                mode = mode,
-                relax = relax,
-                limit = scoreid,
-                beatmapid = self.cache[ctx.message.channel.id]
+@bot.command(aliases=['t'])
+async def top(ctx: Context) -> None:
+    relax = mode = index = 0
+    server = Server.Bancho
+    msg: list[str] = ctx.message.content.lower().split()[1:]
+    
+    if '-p' in msg:
+        index = msg[msg.index('-p') + 1]
+        msg.remove('-p')
+        msg.remove(index)
+        if not index.isdecimal():
+            await ctx.send(
+                'Please provide a number for `-p`'
             )
-            if not userinfo:
-                return await ctx.send("Couldn't find a score.")
-        elif len(msg) == 0:
-            _userid = self.QUERY.find_one({"_id": ctx.message.author.id})
-            if _userid is None:
-                return await ctx.send(f"User couldn't be found in our database! Try connecting a user to our database by doing `;connect (your username)`")
-            userinfo = cover.get_scores(
-                user = _userid['akatsuki'],
-                mode = mode,
-                relax = relax,
-                limit = scoreid,
-                beatmapid = self.cache[ctx.message.channel.id]
-            )
-            if not userinfo:
-                return await ctx.send("Couldn't find a score.")
-        else:
-            userinfo = cover.get_scores(
-                user = msg,
-                mode = mode,
-                relax = relax,
-                limit = scoreid,
-                beatmapid = self.cache[ctx.message.channel.id]
-            )
-            if not userinfo:
-                return await ctx.send("Couldn't find a score.")
+            return
 
-        embed=discord.Embed(
-            description = 
-            (
-                '▸ {pp}PP [AR: {ar} OD: {od}] ▸ {acc}%\n'
-                '▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{300s}/{100s}/{50s}/{misses}]\n'
-            ).format(**userinfo),
-            color = ctx.message.author.roles[len(ctx.message.author.roles) - 1].color
-        )
-        embed.set_author(
-            name =
-            (
-                "{song_name} +{mods} [{difficulty}★]"
-            ).format(**userinfo),
-            url = "https://osu.ppy.sh/b/{beatmap_id}".format(**userinfo), icon_url=userinfo['rank']
-        )
-        embed.set_thumbnail(
-            url = f'https://a.akatsuki.pw/{userinfo["userid"]}'
-        )
-        embed.set_image(
-            url=f"https://assets.ppy.sh/beatmaps/{userinfo['beatmapset_id']}/covers/cover.jpg"
-        )
-        embed.set_footer(text=f"Akatsuki Play for {userinfo['username']} set on {userinfo['time']}")
-        return await ctx.send(embed=embed)
+        index = int(index)
+        index = index - 1 if index > 0 else index
 
-    @commands.command(aliases=['t'])
-    async def top(self, ctx):
-        relax = scoreid = mode = 0
-        msg = ctx.message.content.lower().split(' ')[1:]
-        if '-p' in msg:
-            scoreid = int(msg[msg.index('-p') + 1])
-            msg.remove(str(scoreid))
-            msg.remove('-p')
-        for _mode in (lawl := ['-std', '-taiko', '-ctb', '-mania']):
-            if _mode in msg:
-                msg.remove(_mode)
-                mode = lawl.index(_mode)
-            if 'mania' in _mode:
-                relax = 0
-        if '-rx' in msg:
-            msg.remove('-rx')
-            relax = 1
-        msg = ' '.join(msg)
+    if '-std' in msg:
+        msg.remove('-std')
+        mode = 0
+    elif '-taiko' in msg:
+        msg.remove('-taiko')
+        mode = 1
+    elif '-ctb' in msg:
+        msg.remove('-ctb')
+        mode = 2
+    elif '-mania' in msg:
+        msg.remove('-mania')
+        mode = 3
 
-        if ctx.message.mentions:
-            _userid = self.QUERY.find_one({"_id": ctx.message.mentions[0].id})
-            if _userid is None:
-                return await ctx.send(f"User couldn't be found in our database! Try connecting a user to our database by doing `;connect (your username)`")
-            userinfo = cover.get_best(
-                user = _userid['akatsuki'],
-                mode = mode,
-                relax = relax,
-                limit = scoreid
+    if '-rx' in msg:
+        msg.remove('-rx')
+        relax = 1
+    
+    if '-akatsuki' in msg:
+        msg.remove('-akatsuki')
+        server = Server.Akatsuki
+
+    name = ' '.join(msg)
+
+    server_name = server.name.lower()
+
+    if ctx.message.mentions:
+        mentioned = ctx.message.mentions[0]
+        user = glob.db.find_one({"_id": mentioned.id})
+        if not user or server_name not in user:
+            await ctx.send(
+                "User couldn't be found in our database! "
+                f"{mentioned.name}, Try connecting a user "
+                "to our database by doing `;connect (your username)`"
             )
-            if not userinfo:
-                return await ctx.send("Couldn't find a score.")
+            return
         
-        elif len(msg) == 0:
-            _userid = self.QUERY.find_one({"_id": ctx.message.author.id})
-            if _userid is None:
-                return await ctx.send(f"User couldn't be found in our database! Try connecting a user to our database by doing `;connect (your username)`")
-            userinfo = cover.get_best(
-                user = _userid['akatsuki'],
-                mode = mode,
-                relax = relax,
-                limit = scoreid
+        name = user[server_name]
+
+    elif not name:
+        user = glob.db.find_one({"_id": ctx.author.id})
+        if not user or server_name not in user:
+            await ctx.send(
+                "User couldn't be found in our database! "
+                "Try connecting a user to our database"
+                "by doing `;connect (your username)`"
             )
-            if not userinfo:
-                return await ctx.send("Couldn't find a score.")
-        else:
-            userinfo = cover.get_best(
-                user = msg,
-                mode = mode,
-                relax = relax,
-                limit = scoreid
+            return
+        
+        name = user[server_name]
+    
+    else:
+        pass
+    
+    if server == Server.Akatsuki:
+        s = await Score.from_akatsuki_top(
+            user = name,
+            mode = mode,
+            index = index,
+            relax = relax
+        )
+    else:
+        s = await Score.from_bancho_top(
+            user = name,
+            mode = mode,
+            index = index
+        ) 
+    
+    if not s:
+        await ctx.send("Score or Player couldn't be found!")
+        return
+    
+    glob.cache[ctx.message.channel.id] = (
+        s.bmap, time.time() + TWELVEHOURS
+    )
+
+    e = s.embed
+    e.colour = ctx.author.color
+    await ctx.send(embed=e)
+    return
+
+@bot.command(aliases=['r', 'rs', 'rc'])
+async def recent(ctx: Context) -> None:
+    relax = mode = index = 0
+    server = Server.Bancho
+    msg: list[str] = ctx.message.content.lower().split()[1:]
+    
+    if '-p' in msg:
+        index = msg[msg.index('-p') + 1]
+        msg.remove('-p')
+        msg.remove(index)
+        if not index.isdecimal():
+            await ctx.send(
+                'Please provide a number for `-p`'
             )
-            if not userinfo:
-                return await ctx.send("Couldn't find a score.")
+            return
 
-        self.cache[ctx.message.channel.id] = userinfo['beatmap_id']
+        index = int(index)
+        index = index - 1 if index > 0 else index
 
-        embed=discord.Embed(
-            description = 
-            (
-                '▸ {pp}PP [AR: {ar} OD: {od}] ▸ {acc}%\n'
-                '▸ {score} ▸ {max_combo}x/{full_combo}x ▸ [{300s}/{100s}/{50s}/{misses}]\n'
-            ).format(**userinfo),
-            color = ctx.message.author.roles[len(ctx.message.author.roles) - 1].color
-        )
-        embed.set_author(
-            name =
-            (
-                "{song_name} +{mods} [{difficulty}★]"
-            ).format(**userinfo),
-            url = "https://osu.ppy.sh/b/{beatmap_id}".format(**userinfo), icon_url = userinfo['rank']
-        )
-        embed.set_thumbnail(
-            url = f"https://a.akatsuki.pw/{userinfo['userid']}"
-        )
-        embed.set_image(
-            url = f"https://assets.ppy.sh/beatmaps/{userinfo['beatmapset_id']}/covers/cover.jpg"
-        )
-        embed.set_footer(text=f"Top Akatsuki Play for {userinfo['username']} set on {userinfo['time']}")
-        await ctx.send(embed=embed)
+    if '-std' in msg:
+        msg.remove('-std')
+        mode = 0
+    elif '-taiko' in msg:
+        msg.remove('-taiko')
+        mode = 1
+    elif '-ctb' in msg:
+        msg.remove('-ctb')
+        mode = 2
+    elif '-mania' in msg:
+        msg.remove('-mania')
+        mode = 3
 
+    if '-rx' in msg:
+        msg.remove('-rx')
+        relax = 1
+    
+    if '-akatsuki' in msg:
+        msg.remove('-akatsuki')
+        server = Server.Akatsuki
 
-    @commands.command(aliases=['p','osu'])
-    async def profile(self, ctx):
-        relax, mode = 0, 0
-        msg = ctx.message.content.lower().split(' ')[1:]
-        for _mode in (lawl := ['-std', '-taiko', '-ctb', '-mania']):
-            if _mode in msg:
-                msg.remove(_mode)
-                mode = lawl.index(_mode)
-            if 'mania' in _mode:
-                relax = 0
-        if '-rx' in msg:
-            msg.remove('-rx')
-            relax = 1
-        msg = ' '.join(msg)
+    name = ' '.join(msg)
 
-        if ctx.message.mentions:
-            _userid = self.QUERY.find_one({"_id": ctx.message.mentions[0].id})
-            if _userid is None:
-                return await ctx.send(f"User couldn't be found in our database! Try connecting a user to our database by doing `;connect (your username)`")
+    server_name = server.name.lower()
 
-            userinfo = cover.get_profile(
-                user = _userid['akatsuki'],
-                mode = mode,
-                relax = relax
+    if ctx.message.mentions:
+        mentioned = ctx.message.mentions[0]
+        user = glob.db.find_one({"_id": mentioned.id})
+        if not user or server_name not in user:
+            await ctx.send(
+                "User couldn't be found in our database! "
+                f"{mentioned.name}, Try connecting a user "
+                "to our database by doing `;connect (your username)`"
             )
-            if not userinfo:
-                return await ctx.send(f"User couldn't be found.")
-        elif len(msg) == 0:
-            _userid = self.QUERY.find_one({"_id": ctx.message.author.id})
-            if _userid == None:
-                return await ctx.send(f"User couldn't be found in our database! Try connecting a user to our database by doing `;connect (your username)`")
-            userinfo = cover.get_profile(
-                user = _userid['akatsuki'],
-                mode = mode,
-                relax = relax
+            return
+        
+        name = user[server_name]
+
+    elif not name:
+        user = glob.db.find_one({"_id": ctx.author.id})
+        if not user or server_name not in user:
+            await ctx.send(
+                "User couldn't be found in our database! "
+                "Try connecting a user to our database"
+                "by doing `;connect (your username)`"
             )
-            if not userinfo:
-                return await ctx.send(f"User couldn't be found.")
-        else:
-            userinfo = cover.get_profile(
-                user = msg,
-                mode = mode,
-                relax = relax
+            return
+        
+        name = user[server_name]
+    
+    else:
+        pass
+    
+    if server == Server.Akatsuki:
+        s = await Score.from_akatsuki_recent(
+            user = name,
+            mode = mode,
+            index = index,
+            relax = relax
+        )
+    else:
+        s = await Score.from_bancho_recent(
+            user = name,
+            mode = mode,
+            index = index
+        ) 
+    
+    if not s:
+        await ctx.send("Score or Player couldn't be found from the last 24 hours.")
+        return
+    
+    glob.cache[ctx.message.channel.id] = (
+        s.bmap, time.time() + TWELVEHOURS
+    )
+
+    e = s.embed
+    e.colour = ctx.author.color
+    await ctx.send(embed=e)
+    return
+
+@bot.command(aliases=['p', 'osu'])
+async def profile(ctx: Context) -> None:
+    relax = mode = 0
+    server = Server.Bancho
+    msg: list[str] = ctx.message.content.lower().split()[1:]
+    
+    if '-std' in msg:
+        msg.remove('-std')
+        mode = 0
+    elif '-taiko' in msg:
+        msg.remove('-taiko')
+        mode = 1
+    elif '-ctb' in msg:
+        msg.remove('-ctb')
+        mode = 2
+    elif '-mania' in msg:
+        msg.remove('-mania')
+        mode = 3
+
+    if '-rx' in msg:
+        msg.remove('-rx')
+        relax = 1
+    
+    if '-akatsuki' in msg:
+        msg.remove('-akatsuki')
+        server = Server.Akatsuki
+
+    name = ' '.join(msg)
+    server_name = server.name.lower()
+
+    if ctx.message.mentions:
+        mentioned = ctx.message.mentions[0]
+        user = glob.db.find_one({"_id": mentioned.id})
+        if not user or server_name not in user:
+            await ctx.send(
+                "User couldn't be found in our database! "
+                f"{mentioned.name}, Try connecting a user "
+                "to our database by doing `;connect (your username)`"
             )
-            if not userinfo:
-                return await ctx.send(f"User couldn't be found.")
+            return
+        
+        name = user[server_name]
 
-        embed=discord.Embed(
-        description = 
-        ('▸ Official Rank: {rank} ({country}#{country_rank}) \n▸ Level: {level}\n▸ Total PP: {pp} \n▸ Accuracy: {acc}% \n▸ Playcount: {playcount}').format(**userinfo),
-        color = ctx.message.author.roles[len(ctx.message.author.roles) - 1].color
+    elif not name:
+        user = glob.db.find_one({"_id": ctx.author.id})
+        if not user or server_name not in user:
+            await ctx.send(
+                "User couldn't be found in our database! "
+                "Try connecting a user to our database"
+                "by doing `;connect (your username)`"
+            )
+            return
+        
+        name = user[server_name]
+    
+    else:
+        pass
+    
+    if server == Server.Akatsuki:
+        p = await Player.from_akatsuki(
+            user = name,
+            mode = mode,
+            relax = relax
         )
-        embed.set_author(
-            name = f"osu! Akatsuki Profile for {userinfo['username']} ", 
-            url = f"https://akatsuki.pw/u/{userinfo['userid']}", 
-            icon_url = config.logo if config.logo else 'https://akatsuki.pw/static/logos/logo.png'
-        )
-        embed.set_thumbnail(url = f"https://a.akatsuki.pw/{userinfo['userid']}")
-        embed.set_footer(text=f"Registered on {userinfo['registered_on']}")
-        return await ctx.send(embed=embed)
-
-
-def setup(client):
-    client.add_cog(osu(client))
+    else:
+        p = await Player.from_bancho(
+            user = name,
+            mode = mode,
+        ) 
+    
+    if not p:
+        await ctx.send("User couldn't be found!")
+        return
+    
+    e = p.embed
+    e.colour = ctx.author.color
+    await ctx.send(embed=e)
+    return

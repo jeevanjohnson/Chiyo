@@ -1,15 +1,10 @@
-""" Discord """
-prefix = ''
+# discord
 token = ''
-logo = ""
+default_prefix = ''
 
-""" Database """
-password = ""
-username = ""
-cluster = ""
-database_name = ""
-collection = ""
+# Mongo DB
+connection_access = ""
+collection_path = []
 
-""" osu! """
-api_key = ''                     # I don't think I use these
-beatconnect_api_key = ""         # but im only doing a little rewrite
+# osu!
+api_key = ''

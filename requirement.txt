@@ -1,3 +1,5 @@
+coover
 pymongo
-requests
+WebLamp
+aiohttp
 discord.py

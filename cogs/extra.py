@@ -1,42 +1,58 @@
-import discord
-from discord.ext import commands
+from ext.glob import bot
+from discord import Embed
+from discord.ext.commands.context import Context
 
-class extra(commands.Cog):
+@bot.command(aliases=['h', 'faq', 'commands'])
+async def help(ctx: Context) -> None:
+    h = [
+        '**Top**',
+        ';t | ;top',
+        "Shows a top play from a user's profile",
+        'Args: name of player | -p (a whole number) | '
+        '-std | -taiko | -ctb | -mania | -rx | -akatsuki',
+        '',
+        '**Recent**',
+        ';r | ;rs | ;rc | ;recent',
+        "Shows a recent score from a user's profile",
+        'Args: name of player | -p (a whole number) | '
+        '-std | -taiko | -ctb | -mania | -rx | -akatsuki',
+        '',
+        '**Profile**',
+        ';p | ;osu | ;profile',
+        "Shows a profile for a user.",
+        'Args: name of player | -std | -taiko | '
+        '-ctb | -mania | -rx | -akatsuki',
+        '',
+        '**Compare**',
+        ';c | ;compare',
+        "Compares a score from a recently posted beatmap."
+        'Args: name of player | -p (a whole number) | -std | -taiko | '
+        '-ctb | -mania | -rx | -akatsuki',
+        '',
+        '**Connect**',
+        ';connect',
+        "Connects a profile to your discord account.",
+        "Args: name of player | -akatsuki"
+    ]
 
-    def __init__(self, client) -> None:
-        self.client = client
-        self.QUERY = client.db
-        self.cache = client.cache
+    e = Embed(
+        description = '\n'.join(h),
+        color = ctx.author.color
+    )
 
-    @commands.command(aliases=['help'])
-    async def faq(self, ctx):
-        embed = discord.Embed(
-            title = "Commands", 
-            description = "what it do?",
-            color = ctx.message.author.roles[len(ctx.message.author.roles) - 1].color
-        )
-        embed.add_field(
-            name = ';[recent, r, rc, rs] (username or @someone) (-rx) (-p (numnber)) (-std) (-taiko) (-ctb) (-mania)',
-            value = "This command gets a user's recent akatsuki play!",
-            inline = False
-        )
-        embed.add_field(
-            name = ';[top, t] (username or @someone) (-rx) (-p (numnber)) (-std) (-taiko) (-ctb) (-mania)',
-            value = "This command gets a user's top akatsuki play!",
-            inline = False
-        )
-        embed.add_field(
-            name = ';[compare, c] (username or @someone) (-rx) (-p (numnber)) (-std) (-taiko) (-ctb) (-mania)',
-            value = "This command compares a play\nfrom the most recent used command such as [;r or ;t] on akatsuki!",
-            inline = False
-        )
-        embed.add_field(
-            name = ';[profile, p, osu] (username or @someone) (-rx) (-std) (-taiko) (-ctb) (-mania)',
-            value = "This command gets a user's stats on akatsuki!",
-            inline = False
-        )
-        return await ctx.send(embed = embed)
+    e.set_author(
+        name = 'Chiyo! Another osu! discord bot.',
+        url = 'https://github.com/coverosu/Chiyo',
+        icon_url = 'https://southportlandlibrary.com/wp-content/uploads/2020/11/discord-logo-1024x1024.jpg'
+    )
 
+    e.set_thumbnail(
+        url = bot.user.avatar_url
+    )
 
-def setup(client):
-    client.add_cog(extra(client))
+    e.set_footer(
+        text = 'All commands for Chiyo!'
+    )
+
+    await ctx.send(embed=e)
+    return
