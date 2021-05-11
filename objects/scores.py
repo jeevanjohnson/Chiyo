@@ -129,7 +129,7 @@ class Score:
             description = description
         )
             
-        star_rating = f'{self.bmap.difficulty:.2f}'
+        star_rating = f'{self.bmap.difficulty:.2f}★'
         e.set_author(
             name = f"{self.bmap.song_name} +{repr(self.mods)} [{star_rating}]",
             url = self.bmap.url,
