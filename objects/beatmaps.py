@@ -1,8 +1,8 @@
 import config
+import pyttanko
 from ext import glob
 from discord import Embed
 from objects.players import Player
-from coover import Beatmap as BeatmapParser
 
 class Beatmap:
     def __init__(self) -> None:
@@ -24,7 +24,8 @@ class Beatmap:
         self.difficulty: float
         self.bpm: float
         self.status: int
-        self.mapfile: BeatmapParser
+        self.mapfile: pyttanko.beatmap
+        self.parser: pyttanko.parser = pyttanko.parser()
     
     @property
     def embed(self) -> Embed:
@@ -108,6 +109,7 @@ class Beatmap:
 
         url = f'https://osu.ppy.sh/osu/{bmap.id}'
         async with glob.http.get(url) as resp:
-            bmap.mapfile = BeatmapParser(await resp.text())
+            data = (await resp.text()).splitlines()
+            bmap.mapfile = bmap.parser.map(data)
 
         return bmap

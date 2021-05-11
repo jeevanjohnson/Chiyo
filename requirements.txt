@@ -1,4 +1,3 @@
-coover
 pymongo
 WebLamp
 aiohttp

@@ -60,7 +60,7 @@ class Score:
         elif self.mode == 2:
             # osu!catch
             total = sum((self.n300, self.n100, self.n50,
-                         self.nkatu, self.misses))
+                         self.nkatsu, self.misses))
 
             if total == 0:
                 self.acc = 0.0
@@ -75,7 +75,7 @@ class Score:
         elif self.mode == 3:
             # osu!mania
             total = sum((self.n300, self.n100, self.n50,
-                         self.ngeki, self.nkatu, self.misses))
+                         self.ngeki, self.nkatsu, self.misses))
 
             if total == 0:
                 self.acc = 0.0
@@ -89,20 +89,19 @@ class Score:
             )) / (total * 300.0)
 
     @property
-    def pp_if_fc(self):
-        p = pyttanko.parser()
+    def pp_if_fc(self) -> tuple[float, float]:
         n100 = round(self.n100 / 1.5)
         n50 = round(self.n50 / 1.5)
-        bmap = p.map(self.bmap.mapfile.map)
-        stars = pyttanko.diff_calc().calc(bmap, self.mods.value)
+        stars = pyttanko.diff_calc().calc(self.bmap.mapfile, self.mods.value)
         data = pyttanko.ppv2(
             stars.aim, stars.speed, 
-            bmap = bmap, mods = self.mods.value,
+            bmap = self.bmap.mapfile, 
+            mods = self.mods.value,
             n100 = n100, n50 = n50
         )
 
         return data[0], data[4]
-
+    
     @property
     def embed(self) -> Embed:
         if not self.completed:
@@ -113,7 +112,7 @@ class Score:
         if self.acc < 100 and self.mode == 0:
             pp, acc = self.pp_if_fc
             if_fc = f'{pp:.2f}PP for {acc:.2f}%'
-        else:   
+        else:
             if_fc = f'AR: {self.bmap.ar} OD: {self.bmap.od}'
 
         description = (
@@ -125,9 +124,10 @@ class Score:
         e = Embed(
             description = description
         )
-
+            
+        star_rating = f'{self.bmap.difficulty:.2f}'
         e.set_author(
-            name = f"{self.bmap.song_name} +{repr(self.mods)} [{self.bmap.difficulty:.2f}★]",
+            name = f"{self.bmap.song_name} +{repr(self.mods)} [{star_rating}]",
             url = self.bmap.url,
             icon_url = GRADE_URLS[self.rank]
         )
@@ -144,7 +144,6 @@ class Score:
 
     @property    
     def map_completion(self) -> float:
-        #TODO: Make this better lol
         if self.completed:
             return 100.0
         
@@ -152,10 +151,8 @@ class Score:
             self.n300 + self.n100 + 
             self.n50 + self.misses
         )
-
-        self.bmap.mapfile.get_hit_objects()
         
-        return (total_objects / len(self.bmap.mapfile.hit_objects)) * 100
+        return (total_objects / len(self.bmap.mapfile.hitobjects)) * 100
 
     @classmethod
     async def from_akatsuki_top(
@@ -185,7 +182,7 @@ class Score:
             if not (json := await resp.json()):
                 return
         
-        if len(json) < index:
+        if len(json['scores']) - 1 < index:
             return
 
         json = json['scores'][index]
@@ -242,7 +239,7 @@ class Score:
             if not (json := await resp.json()):
                 return
         
-        if len(json) < index:
+        if len(json['scores']) - 1 < index:
             return
 
         json = json['scores'][index]
@@ -300,7 +297,7 @@ class Score:
             if not (json := await resp.json()):
                 return
         
-        if len(json) < index:
+        if len(json) - 1 < index:
             return
         
         _json = json = json[index]
@@ -395,7 +392,7 @@ class Score:
             if not (json := await resp.json()):
                 return
         
-        if len(json) < index:
+        if len(json) - 1 < index:
             return
         
         json = json[index]
@@ -451,7 +448,7 @@ class Score:
             if not (json := await resp.json()):
                 return
         
-        if len(json) < index:
+        if len(json) - 1 < index:
             return
 
         json = json[index]
@@ -506,7 +503,7 @@ class Score:
             if not (json := await resp.json()):
                 return
         
-        if len(json) < index:
+        if len(json) - 1 < index:
             return
         
         json = json[index]
