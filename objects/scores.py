@@ -1,4 +1,5 @@
 import config
+import pyttanko
 from ext import glob
 from typing import Union
 from discord import Embed
@@ -88,14 +89,35 @@ class Score:
             )) / (total * 300.0)
 
     @property
+    def pp_if_fc(self):
+        p = pyttanko.parser()
+        n100 = round(self.n100 / 1.5)
+        n50 = round(self.n50 / 1.5)
+        bmap = p.map(self.bmap.mapfile.map)
+        stars = pyttanko.diff_calc().calc(bmap, self.mods.value)
+        data = pyttanko.ppv2(
+            stars.aim, stars.speed, 
+            bmap = bmap, mods = self.mods.value,
+            n100 = n100, n50 = n50
+        )
+
+        return data[0], data[4]
+
+    @property
     def embed(self) -> Embed:
         if not self.completed:
             m = f'▸ Map Completion: {self.map_completion:.2f}%'
         else:
             m = ''
 
+        if self.acc < 100 and self.mode == 0:
+            pp, acc = self.pp_if_fc
+            if_fc = f'{pp:.2f}PP for {acc:.2f}%'
+        else:   
+            if_fc = f'AR: {self.bmap.ar} OD: {self.bmap.od}'
+
         description = (
-            f'▸ {self.pp:.0f}PP [AR: {self.bmap.ar} OD: {self.bmap.od}] ▸ {self.acc:.2f}%\n'
+            f'▸ {self.pp:.0f}PP [{if_fc}] ▸ {self.acc:.2f}%\n'
             f'▸ {self.score:,} ▸ {self.max_combo}x/{self.bmap.max_combo}x '
             f'▸ [{self.n300}/{self.n100}/{self.n50}/{self.misses}]\n'
             + m

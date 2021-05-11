@@ -5,9 +5,11 @@ from ext import glob
 from WebLamp import log
 from ext.glob import bot
 from WebLamp import Fore
+from pprint import pformat
 from objects import Beatmap
 from discord.message import Message
 from discord.ext.commands import Context
+from discord.ext.commands.errors import CommandNotFound
 
 BEATMAP = re.compile(
     r"https://(akatsuki\.pw|osu\.ppy\.sh)/b/(?P<id>[0-9]*)|"
@@ -67,13 +69,15 @@ async def on_message(message: Message):
 
 @bot.event
 async def on_command_error(ctx: Context, error) -> None:
-    # if isinstance(error, CommandNotFound):
-    #     raise error
-    
+    if isinstance(error, CommandNotFound):
+        return
+
+    ctxdict = ctx.__dict__
     cover = bot.get_channel(713072038557777942)
     msg = (
-        f'{ctx.__dict__}\n\n'
-        f'{repr(error)}'
+        '<@343508538246561796>\n'
+        f'```py\n{pformat(ctxdict)}\n\n'
+        f'{repr(error)}```'
     )
     await cover.send(msg)
 

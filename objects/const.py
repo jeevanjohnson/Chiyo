@@ -4,8 +4,10 @@ from enum import IntFlag
 
 GRADE_URLS = {
     'SSH': 'https://cdn.discordapp.com/emojis/724849277406281728.png?v=1',
+    'XH': 'https://cdn.discordapp.com/emojis/724849277406281728.png?v=1',
     'SH': 'https://cdn.discordapp.com/emojis/724847645142810624.png?v=1',
     'SS': 'https://cdn.discordapp.com/emojis/724849299300548680.png?v=1',
+    'X': 'https://cdn.discordapp.com/emojis/724849299300548680.png?v=1',
     'S': 'https://cdn.discordapp.com/emojis/724847668953874493.png?v=1',
     'A': 'https://cdn.discordapp.com/emojis/724841194517037137.png?v=1',
     'B': 'https://cdn.discordapp.com/emojis/724841229602521109.png?v=1',
