@@ -1,5 +1,6 @@
 # Chiyo!
-osu!Akatsuki discord bot!
+
+Chiyo is an osu! discord bot that supports both Bancho and Akatsuki!
 
 To see all commands you can do ``;help`` to see all the commands! 
 
