@@ -109,7 +109,11 @@ class Score:
         else:
             m = ''
 
-        if self.acc < 100 and self.mode == 0:
+        if (
+            self.acc < 100 and 
+            self.mode == 0 and
+            not self.mods & Mods.RELAX
+        ):
             pp, acc = self.pp_if_fc
             if_fc = f'{pp:.2f}PP for {acc:.2f}%'
         else:
@@ -151,7 +155,7 @@ class Score:
             self.n300 + self.n100 + 
             self.n50 + self.misses
         )
-        
+
         return (total_objects / len(self.bmap.mapfile.hitobjects)) * 100
 
     @classmethod
