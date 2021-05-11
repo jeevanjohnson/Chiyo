@@ -25,7 +25,7 @@ async def help(ctx: Context) -> None:
         '',
         '**Compare**',
         ';c | ;compare',
-        "Compares a score from a recently posted beatmap."
+        "Compares a score from a recently posted beatmap.",
         'Args: name of player | -p (a whole number) | -std | -taiko | '
         '-ctb | -mania | -rx | -akatsuki',
         '',
