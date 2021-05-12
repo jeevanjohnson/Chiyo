@@ -4,6 +4,7 @@ from ext import glob
 from discord import Embed
 from objects.const import Mods
 from objects.players import Player
+from coover import Beatmap as BeatmapParser
 
 class Beatmap:
     def __init__(self) -> None:
@@ -28,6 +29,7 @@ class Beatmap:
         self.favs: int
         self.last_updated: str
         self.mapfile: pyttanko.beatmap
+        self._mapfile: BeatmapParser
         self.parser: pyttanko.parser = pyttanko.parser()
         self.mods: Mods = Mods.NOMOD
     
@@ -141,8 +143,10 @@ class Beatmap:
             if not (data := await resp.text()):
                 return
 
-            bmap.mapfile = bmap.parser.map(
-                osu_file = data.splitlines()
-            )
+            bmap._mapfile = BeatmapParser(data)
+            if bmap.mode == 0:
+                bmap.mapfile = bmap.parser.map(
+                    osu_file = data.splitlines()
+                )
 
         return bmap

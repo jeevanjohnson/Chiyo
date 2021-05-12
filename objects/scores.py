@@ -158,7 +158,13 @@ class Score:
             self.n50 + self.misses
         )
 
-        return (total_objects / len(self.bmap.mapfile.hitobjects)) * 100
+        if self.mode == 0:
+            hitobjects = len(self.bmap.mapfile.hitobjects)
+        else:
+            self.bmap._mapfile.get_hit_objects()
+            hitobjects = len(self.bmap._mapfile.hit_objects)
+
+            return (total_objects / hitobjects) * 100
 
     @classmethod
     async def from_akatsuki_top(

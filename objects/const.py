@@ -5,6 +5,7 @@ from typing import Union
 
 GRADE_URLS = {
     'SSH': 'https://cdn.discordapp.com/emojis/724849277406281728.png?v=1',
+    'SHD': 'https://cdn.discordapp.com/emojis/724847645142810624.png?v=1',
     'XH': 'https://cdn.discordapp.com/emojis/724849277406281728.png?v=1',
     'SH': 'https://cdn.discordapp.com/emojis/724847645142810624.png?v=1',
     'SS': 'https://cdn.discordapp.com/emojis/724849299300548680.png?v=1',
