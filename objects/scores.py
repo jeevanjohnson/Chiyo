@@ -120,7 +120,7 @@ class Score:
             if_fc = f'AR: {self.bmap.ar} OD: {self.bmap.od}'
 
         description = (
-            f'▸ {self.pp:.0f}PP [{if_fc}] ▸ {self.acc:.2f}%\n'
+            f'▸ {self.pp:.0f}PP [{if_fc} FC] ▸ {self.acc:.2f}%\n'
             f'▸ {self.score:,} ▸ {self.max_combo}x/{self.bmap.max_combo}x '
             f'▸ [{self.n300}/{self.n100}/{self.n50}/{self.misses}]\n'
             + m
