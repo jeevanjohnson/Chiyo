@@ -8,6 +8,7 @@ from objects.const import Server
 from objects.players import Player
 from objects.beatmaps import Beatmap
 from objects.const import GRADE_URLS
+from objects.const import num_simplifier
 
 class Score:
     def __init__(self) -> None:
@@ -119,9 +120,10 @@ class Score:
         else:
             if_fc = f'AR: {self.bmap.ar} OD: {self.bmap.od}'
 
+        score = num_simplifier(self.score)
         description = (
             f'▸ {self.pp:.0f}PP [{if_fc}] ▸ {self.acc:.2f}%\n'
-            f'▸ {self.score:,} ▸ {self.max_combo}x/{self.bmap.max_combo}x '
+            f'▸ {score} ▸ {self.max_combo}x/{self.bmap.max_combo}x '
             f'▸ [{self.n300}/{self.n100}/{self.n50}/{self.misses}]\n'
             + m
         )

@@ -3,6 +3,7 @@ from ext import glob
 from typing import Union
 from discord import Embed
 from objects.const import Server
+from objects.const import num_simplifier
 
 class Player:
     def __init__(self) -> None:
@@ -37,22 +38,24 @@ class Player:
             f'https://osu.ppy.sh/u/{self.id}',
             f'https://akatsuki.pw/u/{self.id}'
         )[self.server.value]
-    
+
     @property
     def embed(self) -> Embed:
         pdict = self.__dict__
 
         if self.country:
-            country_rank = '({country}#{country_rank})'
+            country_rank = ' ({country}#{country_rank})'
         else:
             country_rank = ''
-            
+        
+        ranked_score = num_simplifier(self.ranked_score)
         data = (
-            '▸ Official Rank: #{rank} ' f'{country_rank}\n'
+            '▸ Official Rank: #{rank}' f'{country_rank}\n'
             '▸ Level: {level:.2f}\n'
             '▸ Total PP: {pp:.0f} \n'
             '▸ Accuracy: {acc:.2f}% \n'
-            '▸ Playcount: {pcount}'
+            '▸ Playcount: {pcount}\n'
+            f'▸ Ranked Score: {ranked_score}'
         )
         e = Embed(
             description = data.format(**pdict)

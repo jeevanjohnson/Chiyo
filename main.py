@@ -2,6 +2,7 @@ import os
 import time
 import config
 import asyncio
+import discord
 from ext import glob
 from WebLamp import log
 from WebLamp import Fore
@@ -43,6 +44,15 @@ async def background_task():
             if time.time() >= v[1]:
                 del glob.cache[k]
                 log(f'Removed {v} from cache!', Fore.YELLOW)
+        
+        servers = len(bot.guilds)
+        await bot.change_presence(
+            status = discord.Status.online, 
+            activity = discord.Activity(
+            type = discord.ActivityType.playing, 
+            name = f"in {servers} Servers!")
+        )
+        log('Updated Presence!', Fore.YELLOW)
 
 loop = asyncio.get_event_loop()
 loop.create_task(background_task())

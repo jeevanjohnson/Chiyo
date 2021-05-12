@@ -1,6 +1,7 @@
 from enum import unique
 from enum import IntEnum
 from enum import IntFlag
+from typing import Union
 
 GRADE_URLS = {
     'SSH': 'https://cdn.discordapp.com/emojis/724849277406281728.png?v=1',
@@ -120,3 +121,12 @@ class Server(IntEnum):
             '<Bancho (osu.ppy.sh)>',
             '<Akatsuki (akatsuki.pw)>'
         )[self.value]
+
+def num_simplifier(num: Union[int, float]) -> str:
+    magnitude = 0
+    while abs(num) >= 1000:
+        magnitude += 1
+        num = num / 1000
+    
+    m = ['', 'K', 'M', 'B', 'T', 'Q'][magnitude]
+    return f'{num:,.2f}{m}'

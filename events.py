@@ -1,10 +1,12 @@
 import re
 import time
+import config
 import discord
 from ext import glob
 from WebLamp import log
 from ext.glob import bot
 from WebLamp import Fore
+from typing import Union
 from pprint import pformat
 from objects import Beatmap
 from discord.message import Message
@@ -13,10 +15,35 @@ from discord.ext.commands.errors import CommandNotFound
 
 BEATMAP = re.compile(
     r"https://(akatsuki\.pw|osu\.ppy\.sh)/b/(?P<id>[0-9]*)|"
-    r"https://osu\.ppy\.sh/beatmapsets/(?P<setid>[0-9]*)"
-    r"#(osu|fruits|taiko|mania)/(?P<bid>[0-9]*)"
+    r"https://osu\.ppy\.sh/beatmapsets/(?P<setid>[0-9]*)#(osu|fruits|taiko|mania)/(?P<bid>[0-9]*)|"
+    r"https://(osu\.ppy\.sh/beatmapsets|akatsuki\.pw/d)/(?P<setidd>[0-9]*)"
 )
 TWELVEHOURS = 12 * 60 * 60
+
+async def get_id_from_set(setid: Union[str, int]) -> int:
+    """Returns the highest difficulty of a set's id"""
+    base = 'https://osu.ppy.sh/api'
+    path = 'get_beatmaps'
+    params = {
+        'k': config.api_key,
+        's': setid,
+        'a': 1
+    }
+
+    async with glob.http.get(
+        url = f'{base}/{path}',
+        params = params
+    ) as resp:
+        if not resp or resp.status != 200:
+            return
+        
+        if not (json := await resp.json()):
+            return
+    
+    key = lambda x: float(x['difficultyrating'])
+    json = sorted(json, key = key, reverse = True)
+    
+    return int(json[0]['beatmap_id'])
 
 @bot.event
 async def on_ready():
@@ -48,11 +75,20 @@ async def on_message(message: Message):
         Fore.BLUE
     )
     
-    beatmapids = BEATMAP.search(message.content)
+    beatmapids = BEATMAP.match(message.content)
     if not beatmapids:
         return
     
-    for bid in beatmapids.groupdict().values():
+    bmapdict = beatmapids.groupdict()
+    for key, bid in bmapdict.items():
+        if not bid:
+            continue
+        
+        if key == 'setidd':
+            bid = await get_id_from_set(bid)
+            if not bid:
+                return
+        
         bmap = await Beatmap.from_id(
             int(bid)
         )
