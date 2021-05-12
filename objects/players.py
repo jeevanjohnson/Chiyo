@@ -105,18 +105,18 @@ class Player:
                 return
         
         json = json[0]
-        p.id = int(json['user_id'])
+        p.id = int(json['user_id'] or 0)
         p.name = json['username']
         p.join_date = json['join_date']
-        p.pcount = int(json['playcount'])
-        p.ranked_score = int(json['ranked_score'])
-        p.total_score = int(json['total_score'])
-        p.pp = float(json['pp_raw'])
-        p.level = float(json['level'])
-        p.rank = int(json['pp_rank'])
-        p.acc = float(json['accuracy'])
+        p.pcount = int(json['playcount'] or 0)
+        p.ranked_score = int(json['ranked_score'] or 0)
+        p.total_score = int(json['total_score'] or 0)
+        p.pp = float(json['pp_raw'] or 0)
+        p.level = float(json['level'] or 0)
+        p.rank = int(json['pp_rank'] or 0)
+        p.acc = float(json['accuracy'] or 0)
         p.country = json['country']
-        p.country_rank = int(json['pp_country_rank'])
+        p.country_rank = int(json['pp_country_rank'] or 0)
         p.server = Server.Bancho
 
         return p

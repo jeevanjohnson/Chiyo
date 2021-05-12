@@ -5,6 +5,9 @@ from objects import Score
 from discord import Embed
 from objects import Player
 from objects import Server
+from objects import OsuCard
+from discord.ext import commands
+from discord.message import Message
 from discord.ext.commands import Context
 
 TWELVEHOURS = 12 * 60 * 60
@@ -451,4 +454,87 @@ async def profile(ctx: Context) -> None:
     e = p.embed
     e.colour = ctx.author.color
     await ctx.send(embed=e)
+    return
+
+@bot.command(aliases=['oc', 'card'])
+@commands.cooldown(1, 30, commands.BucketType.user)
+async def osucard(ctx: Context) -> None:
+    relax = mode = 0
+    server = Server.Bancho
+    msg: list[str] = ctx.message.content.lower().split()[1:]
+    
+    if '-std' in msg:
+        msg.remove('-std')
+        mode = 0
+    elif '-taiko' in msg:
+        msg.remove('-taiko')
+        mode = 1
+    elif '-ctb' in msg:
+        msg.remove('-ctb')
+        mode = 2
+    elif '-mania' in msg:
+        msg.remove('-mania')
+        mode = 3
+
+    if '-rx' in msg:
+        msg.remove('-rx')
+        relax = 1
+    
+    if '-akatsuki' in msg:
+        msg.remove('-akatsuki')
+        server = Server.Akatsuki
+
+    name = ' '.join(msg)
+    server_name = server.name.lower()
+
+    if ctx.message.mentions:
+        mentioned = ctx.message.mentions[0]
+        user = glob.db.find_one({"_id": mentioned.id})
+        if not user or server_name not in user:
+            await ctx.send(
+                "User couldn't be found in our database! "
+                f"{mentioned.name}, Try connecting a user "
+                "to our database by doing `;connect (your username)`"
+            )
+            return
+        
+        name = user[server_name]
+
+    elif not name:
+        user = glob.db.find_one({"_id": ctx.author.id})
+        if not user or server_name not in user:
+            await ctx.send(
+                "User couldn't be found in our database! "
+                "Try connecting a user to our database"
+                "by doing `;connect (your username)`"
+            )
+            return
+        
+        name = user[server_name]
+    
+    else:
+        pass
+
+    m: Message = await ctx.send(
+        'Running Calculations! This may take up to a minute.'
+    )
+
+    st = time.time()
+    if server == Server.Akatsuki:
+        ...
+    else:
+        card = await OsuCard.from_bancho(
+            user = name,
+            mode = mode
+        )
+    
+    if not card:
+        await ctx.send(
+            "User wasn't found or an error occured during calculations."
+        )
+        return
+
+    e = card.embed
+    e.colour = ctx.author.color
+    await m.edit(content=f'Done! {time.time()-st:.2f}s', embed=e)
     return

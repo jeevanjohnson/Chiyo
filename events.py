@@ -11,7 +11,9 @@ from pprint import pformat
 from objects import Beatmap
 from discord.message import Message
 from discord.ext.commands import Context
-from discord.ext.commands.errors import CommandNotFound
+from discord.ext.commands.errors import (
+    CommandNotFound, CommandOnCooldown
+)
 
 BEATMAP = re.compile(
     r"https://(akatsuki\.pw|osu\.ppy\.sh)/b/(?P<id>[0-9]*)|"
@@ -106,6 +108,10 @@ async def on_message(message: Message):
 @bot.event
 async def on_command_error(ctx: Context, error) -> None:
     if isinstance(error, CommandNotFound):
+        return
+    
+    if isinstance(error, CommandOnCooldown):
+        await ctx.send(*error.args)
         return
 
     ctxdict = ctx.__dict__

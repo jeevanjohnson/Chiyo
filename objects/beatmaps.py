@@ -111,7 +111,7 @@ class Beatmap:
         
         json = json[0]
         bmap.setid = int(json['beatmapset_id'])
-        bmap.id = int(json['beatmap_id'])
+        bmap.id = bmap_id
         bmap.total_length = int(json['total_length'])
         bmap.hit_length = int(json['hit_length'])
         bmap.version = json['version']

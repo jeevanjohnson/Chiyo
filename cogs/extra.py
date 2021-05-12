@@ -32,7 +32,14 @@ async def help(ctx: Context) -> None:
         '**Connect**',
         ';connect',
         "Connects a profile to your discord account.",
-        "Args: name of player | -akatsuki"
+        "Args: name of player | -akatsuki",
+        '',
+        '**Osucard**',
+        ';osucard | ;oc | ;card',
+        'Shows your overall stats of certain skill sets on an embed.',
+        "**HUGE work in progress wouldn't suggest using for now**",
+        "Args: player name | -std | -taiko | "
+        "-ctb | -mania | -rx | -akatsuki"
     ]
 
     e = Embed(

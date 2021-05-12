@@ -85,7 +85,7 @@ class Score:
             self.acc = 100.0 * sum((
                 self.n50 * 50.0,
                 self.n100 * 100.0,
-                self.nkatu * 200.0,
+                self.nkatsu * 200.0,
                 (self.n300 + self.ngeki) * 300.0
             )) / (total * 300.0)
 
@@ -170,7 +170,7 @@ class Score:
         path = 'users/scores/best'
         params = {
             'name' if isinstance(user, str) else 'id': user,
-            'm': mode,
+            'mode': mode,
             'rx': relax
         }
 
@@ -393,6 +393,7 @@ class Score:
             'k': config.api_key,
             'u': user,
             'm': mode,
+            'limit': 100,
             'type': 'string' if isinstance(user, str) else 'id'
         }
 
