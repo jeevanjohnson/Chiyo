@@ -231,7 +231,7 @@ class Score:
         path = 'users/scores/recent?'
         params = {
             'name' if isinstance(user, str) else 'id': user,
-            'm': mode,
+            'mode': mode,
             'rx': relax
         }
 
