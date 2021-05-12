@@ -201,10 +201,14 @@ class Score:
         s.date = json['time'].replace('T', ' ').replace('Z', ' ')
         s.rank = json['rank']
         s.max_combo = json['max_combo']
+        
         s.bmap = await Beatmap.from_id(
             bmap_id = json['beatmap']['beatmap_id'],
             mode = mode
         )
+        if not s.bmap:
+            return
+        
         s.completed = True
         s.server = Server.Akatsuki
         s.pp = json['pp']
@@ -258,10 +262,14 @@ class Score:
         s.date = json['time'].replace('T', ' ').replace('Z', ' ')
         s.rank = json['rank']
         s.max_combo = json['max_combo']
+        
         s.bmap = await Beatmap.from_id(
             bmap_id = json['beatmap']['beatmap_id'],
             mode = mode
         )
+        if not s.bmap:
+            return
+        
         s.completed = json['completed'] > 1
         s.server = Server.Akatsuki
         s.pp = json['pp']
@@ -316,10 +324,14 @@ class Score:
         s.mods = Mods(int(json['enabled_mods']))
         s.date = json['date']
         s.rank = json['rank']
+
         s.bmap = await Beatmap.from_id(
             bmap_id = int(json['beatmap_id']),
             mode = mode
         )
+        if not s.bmap:
+            return
+        
         s.completed = s.rank != 'F'
         s.server = Server.Bancho
         s.pp = 0.0
@@ -411,10 +423,14 @@ class Score:
         s.mods = Mods(int(json['enabled_mods']))
         s.date = json['date']
         s.rank = json['rank']
+
         s.bmap = await Beatmap.from_id(
             bmap_id = int(json['beatmap_id']),
             mode = mode
         )
+        if not s.bmap:
+            return
+        
         s.completed = True
         s.server = Server.Bancho
         s.pp = float(json['pp'])

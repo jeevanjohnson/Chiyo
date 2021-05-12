@@ -109,7 +109,14 @@ class Beatmap:
 
         url = f'https://osu.ppy.sh/osu/{bmap.id}'
         async with glob.http.get(url) as resp:
-            data = (await resp.text()).splitlines()
-            bmap.mapfile = bmap.parser.map(data)
+            if not resp or resp.status != 200:
+                return
+            
+            if not (data := await resp.text()):
+                return
+
+            bmap.mapfile = bmap.parser.map(
+                osu_file = data.splitlines()
+            )
 
         return bmap
