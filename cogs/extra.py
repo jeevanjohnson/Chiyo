@@ -37,7 +37,7 @@ async def help(ctx: Context) -> None:
         '**Osucard**',
         ';osucard | ;oc | ;card',
         'Shows your overall stats of certain skill sets on an embed.',
-        "**HUGE work in progress wouldn't suggest using for now**",
+        "**Bancho STD support only (for now :D)**",
         "Args: player name | -std | -taiko | "
         "-ctb | -mania | -rx | -akatsuki"
     ]

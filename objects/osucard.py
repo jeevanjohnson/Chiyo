@@ -118,7 +118,7 @@ class OsuCard:
             return acc
 
     @staticmethod
-    def calc_std_value(stars, **kwargs):
+    def calc_std_value(stars, **kwargs) -> tuple[float, float, float]:
         """Calculate speed/acc/aim values for a score."""
         cs: float = kwargs['cs']
         bpm: float = kwargs['bpm']
@@ -130,8 +130,6 @@ class OsuCard:
         combo: int = kwargs['combo']
         mods: Mods = kwargs['mods']
 
-        values = {}
-
         aim = (
             stars.aim * (math.pow(cs, 0.1) / math.pow(4, 0.1))
         ) * 2
@@ -142,8 +140,8 @@ class OsuCard:
             (math.pow(ar, 0.1) / math.pow(6, 0.1))
         ) * 2
 
-        values['aim before unbalance'] = aim
-        values['speed before unbalance'] = speed
+        final_aim = aim
+        final_speed = speed
 
         unbalance_limit = (
             abs(aim - speed)) > (math.pow(5, math.log(aim + speed) / math.log(1.7)) / 2940
@@ -152,9 +150,6 @@ class OsuCard:
         if mods & (Mods.DOUBLETIME | Mods.NIGHTCORE) and unbalance_limit:
             aim /= 1.06
             speed /= 1.06
-
-        values['aim'] = aim
-        values['speed'] = speed
 
         acc = (
             math.pow(aim / 2, (math.pow(acc, 2.5) / math.pow(100, 2.5)) * (0.083 *
@@ -167,9 +162,7 @@ class OsuCard:
         if mods & Mods.FLASHLIGHT:
             acc *= (0.095 * math.log10(stars.nsingles * 900000000))
 
-        values['acc'] = acc
-
-        return values
+        return final_aim, final_speed, acc
 
     @classmethod
     async def from_bancho(
@@ -205,13 +198,19 @@ class OsuCard:
                 return
         
         for play in json:
-            bmap = await Beatmap.from_id(
-                bmap_id = int(play['beatmap_id']),
-                mode = mode
-            )
+            bid = int(play['beatmap_id'])
+            if bid in glob.cache.beatmaps:
+                bmap = glob.cache.beatmaps[bid]
+            else:
+                bmap = await Beatmap.from_id(
+                    bmap_id = bid,
+                    mode = mode
+                )
 
-            if not bmap:
-                continue
+                if not bmap:
+                    continue
+
+                glob.cache.beatmaps[bid] = bmap
 
             mods = Mods(int(play['enabled_mods']))
             stars = pyttanko.diff_calc().calc(
@@ -264,8 +263,9 @@ class OsuCard:
             elif mode == 3:
                 ...
             
-            card.aim += values['aim before unbalance']
-            card.speed += values['speed before unbalance']
-            card.acc += values['acc']
+            aim, speed, acc = values
+            card.aim += aim
+            card.speed += speed
+            card.acc += acc
 
         return card

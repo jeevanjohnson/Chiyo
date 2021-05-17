@@ -1,6 +1,7 @@
 import config
 from ext import glob
 from typing import Union
+from helpers import note
 from discord import Embed
 from objects.const import Server
 from objects.const import num_simplifier
@@ -99,9 +100,21 @@ class Player:
             params = params
         ) as resp:
             if not resp or resp.status != 200:
+                await note(
+                    statement = "if not resp or resp.status != 200",
+                    user = user, 
+                    mode = mode, 
+                    function = 'Player.from_bancho'
+                )
                 return
             
             if not (json := await resp.json()):
+                await note(
+                    statement = "if not (json := await resp.json())",
+                    user = user, 
+                    mode = mode, 
+                    function = 'Player.from_bancho'
+                )
                 return
         
         json = json[0]
@@ -141,9 +154,19 @@ class Player:
             params = params
         ) as resp:
             if not resp or resp.status != 200:
+                await note(
+                    statement = "if not resp or resp.status != 200",
+                    user = user, mode = mode, 
+                    relax = bool(relax), function = 'Player.from_akatsuki'
+                )
                 return
             
             if not (json := await resp.json()):
+                await note(
+                    statement = "if not (json := await resp.json())",
+                    user = user, mode = mode, 
+                    relax = bool(relax), function = 'Player.from_akatsuki'
+                )
                 return
         
         m = ('std', 'taiko', 'ctb', 'mania')[mode]

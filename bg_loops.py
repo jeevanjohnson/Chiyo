@@ -10,10 +10,10 @@ async def mainbgtask():
         await asyncio.sleep(120)
         log('Running Background Task!', Fore.YELLOW)
 
-        for k, v in glob.cache.copy().items():
+        for k, v in glob.cache.channel_beatmaps.copy().items():
             if time.time() >= v[1]:
-                del glob.cache[k]
-                log(f'Removed {v} from cache!', Fore.YELLOW)
+                del glob.cache.channel_beatmaps[k]
+                log(f'Removed {v} from channel_beatmaps cache!', Fore.YELLOW)
         
         servers = len(bot.guilds)
         await bot.change_presence(

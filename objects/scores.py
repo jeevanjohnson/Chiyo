@@ -2,6 +2,7 @@ import config
 import pyttanko
 from ext import glob
 from typing import Union
+from helpers import note
 from discord import Embed
 from objects.const import Mods
 from objects.const import Server
@@ -106,7 +107,7 @@ class Score:
     @property
     def embed(self) -> Embed:
         if not self.completed:
-            m = f'▸ Map Completion: {self.map_completion:.2f}%'
+            m = f'\n▸ Map Completion: {self.map_completion:.2f}%'
         else:
             m = ''
 
@@ -118,13 +119,15 @@ class Score:
             pp, acc = self.pp_if_fc
             if_fc = f'{pp:.2f}PP for {acc:.2f}% FC'
         else:
-            if_fc = f'AR: {self.bmap.ar} OD: {self.bmap.od}'
+            self.bmap.mods = self.mods
+            self.bmap.convert_diff()
+            if_fc = f'AR: {self.bmap.ar:.2f} OD: {self.bmap.od:.2f}'
 
         score = num_simplifier(self.score)
         description = (
             f'▸ {self.pp:.0f}PP [{if_fc}] ▸ {self.acc:.2f}%\n'
             f'▸ {score} ▸ {self.max_combo}x/{self.bmap.max_combo}x '
-            f'▸ [{self.n300}/{self.n100}/{self.n50}/{self.misses}]\n'
+            f'▸ [{self.n300}/{self.n100}/{self.n50}/{self.misses}]'
             + m
         )
         e = Embed(
@@ -184,17 +187,49 @@ class Score:
             user, mode, relax
         )
 
+        if not s.player:
+            await note(
+                statement = "if not s.player",
+                name_or_id = user,
+                mode = mode,
+                relax = relax,
+                function = 'Score.from_akatsuki_recent'
+            )
+            return
+
         async with glob.http.get(
             url = f'{base}/{path}',
             params = params
         ) as resp:
             if not resp or resp.status != 200:
+                await note(
+                    statement = "if not resp or resp.status != 200",
+                    name_or_id = user,
+                    mode = mode,
+                    relax = relax,
+                    function = 'Score.from_akatsuki_top'
+                )
                 return
             
             if not (json := await resp.json()):
+                await note(
+                    statement = "if not (json := await resp.json())",
+                    name_or_id = user,
+                    mode = mode,
+                    relax = relax,
+                    function = 'Score.from_akatsuki_top'
+                )
                 return
         
         if len(json['scores']) - 1 < index:
+            await note(
+                statement = "if len(json['scores']) - 1 < index",
+                json = json['scores'],
+                name_or_id = user,
+                mode = mode,
+                relax = relax,
+                function = 'Score.from_akatsuki_top'
+            )
             return
 
         json = json['scores'][index]
@@ -215,6 +250,14 @@ class Score:
             mode = mode
         )
         if not s.bmap:
+            await note(
+                statement = "if not s.bmap",
+                name_or_id = user,
+                mode = mode,
+                relax = relax,
+                bmap_id = json['beatmap']['beatmap_id'],
+                function = 'Score.from_akatsuki_top'
+            )
             return
         
         s.completed = True
@@ -245,17 +288,49 @@ class Score:
             user, mode, relax
         )
 
+        if not s.player:
+            await note(
+                statement = "if not s.player",
+                name_or_id = user,
+                mode = mode,
+                relax = relax,
+                function = 'Score.from_akatsuki_recent'
+            )
+            return
+
         async with glob.http.get(
             url = f'{base}/{path}',
             params = params
         ) as resp:
             if not resp or resp.status != 200:
+                await note(
+                    statement = "if not resp or resp.status != 200",
+                    name_or_id = user,
+                    mode = mode,
+                    relax = relax,
+                    function = 'Score.from_akatsuki_recent'
+                )
                 return
             
             if not (json := await resp.json()):
+                await note(
+                    statement = "if not (json := await resp.json())",
+                    name_or_id = user,
+                    mode = mode,
+                    relax = relax,
+                    function = 'Score.from_akatsuki_recent'
+                )
                 return
         
         if len(json['scores']) - 1 < index:
+            await note(
+                statement = "if len(json['scores']) - 1 < index",
+                json = json['scores'],
+                name_or_id = user,
+                mode = mode,
+                relax = relax,
+                function = 'Score.from_akatsuki_recent'
+            )
             return
 
         json = json['scores'][index]
@@ -276,6 +351,15 @@ class Score:
             mode = mode
         )
         if not s.bmap:
+            await note(
+                statement = "if not s.bmap",
+                json = json['scores'],
+                name_or_id = user,
+                mode = mode,
+                relax = relax,
+                bmap_id = json['beatmap']['beatmap_id'],
+                function = 'Score.from_akatsuki_recent'
+            )
             return
         
         s.completed = json['completed'] > 1
@@ -307,17 +391,45 @@ class Score:
             user, mode
         )
 
+        if not s.player:
+            await note(
+                statement = "if not s.player",
+                name_or_id = user,
+                mode = mode,
+                function = 'Score.from_bancho_recent'
+            )
+            return
+
         async with glob.http.get(
             url = f'{base}/{path}',
             params = params
         ) as resp:
             if not resp or resp.status != 200:
+                await note(
+                    statement = "if not resp or resp.status != 200",
+                    name_or_id = user,
+                    mode = mode,
+                    function = 'Score.from_bancho_recent'
+                )
                 return
             
             if not (json := await resp.json()):
+                await note(
+                    statement = "if not (json := await resp.json())",
+                    name_or_id = user,
+                    mode = mode,
+                    function = 'Score.from_bancho_recent'
+                )
                 return
         
         if len(json) - 1 < index:
+            await note(
+                statement = "if len(json) - 1 < index",
+                json = json,
+                name_or_id = user,
+                mode = mode,
+                function = 'Score.from_bancho_recent'
+            )
             return
         
         _json = json = json[index]
@@ -338,6 +450,13 @@ class Score:
             mode = mode
         )
         if not s.bmap:
+            await note(
+                statement = "if not s.bmap",
+                name_or_id = user,
+                mode = mode,
+                bmap_id = int(json['beatmap_id']),
+                function = 'Score.from_bancho_recent'
+            )
             return
         
         s.completed = s.rank != 'F'
@@ -407,17 +526,45 @@ class Score:
             user, mode
         )
 
+        if not s.player:
+            await note(
+                statement = "if not s.player",
+                name_or_id = user,
+                mode = mode,
+                function = 'Score.from_bancho_top'
+            )
+            return
+
         async with glob.http.get(
             url = f'{base}/{path}',
             params = params
         ) as resp:
             if not resp or resp.status != 200:
+                await note(
+                    statement = "if not resp or resp.status != 200",
+                    name_or_id = user,
+                    mode = mode,
+                    function = 'Score.from_bancho_top'
+                )
                 return
             
             if not (json := await resp.json()):
+                await note(
+                    statement = "if not (json := await resp.json())",
+                    name_or_id = user,
+                    mode = mode,
+                    function = 'Score.from_bancho_top'
+                )
                 return
         
         if len(json) - 1 < index:
+            await note(
+                statement = "if len(json) - 1 < index",
+                name_or_id = user,
+                mode = mode,
+                json = json,
+                function = 'Score.from_bancho_top'
+            )
             return
         
         json = json[index]
@@ -438,6 +585,13 @@ class Score:
             mode = mode
         )
         if not s.bmap:
+            await note(
+                statement = "if not s.bmap",
+                name_or_id = user,
+                mode = mode,
+                bmap_id = int(json['beatmap_id']),
+                function = 'Score.from_bancho_top'
+            )
             return
         
         s.completed = True
@@ -451,7 +605,7 @@ class Score:
 
     @classmethod
     async def from_akatsuki(
-        cls, user: Player,
+        cls, user: Union[str, int],
         bmap: Beatmap, mode = 0, 
         index = 0, relax = 0
     ):
@@ -465,19 +619,56 @@ class Score:
             'rx': relax
         }
 
-        s.player = user
+        s.player = await Player.from_akatsuki(
+            user, mode, relax
+        )
+        if not s.player:
+            await note(
+                statement = "if not s.player",
+                name_or_id = user,
+                mode = mode,
+                relax = relax,
+                index = index,
+                function = 'Score.from_akatsuki'
+            )
+            return
 
         async with glob.http.get(
             url = f'{base}/{path}',
             params = params
         ) as resp:
             if not resp or resp.status != 200:
+                await note(
+                    statement = "if not resp or resp.status != 200",
+                    name_or_id = user,
+                    mode = mode,
+                    relax = relax,
+                    index = index,
+                    function = 'Score.from_akatsuki'
+                )
                 return
             
             if not (json := await resp.json()):
+                await note(
+                    statement = "if not (json := await resp.json())",
+                    name_or_id = user,
+                    mode = mode,
+                    relax = relax,
+                    index = index,
+                    function = 'Score.from_akatsuki'
+                )
                 return
         
         if len(json) - 1 < index:
+            await note(
+                statement = "if len(json) - 1 < index",
+                name_or_id = user,
+                mode = mode,
+                relax = relax,
+                index = index,
+                json = json,
+                function = 'Score.from_akatsuki'
+            )
             return
 
         json = json[index]
@@ -505,7 +696,7 @@ class Score:
 
     @classmethod
     async def from_bancho(
-        cls, user: Player, 
+        cls, user: Union[str, int], 
         bmap: Beatmap,
         mode = 0, index = 0,
     ):
@@ -520,19 +711,52 @@ class Score:
             'type': 'string' if isinstance(user, str) else 'id'
         }
 
-        s.player = user
+        s.player = await Player.from_bancho(
+            user, mode
+        )
+        if not s.player:
+            await note(
+                statement = "if not s.player",
+                name_or_id = user,
+                mode = mode,
+                index = index,
+                function = 'Score.from_bancho'
+            )
+            return
 
         async with glob.http.get(
             url = f'{base}/{path}',
             params = params
         ) as resp:
             if not resp or resp.status != 200:
+                await note(
+                    statement = "if not resp or resp.status != 200",
+                    name_or_id = user,
+                    mode = mode,
+                    index = index,
+                    function = 'Score.from_bancho'
+                )
                 return
             
             if not (json := await resp.json()):
+                await note(
+                    statement = "if not (json := await resp.json())",
+                    name_or_id = user,
+                    mode = mode,
+                    index = index,
+                    function = 'Score.from_bancho'
+                )
                 return
         
         if len(json) - 1 < index:
+            await note(
+                statement = "if len(json) - 1 < index",
+                name_or_id = user,
+                mode = mode,
+                index = index,
+                json = json,
+                function = 'Score.from_bancho'
+            )
             return
         
         json = json[index]

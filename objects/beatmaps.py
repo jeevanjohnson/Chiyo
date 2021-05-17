@@ -33,6 +33,17 @@ class Beatmap:
         self.parser: pyttanko.parser = pyttanko.parser()
         self.mods: Mods = Mods.NOMOD
     
+    def convert_diff(self) -> None:
+        v = pyttanko.mods_apply(
+            mods = self.mods.value,
+            ar = self.ar,
+            od = self.od,
+            cs = self.cs,
+            hp = self.hp,
+        )[1:]
+
+        self.ar, self.od, self.cs, self.hp = v
+    
     @property
     def embed(self) -> Embed:
         e = Embed()

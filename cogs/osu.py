@@ -6,11 +6,11 @@ from discord import Embed
 from objects import Player
 from objects import Server
 from objects import OsuCard
+from objects import Beatmap
+from helpers import TWELVEHOURS
 from discord.ext import commands
 from discord.message import Message
 from discord.ext.commands import Context
-
-TWELVEHOURS = 12 * 60 * 60
 
 @bot.command()
 async def connect(ctx: Context) -> None:
@@ -73,11 +73,16 @@ async def connect(ctx: Context) -> None:
 
 @bot.command(aliases=['c'])
 async def compare(ctx: Context) -> None:
-    if ctx.message.channel.id not in glob.cache:
+    if ctx.message.channel.id not in glob.cache.channel_beatmaps:
         await ctx.send("No map was found.")
         return
 
-    bmap = glob.cache[ctx.message.channel.id][0]
+    bmap: Beatmap = glob.cache.channel_beatmaps[ctx.message.channel.id][0]
+
+    bid = bmap.id
+    if bid not in glob.cache.beatmaps:
+        glob.cache.beatmaps[bid] = bmap
+    
     relax = mode = index = 0
     server = Server.Bancho
     msg: list[str] = ctx.message.content.lower().split()[1:]
@@ -110,6 +115,7 @@ async def compare(ctx: Context) -> None:
 
     if '-rx' in msg:
         msg.remove('-rx')
+        server = Server.Akatsuki
         relax = 1
     
     if '-akatsuki' in msg:
@@ -149,22 +155,16 @@ async def compare(ctx: Context) -> None:
         pass
 
     if server == Server.Akatsuki:
-        p = await Player.from_akatsuki(
-            name, mode, relax
-        )
         s = await Score.from_akatsuki(
-            user = p,
+            user = name,
             mode = mode,
             index = index,
             relax = relax,
             bmap = bmap
         )
     else:
-        p = await Player.from_bancho(
-            name, mode
-        )
         s = await Score.from_bancho(
-            user = p,
+            user = name,
             mode = mode,
             index = index,
             bmap = bmap
@@ -213,6 +213,7 @@ async def top(ctx: Context) -> None:
 
     if '-rx' in msg:
         msg.remove('-rx')
+        server = Server.Akatsuki
         relax = 1
     
     if '-akatsuki' in msg:
@@ -269,9 +270,14 @@ async def top(ctx: Context) -> None:
         await ctx.send("Score or Player couldn't be found!")
         return
     
-    glob.cache[ctx.message.channel.id] = (
+    msg_id = ctx.message.channel.id
+    glob.cache.channel_beatmaps[msg_id] = (
         s.bmap, time.time() + TWELVEHOURS
     )
+
+    bid = s.bmap.id
+    if bid not in glob.cache.beatmaps:
+        glob.cache.beatmaps[bid] = s.bmap
 
     e = s.embed
     e.colour = ctx.author.color
@@ -312,6 +318,7 @@ async def recent(ctx: Context) -> None:
 
     if '-rx' in msg:
         msg.remove('-rx')
+        server = Server.Akatsuki
         relax = 1
     
     if '-akatsuki' in msg:
@@ -368,9 +375,14 @@ async def recent(ctx: Context) -> None:
         await ctx.send("Score or Player couldn't be found from the last 24 hours.")
         return
     
-    glob.cache[ctx.message.channel.id] = (
+    msg_id = ctx.message.channel.id
+    glob.cache.channel_beatmaps[msg_id] = (
         s.bmap, time.time() + TWELVEHOURS
     )
+
+    bid = s.bmap.id
+    if bid not in glob.cache.beatmaps:
+        glob.cache.beatmaps[bid] = s.bmap
 
     e = s.embed
     e.colour = ctx.author.color
@@ -398,6 +410,7 @@ async def profile(ctx: Context) -> None:
 
     if '-rx' in msg:
         msg.remove('-rx')
+        server = Server.Akatsuki
         relax = 1
     
     if '-akatsuki' in msg:
@@ -457,7 +470,7 @@ async def profile(ctx: Context) -> None:
     return
 
 @bot.command(aliases=['oc', 'card'])
-@commands.cooldown(1, 30, commands.BucketType.user)
+@commands.cooldown(1, 10, commands.BucketType.user)
 async def osucard(ctx: Context) -> None:
     relax = mode = 0
     server = Server.Bancho
@@ -478,6 +491,7 @@ async def osucard(ctx: Context) -> None:
 
     if '-rx' in msg:
         msg.remove('-rx')
+        server = Server.Akatsuki
         relax = 1
     
     if '-akatsuki' in msg:
@@ -536,5 +550,8 @@ async def osucard(ctx: Context) -> None:
 
     e = card.embed
     e.colour = ctx.author.color
-    await m.edit(content=f'Done! {time.time()-st:.2f}s', embed=e)
+    await m.edit(
+        content = f'Done! {time.time()-st:.2f}s', 
+        embed = e
+    )
     return
