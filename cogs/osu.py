@@ -80,7 +80,10 @@ async def compare(ctx: Context) -> None:
     bmap: Beatmap = glob.cache.channel_beatmaps[ctx.message.channel.id][0]
 
     bid = bmap.id
-    if bid not in glob.cache.beatmaps:
+    if (
+        bid not in glob.cache.beatmaps and
+        bmap.status
+    ):
         glob.cache.beatmaps[bid] = bmap
     
     relax = mode = index = 0
@@ -276,7 +279,10 @@ async def top(ctx: Context) -> None:
     )
 
     bid = s.bmap.id
-    if bid not in glob.cache.beatmaps:
+    if (
+        bid not in glob.cache.beatmaps and
+        s.bmap.status
+    ):
         glob.cache.beatmaps[bid] = s.bmap
 
     e = s.embed
@@ -381,7 +387,10 @@ async def recent(ctx: Context) -> None:
     )
 
     bid = s.bmap.id
-    if bid not in glob.cache.beatmaps:
+    if (
+        bid not in glob.cache.beatmaps and
+        s.bmap.status
+    ):
         glob.cache.beatmaps[bid] = s.bmap
 
     e = s.embed

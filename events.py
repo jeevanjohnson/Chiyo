@@ -72,6 +72,13 @@ async def on_message(message: Message):
         glob.cache.channel_beatmaps[message.channel.id] = (
             bmap, time.time() + TWELVEHOURS
         )
+
+        if (
+            bmap.id not in glob.cache.beatmaps and
+            bmap.status
+        ):
+            glob.cache.beatmaps[bmap.id] = bmap
+        
         await message.channel.send(embed=e)
         return
 
