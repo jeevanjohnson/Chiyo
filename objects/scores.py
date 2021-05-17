@@ -32,6 +32,7 @@ class Score:
         self.player: Player
         self.mode: int
         self.acc: float
+        self.index: int
 
     def calc_acc(self) -> float:
         if self.mode == 0: # osu!
@@ -175,6 +176,7 @@ class Score:
         mode = 0, index = 0, relax = 0
     ):
         s = cls()
+        s.index = index
         base = 'https://akatsuki.pw/api/v1'
         path = 'users/scores/best'
         params = {
@@ -276,6 +278,7 @@ class Score:
         mode = 0, index = 0, relax = 0
     ):
         s = cls()
+        s.index = index
         base = 'https://akatsuki.pw/api/v1'
         path = 'users/scores/recent?'
         params = {
@@ -378,6 +381,7 @@ class Score:
         mode = 0, index = 0
     ):
         s = cls()
+        s.index = index
         base = 'https://osu.ppy.sh/api'
         path = 'get_user_recent'
         params = {
@@ -512,6 +516,7 @@ class Score:
         mode = 0, index = 0
     ):
         s = cls()
+        s.index = index
         base = 'https://osu.ppy.sh/api'
         path = 'get_user_best'
         params = {
@@ -598,7 +603,7 @@ class Score:
         s.server = Server.Bancho
         s.pp = float(json['pp'])
         s.mode = mode
-        
+
         s.calc_acc()
 
         return s
@@ -610,6 +615,7 @@ class Score:
         index = 0, relax = 0
     ):
         s = cls()
+        s.index = index
         base = 'https://akatsuki.pw/api'
         path = 'get_scores'
         params = {
@@ -701,6 +707,7 @@ class Score:
         mode = 0, index = 0,
     ):
         s = cls()
+        s.index = index
         base = 'https://osu.ppy.sh/api'
         path = 'get_scores'
         params = {

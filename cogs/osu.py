@@ -12,6 +12,8 @@ from discord.ext import commands
 from discord.message import Message
 from discord.ext.commands import Context
 
+arrows = ('⬅️', '➡️')
+
 @bot.command()
 async def connect(ctx: Context) -> None:
     server = Server.Bancho
@@ -80,10 +82,7 @@ async def compare(ctx: Context) -> None:
     bmap: Beatmap = glob.cache.channel_beatmaps[ctx.message.channel.id][0]
 
     bid = bmap.id
-    if (
-        bid not in glob.cache.beatmaps and
-        bmap.status
-    ):
+    if bid not in glob.cache.beatmaps:
         glob.cache.beatmaps[bid] = bmap
     
     relax = mode = index = 0
@@ -177,9 +176,14 @@ async def compare(ctx: Context) -> None:
         await ctx.send("Score or Player couldn't be found!")
         return
 
+    glob.cache.scores[s.player.id] = (s, 'c')
+
     e = s.embed
     e.colour = ctx.author.color
-    await ctx.send(embed=e)
+    msg: Message = await ctx.send(embed=e)
+
+    for emoji in arrows:
+        await msg.add_reaction(emoji)
     return
 
 @bot.command(aliases=['t'])
@@ -279,15 +283,18 @@ async def top(ctx: Context) -> None:
     )
 
     bid = s.bmap.id
-    if (
-        bid not in glob.cache.beatmaps and
-        s.bmap.status
-    ):
+    if bid not in glob.cache.beatmaps:
         glob.cache.beatmaps[bid] = s.bmap
+
+    glob.cache.scores[s.player.id] = (s, 't')
 
     e = s.embed
     e.colour = ctx.author.color
-    await ctx.send(embed=e)
+    msg: Message = await ctx.send(embed=e)
+
+    for emoji in arrows:
+        await msg.add_reaction(emoji)
+    
     return
 
 @bot.command(aliases=['r', 'rs', 'rc'])
@@ -387,15 +394,18 @@ async def recent(ctx: Context) -> None:
     )
 
     bid = s.bmap.id
-    if (
-        bid not in glob.cache.beatmaps and
-        s.bmap.status
-    ):
+    if bid not in glob.cache.beatmaps:
         glob.cache.beatmaps[bid] = s.bmap
+    
+    glob.cache.scores[s.player.id] = (s, 'r')
 
     e = s.embed
     e.colour = ctx.author.color
-    await ctx.send(embed=e)
+    msg: Message = await ctx.send(embed=e)
+
+    for emoji in arrows:
+        await msg.add_reaction(emoji)
+    
     return
 
 @bot.command(aliases=['p', 'osu'])

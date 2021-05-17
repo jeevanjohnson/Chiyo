@@ -48,12 +48,16 @@ async def note(**kwargs: tuple[Any]) -> None:
         elif isinstance(_obj, dict):
             ...
         else:
-            obj = f'{k} = {pformat(_obj)}'
+            obj = f'{k} = {pformat(_obj)}'[:200]
         
         msg.append(obj)
     
     msg.append('```')
     cover: TextChannel = glob.bot.get_channel(713072038557777942)
 
-    await cover.send('\n'.join(msg))
+    m = '\n'.join(msg)[:1997]
+    if not m.endswith('```'):
+        m += '```'
+
+    await cover.send(content=m)
     return
