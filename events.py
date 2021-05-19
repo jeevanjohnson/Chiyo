@@ -11,6 +11,7 @@ from objects import Server
 from discord import Member
 from pprint import pformat
 from objects import Beatmap
+from objects import BOT_OWNER_ID
 from discord.message import Message
 from discord.reaction import Reaction
 from discord.ext.commands import Context
@@ -157,6 +158,8 @@ async def on_reaction_add(reaction: Reaction, user: Member):
     await msg.edit(embed=e)
     return
 
+ERROR_CHANNEL = 713072038557777942
+
 @bot.event
 async def on_command_error(ctx: Context, error) -> None:
     if isinstance(error, CommandNotFound):
@@ -167,9 +170,9 @@ async def on_command_error(ctx: Context, error) -> None:
         return
 
     ctxdict = ctx.__dict__
-    cover = bot.get_channel(713072038557777942)
+    cover = bot.get_channel(ERROR_CHANNEL)
     msg = (
-        '<@343508538246561796>\n'
+        f'<@{BOT_OWNER_ID}>\n'
         f'```py\n{pformat(ctxdict)}\n\n'
         f'{repr(error)}```'
     )
@@ -183,17 +186,21 @@ async def on_command_error(ctx: Context, error) -> None:
 # private vc: 743562646795714667
 # Hideout guild id: 705649421857325139
 
+DRAG_VC = 784646271838191616
+PRIVATE_VC = 743562646795714667
+HIDEOUT_ID = 705649421857325139
+
 @bot.event
 async def on_voice_state_update(member: Member, before, after) -> None:
-    if member.guild.id != 705649421857325139:
+    if member.guild.id != HIDEOUT_ID:
         return
     
-    private_vc = bot.get_channel(743562646795714667)
+    private_vc = bot.get_channel(PRIVATE_VC)
     if not glob.mode or not (channel := after.channel):
         return
     
     channel = after.channel
-    if channel.id != 784646271838191616:
+    if channel.id != DRAG_VC:
         return
     
     await member.move_to(private_vc)

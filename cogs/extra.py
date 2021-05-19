@@ -2,48 +2,49 @@ from ext.glob import bot
 from discord import Embed
 from discord.ext.commands.context import Context
 
+FAQ = '\n'.join([
+    '**Top**',
+    ';t | ;top',
+    "Shows a top play from a user's profile",
+    'Args: name of player | -p (a whole number) | '
+    '-std | -taiko | -ctb | -mania | -rx | -akatsuki',
+    '',
+    '**Recent**',
+    ';r | ;rs | ;rc | ;recent',
+    "Shows a recent score from a user's profile",
+    'Args: name of player | -p (a whole number) | '
+    '-std | -taiko | -ctb | -mania | -rx | -akatsuki',
+    '',
+    '**Profile**',
+    ';p | ;osu | ;profile',
+    "Shows a profile for a user.",
+    'Args: name of player | -std | -taiko | '
+    '-ctb | -mania | -rx | -akatsuki',
+    '',
+    '**Compare**',
+    ';c | ;compare',
+    "Compares a score from a recently posted beatmap.",
+    'Args: name of player | -p (a whole number) | -std | -taiko | '
+    '-ctb | -mania | -rx | -akatsuki',
+    '',
+    '**Connect**',
+    ';connect',
+    "Connects a profile to your discord account.",
+    "Args: name of player | -akatsuki",
+    '',
+    '**Osucard**',
+    ';osucard | ;oc | ;card',
+    'Shows your overall stats of certain skill sets on an embed.',
+    "**Bancho STD support only (for now :D)**",
+    "Args: player name | -std | -taiko | "
+    "-ctb | -mania | -rx | -akatsuki"
+])
+
 @bot.command(aliases=['h', 'faq', 'commands'])
 async def help(ctx: Context) -> None:
-    h = [
-        '**Top**',
-        ';t | ;top',
-        "Shows a top play from a user's profile",
-        'Args: name of player | -p (a whole number) | '
-        '-std | -taiko | -ctb | -mania | -rx | -akatsuki',
-        '',
-        '**Recent**',
-        ';r | ;rs | ;rc | ;recent',
-        "Shows a recent score from a user's profile",
-        'Args: name of player | -p (a whole number) | '
-        '-std | -taiko | -ctb | -mania | -rx | -akatsuki',
-        '',
-        '**Profile**',
-        ';p | ;osu | ;profile',
-        "Shows a profile for a user.",
-        'Args: name of player | -std | -taiko | '
-        '-ctb | -mania | -rx | -akatsuki',
-        '',
-        '**Compare**',
-        ';c | ;compare',
-        "Compares a score from a recently posted beatmap.",
-        'Args: name of player | -p (a whole number) | -std | -taiko | '
-        '-ctb | -mania | -rx | -akatsuki',
-        '',
-        '**Connect**',
-        ';connect',
-        "Connects a profile to your discord account.",
-        "Args: name of player | -akatsuki",
-        '',
-        '**Osucard**',
-        ';osucard | ;oc | ;card',
-        'Shows your overall stats of certain skill sets on an embed.',
-        "**Bancho STD support only (for now :D)**",
-        "Args: player name | -std | -taiko | "
-        "-ctb | -mania | -rx | -akatsuki"
-    ]
 
     e = Embed(
-        description = '\n'.join(h),
+        description = FAQ,
         color = ctx.author.color
     )
 

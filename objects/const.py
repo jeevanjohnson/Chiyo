@@ -3,6 +3,8 @@ from enum import IntEnum
 from enum import IntFlag
 from typing import Union
 
+BOT_OWNER_ID = 828821094559514684
+
 GRADE_URLS = {
     'SSH': 'https://cdn.discordapp.com/emojis/724849277406281728.png?v=1',
     'SHD': 'https://cdn.discordapp.com/emojis/724847645142810624.png?v=1',
