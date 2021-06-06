@@ -124,6 +124,13 @@ class Server(IntEnum):
             '<Bancho (osu.ppy.sh)>',
             '<Akatsuki (akatsuki.pw)>'
         )[self.value]
+    
+    @classmethod
+    def from_name(cls, name: str):
+        return {
+            'bancho': cls.Bancho,
+            'akatsuki': cls.Akatsuki
+        }[name.lower()]
 
 def num_simplifier(num: Union[int, float]) -> str:
     magnitude = 0

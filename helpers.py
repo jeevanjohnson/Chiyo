@@ -8,10 +8,11 @@ from discord import Message
 from discord import TextChannel
 
 TWELVEHOURS = 12 * 60 * 60
+TWELVEHOURS = 12 * 60 * 60
 BEATMAP = re.compile(
-    r"https://(akatsuki\.pw|osu\.ppy\.sh)/b/(?P<id>[0-9]*)|"
     r"https://osu\.ppy\.sh/beatmapsets/(?P<setid>[0-9]*)#(osu|fruits|taiko|mania)/(?P<bid>[0-9]*)|"
-    r"https://(osu\.ppy\.sh/beatmapsets|akatsuki\.pw/d)/(?P<setidd>[0-9]*)"
+    r"https://(osu\.ppy\.sh/beatmapsets|akatsuki\.pw/d)/(?P<setidd>[0-9]*)|"
+    r"https://(akatsuki\.pw|osu\.ppy\.sh)/b/(?P<id>[0-9]*)"
 )
 
 async def get_id_from_set(setid: Union[str, int]) -> int:

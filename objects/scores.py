@@ -1,7 +1,6 @@
 import config
 import pyttanko
 from ext import glob
-from typing import Union
 from helpers import note
 from discord import Embed
 from objects.const import Mods
@@ -121,7 +120,7 @@ class Score:
             if_fc = f'{pp:.2f}PP for {acc:.2f}% FC'
         else:
             self.bmap.mods = self.mods
-            self.bmap.convert_diff()
+            self.bmap.convert_difficulty_attrs()
             if_fc = f'AR: {self.bmap.ar:.2f} OD: {self.bmap.od:.2f}'
 
         score = num_simplifier(self.score)
@@ -134,10 +133,14 @@ class Score:
         e = Embed(
             description = description
         )
-            
-        star_rating = f'{self.bmap.difficulty:.2f}★'
+        
+        if self.mode == 0:
+            sr = f'{self.bmap.convert_star_rating():.2f}★'
+        else:
+            sr = f'{self.bmap.difficulty:.2f}★'
+        
         e.set_author(
-            name = f"{self.bmap.song_name} +{repr(self.mods)} [{star_rating}]",
+            name = f"{self.bmap.song_name} +{repr(self.mods)} [{sr}]",
             url = self.bmap.url,
             icon_url = GRADE_URLS[self.rank]
         )
@@ -148,6 +151,10 @@ class Score:
 
         e.set_image(
             url = self.bmap.cover
+        )
+
+        e.set_footer(
+            text = f'Score set on {self.server.name.lower()}!'
         )
 
         return e
@@ -172,7 +179,7 @@ class Score:
 
     @classmethod
     async def from_akatsuki_top(
-        cls, user: Union[int, str],
+        cls, user: Player,
         mode = 0, index = 0, relax = 0
     ):
         s = cls()
@@ -180,24 +187,12 @@ class Score:
         base = 'https://akatsuki.pw/api/v1'
         path = 'users/scores/best'
         params = {
-            'name' if isinstance(user, str) else 'id': user,
+            'id': user.id,
             'mode': mode,
             'rx': relax
         }
 
-        s.player = await Player.from_akatsuki(
-            user, mode, relax
-        )
-
-        if not s.player:
-            await note(
-                statement = "if not s.player",
-                name_or_id = user,
-                mode = mode,
-                relax = relax,
-                function = 'Score.from_akatsuki_recent'
-            )
-            return
+        s.player = user
 
         async with glob.http.get(
             url = f'{base}/{path}',
@@ -206,7 +201,7 @@ class Score:
             if not resp or resp.status != 200:
                 await note(
                     statement = "if not resp or resp.status != 200",
-                    name_or_id = user,
+                    name_or_id = user.name,
                     mode = mode,
                     relax = relax,
                     function = 'Score.from_akatsuki_top'
@@ -216,7 +211,7 @@ class Score:
             if not (json := await resp.json()):
                 await note(
                     statement = "if not (json := await resp.json())",
-                    name_or_id = user,
+                    name_or_id = user.name,
                     mode = mode,
                     relax = relax,
                     function = 'Score.from_akatsuki_top'
@@ -227,7 +222,7 @@ class Score:
             await note(
                 statement = "if len(json['scores']) - 1 < index",
                 json = json['scores'],
-                name_or_id = user,
+                name_or_id = user.name,
                 mode = mode,
                 relax = relax,
                 function = 'Score.from_akatsuki_top'
@@ -254,7 +249,7 @@ class Score:
         if not s.bmap:
             await note(
                 statement = "if not s.bmap",
-                name_or_id = user,
+                name_or_id = user.name,
                 mode = mode,
                 relax = relax,
                 bmap_id = json['beatmap']['beatmap_id'],
@@ -264,6 +259,7 @@ class Score:
         
         s.completed = True
         s.server = Server.Akatsuki
+        s.bmap.mods = s.mods
         s.pp = json['pp']
         s.id = json['id']
         s.mode = mode
@@ -274,7 +270,7 @@ class Score:
 
     @classmethod
     async def from_akatsuki_recent(
-        cls, user: Union[str, int],
+        cls, user: Player,
         mode = 0, index = 0, relax = 0
     ):
         s = cls()
@@ -282,24 +278,12 @@ class Score:
         base = 'https://akatsuki.pw/api/v1'
         path = 'users/scores/recent?'
         params = {
-            'name' if isinstance(user, str) else 'id': user,
+            'id': user.id,
             'mode': mode,
             'rx': relax
         }
 
-        s.player = await Player.from_akatsuki(
-            user, mode, relax
-        )
-
-        if not s.player:
-            await note(
-                statement = "if not s.player",
-                name_or_id = user,
-                mode = mode,
-                relax = relax,
-                function = 'Score.from_akatsuki_recent'
-            )
-            return
+        s.player = user
 
         async with glob.http.get(
             url = f'{base}/{path}',
@@ -308,7 +292,7 @@ class Score:
             if not resp or resp.status != 200:
                 await note(
                     statement = "if not resp or resp.status != 200",
-                    name_or_id = user,
+                    name_or_id = user.name,
                     mode = mode,
                     relax = relax,
                     function = 'Score.from_akatsuki_recent'
@@ -318,7 +302,7 @@ class Score:
             if not (json := await resp.json()):
                 await note(
                     statement = "if not (json := await resp.json())",
-                    name_or_id = user,
+                    name_or_id = user.name,
                     mode = mode,
                     relax = relax,
                     function = 'Score.from_akatsuki_recent'
@@ -329,7 +313,7 @@ class Score:
             await note(
                 statement = "if len(json['scores']) - 1 < index",
                 json = json['scores'],
-                name_or_id = user,
+                name_or_id = user.name,
                 mode = mode,
                 relax = relax,
                 function = 'Score.from_akatsuki_recent'
@@ -357,7 +341,7 @@ class Score:
             await note(
                 statement = "if not s.bmap",
                 json = json['scores'],
-                name_or_id = user,
+                name_or_id = user.name,
                 mode = mode,
                 relax = relax,
                 bmap_id = json['beatmap']['beatmap_id'],
@@ -367,6 +351,7 @@ class Score:
         
         s.completed = json['completed'] > 1
         s.server = Server.Akatsuki
+        s.bmap.mods = s.mods
         s.pp = json['pp']
         s.id = json['id']
         s.mode = mode
@@ -377,7 +362,7 @@ class Score:
 
     @classmethod
     async def from_bancho_recent(
-        cls, user: Union[str, int], 
+        cls, user: Player, 
         mode = 0, index = 0
     ):
         s = cls()
@@ -386,23 +371,12 @@ class Score:
         path = 'get_user_recent'
         params = {
             'k': config.api_key,
-            'u': user,
+            'u': user.id,
             'm': mode,
-            'type': 'string' if isinstance(user, str) else 'id'
+            'type': 'id'
         }
 
-        s.player = await Player.from_bancho(
-            user, mode
-        )
-
-        if not s.player:
-            await note(
-                statement = "if not s.player",
-                name_or_id = user,
-                mode = mode,
-                function = 'Score.from_bancho_recent'
-            )
-            return
+        s.player = user
 
         async with glob.http.get(
             url = f'{base}/{path}',
@@ -411,7 +385,7 @@ class Score:
             if not resp or resp.status != 200:
                 await note(
                     statement = "if not resp or resp.status != 200",
-                    name_or_id = user,
+                    name_or_id = user.name,
                     mode = mode,
                     function = 'Score.from_bancho_recent'
                 )
@@ -420,7 +394,7 @@ class Score:
             if not (json := await resp.json()):
                 await note(
                     statement = "if not (json := await resp.json())",
-                    name_or_id = user,
+                    name_or_id = user.name,
                     mode = mode,
                     function = 'Score.from_bancho_recent'
                 )
@@ -430,7 +404,7 @@ class Score:
             await note(
                 statement = "if len(json) - 1 < index",
                 json = json,
-                name_or_id = user,
+                name_or_id = user.name,
                 mode = mode,
                 function = 'Score.from_bancho_recent'
             )
@@ -456,7 +430,7 @@ class Score:
         if not s.bmap:
             await note(
                 statement = "if not s.bmap",
-                name_or_id = user,
+                name_or_id = user.name,
                 mode = mode,
                 bmap_id = int(json['beatmap_id']),
                 function = 'Score.from_bancho_recent'
@@ -465,6 +439,7 @@ class Score:
         
         s.completed = s.rank != 'F'
         s.server = Server.Bancho
+        s.bmap.mods = s.mods
         s.pp = 0.0
         s.mode = mode
 
@@ -473,9 +448,9 @@ class Score:
             params = {
                 'k': config.api_key,
                 'b': s.bmap.id,
-                'u': user,
+                'u': user.id,
                 'm': mode,
-                'type': 'string' if isinstance(user, str) else 'id'
+                'type': 'id'
             }
             async with glob.http.get(
                 url = f'{base}/{path}',
@@ -512,7 +487,7 @@ class Score:
 
     @classmethod
     async def from_bancho_top(
-        cls, user: Union[str, int], 
+        cls, user: Player, 
         mode = 0, index = 0
     ):
         s = cls()
@@ -521,24 +496,13 @@ class Score:
         path = 'get_user_best'
         params = {
             'k': config.api_key,
-            'u': user,
+            'u': user.id,
             'm': mode,
             'limit': 100,
-            'type': 'string' if isinstance(user, str) else 'id'
+            'type': 'id'
         }
 
-        s.player = await Player.from_bancho(
-            user, mode
-        )
-
-        if not s.player:
-            await note(
-                statement = "if not s.player",
-                name_or_id = user,
-                mode = mode,
-                function = 'Score.from_bancho_top'
-            )
-            return
+        s.player = user
 
         async with glob.http.get(
             url = f'{base}/{path}',
@@ -547,7 +511,7 @@ class Score:
             if not resp or resp.status != 200:
                 await note(
                     statement = "if not resp or resp.status != 200",
-                    name_or_id = user,
+                    name_or_id = user.name,
                     mode = mode,
                     function = 'Score.from_bancho_top'
                 )
@@ -556,7 +520,7 @@ class Score:
             if not (json := await resp.json()):
                 await note(
                     statement = "if not (json := await resp.json())",
-                    name_or_id = user,
+                    name_or_id = user.name,
                     mode = mode,
                     function = 'Score.from_bancho_top'
                 )
@@ -565,7 +529,7 @@ class Score:
         if len(json) - 1 < index:
             await note(
                 statement = "if len(json) - 1 < index",
-                name_or_id = user,
+                name_or_id = user.name,
                 mode = mode,
                 json = json,
                 function = 'Score.from_bancho_top'
@@ -592,7 +556,7 @@ class Score:
         if not s.bmap:
             await note(
                 statement = "if not s.bmap",
-                name_or_id = user,
+                name_or_id = user.name,
                 mode = mode,
                 bmap_id = int(json['beatmap_id']),
                 function = 'Score.from_bancho_top'
@@ -600,6 +564,7 @@ class Score:
             return
         
         s.completed = True
+        s.bmap.mods = s.mods
         s.server = Server.Bancho
         s.pp = float(json['pp'])
         s.mode = mode
@@ -610,7 +575,7 @@ class Score:
 
     @classmethod
     async def from_akatsuki(
-        cls, user: Union[str, int],
+        cls, user: Player,
         bmap: Beatmap, mode = 0, 
         index = 0, relax = 0
     ):
@@ -625,19 +590,7 @@ class Score:
             'rx': relax
         }
 
-        s.player = await Player.from_akatsuki(
-            user, mode, relax
-        )
-        if not s.player:
-            await note(
-                statement = "if not s.player",
-                name_or_id = user,
-                mode = mode,
-                relax = relax,
-                index = index,
-                function = 'Score.from_akatsuki'
-            )
-            return
+        s.player = user
 
         async with glob.http.get(
             url = f'{base}/{path}',
@@ -646,7 +599,7 @@ class Score:
             if not resp or resp.status != 200:
                 await note(
                     statement = "if not resp or resp.status != 200",
-                    name_or_id = user,
+                    name_or_id = user.name,
                     mode = mode,
                     relax = relax,
                     index = index,
@@ -657,7 +610,7 @@ class Score:
             if not (json := await resp.json()):
                 await note(
                     statement = "if not (json := await resp.json())",
-                    name_or_id = user,
+                    name_or_id = user.name,
                     mode = mode,
                     relax = relax,
                     index = index,
@@ -668,7 +621,7 @@ class Score:
         if len(json) - 1 < index:
             await note(
                 statement = "if len(json) - 1 < index",
-                name_or_id = user,
+                name_or_id = user.name,
                 mode = mode,
                 relax = relax,
                 index = index,
@@ -694,6 +647,7 @@ class Score:
         s.server = Server.Akatsuki
         s.pp = float(json['pp'])
         s.id = int(json['score_id'])
+        s.bmap.mods = s.mods
         s.mode = mode
 
         s.calc_acc()
@@ -702,7 +656,7 @@ class Score:
 
     @classmethod
     async def from_bancho(
-        cls, user: Union[str, int], 
+        cls, user: Player, 
         bmap: Beatmap,
         mode = 0, index = 0,
     ):
@@ -715,21 +669,10 @@ class Score:
             'u': user.id,
             'm': mode,
             'b': bmap.id,
-            'type': 'string' if isinstance(user, str) else 'id'
+            'type': 'id'
         }
 
-        s.player = await Player.from_bancho(
-            user, mode
-        )
-        if not s.player:
-            await note(
-                statement = "if not s.player",
-                name_or_id = user,
-                mode = mode,
-                index = index,
-                function = 'Score.from_bancho'
-            )
-            return
+        s.player = user
 
         async with glob.http.get(
             url = f'{base}/{path}',
@@ -738,7 +681,7 @@ class Score:
             if not resp or resp.status != 200:
                 await note(
                     statement = "if not resp or resp.status != 200",
-                    name_or_id = user,
+                    name_or_id = user.name,
                     mode = mode,
                     index = index,
                     function = 'Score.from_bancho'
@@ -748,7 +691,7 @@ class Score:
             if not (json := await resp.json()):
                 await note(
                     statement = "if not (json := await resp.json())",
-                    name_or_id = user,
+                    name_or_id = user.name,
                     mode = mode,
                     index = index,
                     function = 'Score.from_bancho'
@@ -758,7 +701,7 @@ class Score:
         if len(json) - 1 < index:
             await note(
                 statement = "if len(json) - 1 < index",
-                name_or_id = user,
+                name_or_id = user.name,
                 mode = mode,
                 index = index,
                 json = json,
@@ -782,6 +725,7 @@ class Score:
         s.completed = True
         s.server = Server.Bancho
         s.pp = float(json['pp'])
+        s.bmap.mods = s.mods
         s.mode = mode
         
         s.calc_acc()

@@ -33,7 +33,7 @@ class Beatmap:
         self.parser: pyttanko.parser = pyttanko.parser()
         self.mods: Mods = Mods.NOMOD
     
-    def convert_diff(self) -> None:
+    def convert_difficulty_attrs(self) -> None:
         v = pyttanko.mods_apply(
             mods = self.mods.value,
             ar = self.ar,
@@ -44,6 +44,21 @@ class Beatmap:
 
         self.ar, self.od, self.cs, self.hp = v
     
+    def convert_star_rating(self) -> float:
+        m = (Mods.NOMOD, Mods.NOFAIL, Mods.AUTOPILOT, Mods.RELAX, Mods.SPUNOUT)
+        if not self.mods in m and self.mode == 0:
+            sr = pyttanko.diff_calc().calc(
+                self.mapfile, self.mods
+            )
+            if not sr:
+                star_rating = self.difficulty
+            else:
+                star_rating = sr.total
+        else:
+            star_rating = self.difficulty
+        
+        return star_rating
+
     @property
     def embed(self) -> Embed:
         e = Embed()

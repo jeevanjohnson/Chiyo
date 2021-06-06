@@ -19,7 +19,7 @@ from discord.ext.commands.errors import (
     CommandNotFound, CommandOnCooldown
 )
 from helpers import (
-    BEATMAP, TWELVEHOURS, get_id_from_set
+    BEATMAP, TWELVEHOURS, get_id_from_set, note
 )
 
 @bot.event
@@ -32,7 +32,7 @@ async def on_ready():
         status = discord.Status.online, 
         activity = discord.Activity(
         type = discord.ActivityType.playing, 
-        name = f"in {servers} Servers!")
+        name = f"in {servers} Servers! | Supports Akatsuki & Bancho!")
     )
 
 @bot.event
@@ -107,19 +107,22 @@ async def on_reaction_add(reaction: Reaction, user: Member):
         user.bot or
         reaction.custom_emoji or
         reaction.emoji not in ('⬅️', '➡️')
-    ):
+    ): 
         return
     
+    start_time = time.time()
     msg: Message = reaction.message
     if not msg.embeds:
         return
+    
     embed: Embed = msg.embeds[0]
     userid = int(embed._thumbnail['url'].split('/')[-1:][0])
+    server = Server.from_name(embed._footer['text'].split()[3][:-1])
     
-    if userid not in glob.cache.scores:
+    if (userid, server) not in glob.cache.scores:
         return
     
-    s, _type = glob.cache.scores[userid]
+    s, _type = glob.cache.scores[(userid, server)][:-1]
     
     if _type == 'c':
         iterate = scores
@@ -134,7 +137,7 @@ async def on_reaction_add(reaction: Reaction, user: Member):
         change = -1
 
     kwargs = {
-        'user': s.player.id,
+        'user': s.player,
         'mode': s.mode,
         'index': s.index + change
     }
@@ -142,20 +145,30 @@ async def on_reaction_add(reaction: Reaction, user: Member):
     if s.mods & Mods.RELAX:
         kwargs['relax'] = 1
 
-    score: Score = await iterate[s.server](**kwargs)
+    score: Score = await iterate[server](**kwargs)
     
     if not score:
         await msg.edit(
             content = 'No score found.',
             embed = None
         )
+        glob.cache.scores[(userid, server)] = (
+            s, _type, time.time() + TWELVEHOURS
+        )
         return
     
-    glob.cache.scores[userid] = (score, _type)
+    glob.cache.scores[(userid, server)] = (
+        score, _type, time.time() + TWELVEHOURS
+    )
+    glob.cache.channel_beatmaps[msg.channel.id] = score.bmap
+    glob.cache.beatmaps[score.bmap.id] = score.bmap
     
     e = score.embed
     e.colour = user.color
-    await msg.edit(embed=e)
+    await msg.edit(
+        content = f'{time.time()-start_time:.2f}s',
+        embed = e
+    )
     return
 
 ERROR_CHANNEL = 713072038557777942

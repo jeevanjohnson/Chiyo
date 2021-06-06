@@ -1,3 +1,4 @@
+from .msgcontent import MsgContent
 from .beatmaps import Beatmap
 from .osucard import OsuCard
 from .players import Player
