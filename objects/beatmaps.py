@@ -1,7 +1,9 @@
 import config
 import pyttanko
 from ext import glob
+from typing import Union
 from discord import Embed
+from typing import Optional
 from objects.const import Mods
 from objects.players import Player
 from coover import Beatmap as BeatmapParser
@@ -28,8 +30,8 @@ class Beatmap:
         self.status: int
         self.favs: int
         self.last_updated: str
-        self.mapfile: pyttanko.beatmap
-        self._mapfile: BeatmapParser
+        self.mapfile: Optional[pyttanko.beatmap] = None
+        self._mapfile: Optional[BeatmapParser] = None
         self.parser: pyttanko.parser = pyttanko.parser()
         self.mods: Mods = Mods.NOMOD
     
@@ -63,10 +65,17 @@ class Beatmap:
     def embed(self) -> Embed:
         e = Embed()
 
-        e.set_author(
-            url = self.url,
-            icon_url = self.creator.avatar,
+        if not self.creator:
+            icon_url = 'https://a.ppy.sh/'
+            name = f'{self.song_name} (★{self.difficulty:.2f})'
+        else:
+            icon_url = self.creator.avatar
             name = f'{self.song_name} (★{self.difficulty:.2f}) by {self.creator.name}'
+        
+        e.set_author(
+            name = name,
+            url = self.url,
+            icon_url = icon_url,
         )
 
         e.set_image(
@@ -116,7 +125,98 @@ class Beatmap:
         return f'{self.artist} - {self.title} [{self.version}]'
     
     @classmethod
+    async def get_id_from_set(cls, setid: Union[str, int]):
+        """Returns the highest difficulty of a set's id"""
+        if isinstance(setid, str):
+            setid = int(setid)
+        
+        if setid in glob.cache.beatmap_sets:
+            bmap_list = tuple(glob.cache.beatmap_sets[setid].values())
+            key = lambda bmap: bmap.difficulty
+            bmap = sorted(bmap_list, key = key, reverse = True)[0]
+            return bmap
+        else:
+            base = 'https://osu.ppy.sh/api'
+            path = 'get_beatmaps'
+            params = {
+                'k': config.api_key,
+                's': setid,
+                'a': 1
+            }
+
+            async with glob.http.get(
+                url = f'{base}/{path}',
+                params = params
+            ) as resp:
+                if not resp or resp.status != 200:
+                    return
+                
+                if not (json := await resp.json()):
+                    return
+            
+            key = lambda x: float(x['difficultyrating'])
+            json: list[dict] = sorted(json, key = key, reverse = True)[0]
+        
+            return await cls.from_api_dict(json)
+
+    @classmethod
+    async def from_api_dict(cls, dictionary: dict):
+        bmap_id = int(dictionary['beatmap_id'])
+        mode = int(dictionary['mode'])
+        key = (bmap_id, mode)
+        if key in glob.cache.beatmaps:
+            return glob.cache.beatmaps[key]
+
+        bmap = cls()
+        bmap.setid = int(dictionary['beatmapset_id'])
+        bmap.id = bmap_id
+        bmap.total_length = int(dictionary['total_length'])
+        bmap.hit_length = int(dictionary['hit_length'])
+        bmap.version = dictionary['version']
+        bmap.md5 = dictionary['file_md5']
+        bmap.cs = float(dictionary['diff_size'])
+        bmap.od = float(dictionary['diff_overall'])
+        bmap.ar = float(dictionary['diff_approach'])
+        bmap.hp = float(dictionary['diff_drain'])
+        bmap.mode = mode
+        bmap.artist = dictionary['artist']
+        bmap.title = dictionary['title']
+        bmap.creator = await Player.from_bancho(
+            user = dictionary['creator']
+        )
+        bmap.max_combo = int(dictionary['max_combo'])
+        bmap.difficulty = float(dictionary['difficultyrating'])
+        bmap.bpm = float(dictionary['bpm'])
+        bmap.status = int(dictionary['approved'])
+        bmap.favs = int(dictionary['favourite_count'])
+        bmap.last_updated = dictionary['last_update']
+
+        data: Optional[str] = None
+        url = f'https://osu.ppy.sh/osu/{bmap.id}'
+        
+        async with glob.http.get(url) as resp:
+            if not resp or resp.status != 200:
+                return
+            
+            if not (data := await resp.text()):
+                return
+
+        if data:
+            bmap._mapfile = BeatmapParser(data)
+            if bmap.mode == 0:
+                bmap.mapfile = bmap.parser.map(
+                    osu_file = data.splitlines()
+                )
+        
+        glob.loop.create_task(bmap.add_set_to_cache())
+        return bmap
+
+    @classmethod
     async def from_id(cls, bmap_id: int, mode = 0):
+        key = (bmap_id, mode)
+        if key in glob.cache.beatmaps:
+            return glob.cache.beatmaps[key]
+        
         bmap = cls()
         base = 'https://osu.ppy.sh/api'
         path = 'get_beatmaps'
@@ -148,7 +248,7 @@ class Beatmap:
         bmap.od = float(json['diff_overall'])
         bmap.ar = float(json['diff_approach'])
         bmap.hp = float(json['diff_drain'])
-        bmap.mode = int(json['mode'])
+        bmap.mode = mode
         bmap.artist = json['artist']
         bmap.title = json['title']
         bmap.creator = await Player.from_bancho(
@@ -174,5 +274,52 @@ class Beatmap:
                 bmap.mapfile = bmap.parser.map(
                     osu_file = data.splitlines()
                 )
+        
+        glob.loop.create_task(bmap.add_set_to_cache())
 
         return bmap
+    
+    def add_map_to_cache(self) -> None:
+        glob.cache.beatmaps[(self.id, self.mode)] = self
+
+    async def add_set_to_cache(self) -> None:
+        if (self.id, self.mode) in glob.cache.beatmaps:
+            return # This means we already have the whole set in cache
+
+        self.add_map_to_cache()
+
+        base = 'https://osu.ppy.sh/api'
+        path = 'get_beatmaps'
+        params = {
+            'k': config.api_key,
+            's': self.setid,
+            'm': self.mode,
+            'a': 1
+        }
+
+        async with glob.http.get(
+            f'{base}/{path}', 
+            params = params
+        ) as resp:
+            
+            if not resp or resp.status != 200:
+                return
+            
+            if not (json := await resp.json()):
+                return
+        
+        set_dict = {}
+        for bmap_dict in json:
+            key = (int(bmap_dict['beatmap_id']), self.mode)
+            if key in glob.cache.beatmaps:
+                continue
+            
+            bmap: Beatmap = await Beatmap.from_api_dict(bmap_dict)
+            if not bmap:
+                continue
+        
+            bmap.add_map_to_cache()
+            set_dict[bmap.id] = bmap
+        
+        glob.cache.beatmap_sets[(self.setid, self.mode)] = set_dict
+        glob.cache.beatmap_sets[self.setid] = set_dict

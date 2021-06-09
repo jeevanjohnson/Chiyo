@@ -8,7 +8,8 @@ from objects.const import Server
 from objects.players import Player
 from objects.beatmaps import Beatmap
 from objects.const import GRADE_URLS
-from objects.const import num_simplifier
+from functools import cached_property
+from objects.const import magnitude_fmt
 
 class Score:
     def __init__(self) -> None:
@@ -90,8 +91,11 @@ class Score:
                 (self.n300 + self.ngeki) * 300.0
             )) / (total * 300.0)
 
-    @property
+    @cached_property
     def pp_if_fc(self) -> tuple[float, float]:
+        if self.mode != 0:
+            return
+        
         n100 = round(self.n100 / 1.5)
         n50 = round(self.n50 / 1.5)
         stars = pyttanko.diff_calc().calc(self.bmap.mapfile, self.mods.value)
@@ -123,7 +127,7 @@ class Score:
             self.bmap.convert_difficulty_attrs()
             if_fc = f'AR: {self.bmap.ar:.2f} OD: {self.bmap.od:.2f}'
 
-        score = num_simplifier(self.score)
+        score = magnitude_fmt(self.score)
         description = (
             f'▸ {self.pp:.0f}PP [{if_fc}] ▸ {self.acc:.2f}%\n'
             f'▸ {score} ▸ {self.max_combo}x/{self.bmap.max_combo}x '
@@ -159,7 +163,7 @@ class Score:
 
         return e
 
-    @property    
+    @cached_property    
     def map_completion(self) -> float:
         if self.completed:
             return 100.0

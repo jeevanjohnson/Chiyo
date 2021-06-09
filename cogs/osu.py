@@ -5,7 +5,6 @@ from objects import Score
 from discord import Embed
 from objects import Player
 from objects import Server
-from objects import OsuCard
 from objects import Beatmap
 from typing import Optional
 from objects import MsgContent
@@ -66,10 +65,6 @@ async def compare(ctx: Context) -> None:
         return
 
     bmap: Beatmap = glob.cache.channel_beatmaps[ctx.message.channel.id][0]
-
-    bid = bmap.id
-    if bid not in glob.cache.beatmaps:
-        glob.cache.beatmaps[bid] = bmap
     
     parsed: Optional[MsgContent] = await MsgContent.from_discord_msg(ctx)
     if not parsed:
@@ -141,10 +136,6 @@ async def top(ctx: Context) -> None:
         s.bmap, time.time() + TWELVEHOURS
     )
 
-    bid = s.bmap.id
-    if bid not in glob.cache.beatmaps:
-        glob.cache.beatmaps[bid] = s.bmap
-
     key = (s.player.id, s.server)
     glob.cache.scores[key] = (
         s, 't', time.time() + TWELVEHOURS
@@ -190,10 +181,6 @@ async def recent(ctx: Context) -> None:
     glob.cache.channel_beatmaps[msg_id] = (
         s.bmap, time.time() + TWELVEHOURS
     )
-
-    bid = s.bmap.id
-    if bid not in glob.cache.beatmaps:
-        glob.cache.beatmaps[bid] = s.bmap
     
     key = (s.player.id, s.server)
     glob.cache.scores[key] = (
@@ -218,18 +205,8 @@ async def profile(ctx: Context) -> None:
     if not parsed:
         return
     
-    if parsed.server == Server.Akatsuki:
-        p = await Player.from_akatsuki(
-            user = parsed.player,
-            mode = parsed.mode,
-            relax = parsed.relax
-        )
-    else:
-        p = await Player.from_bancho(
-            user = parsed.player,
-            mode = parsed.mode,
-        ) 
-    
+    p = parsed.player
+
     if not p:
         await ctx.send("User couldn't be found!")
         return
@@ -240,38 +217,4 @@ async def profile(ctx: Context) -> None:
         content = f'{time.time()-parsed.start_time:.2f}s',
         embed = e
     )
-    return
-
-@bot.command(aliases=['oc', 'card'])
-@commands.cooldown(1, 10, commands.BucketType.user)
-async def osucard(ctx: Context) -> None:
-    parsed: Optional[MsgContent] = await MsgContent.from_discord_msg(ctx)
-    if not parsed:
-        return
-
-    m: Message = await ctx.send(
-        'Running Calculations! This may take up to a minute.'
-    )
-
-    if parsed.server == Server.Akatsuki:
-        ...
-    else:
-        card = await OsuCard.from_bancho(
-            user = parsed.player,
-            mode = parsed.mode
-        )
-    
-    if not card:
-        await ctx.send(
-            "User wasn't found or an error occured during calculations."
-        )
-        return
-
-    e = card.embed
-    e.colour = ctx.author.color
-    await m.edit(
-        content = f'Done! {time.time()-parsed.start_time:.2f}s', 
-        embed = e
-    )
-
     return

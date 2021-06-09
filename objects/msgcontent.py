@@ -126,7 +126,7 @@ class MsgContent:
                 function = 'MsgContent.from_discord_msg'
             )
             await ctx.send(
-                f"No user from `{server_name}`` was found!"
+                f"No user from `{server_name}` was found!"
             )
             return
 

@@ -4,7 +4,7 @@ from typing import Union
 from helpers import note
 from discord import Embed
 from objects.const import Server
-from objects.const import num_simplifier
+from objects.const import magnitude_fmt
 
 class Player:
     def __init__(self) -> None:
@@ -49,7 +49,7 @@ class Player:
         else:
             country_rank = ''
         
-        ranked_score = num_simplifier(self.ranked_score)
+        ranked_score = magnitude_fmt(self.ranked_score)
         data = (
             '▸ Official Rank: #{rank}' f'{country_rank}\n'
             '▸ Level: {level:.2f}\n'
@@ -133,7 +133,6 @@ class Player:
         p.server = Server.Bancho
 
         return p
-
 
     @classmethod
     async def from_akatsuki(

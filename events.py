@@ -7,8 +7,9 @@ from objects import Mods
 from WebLamp import Fore
 from objects import Score
 from discord import Embed
-from objects import Server
 from discord import Member
+from objects import Player
+from objects import Server
 from pprint import pformat
 from objects import Beatmap
 from objects import BOT_OWNER_ID
@@ -19,7 +20,7 @@ from discord.ext.commands.errors import (
     CommandNotFound, CommandOnCooldown
 )
 from helpers import (
-    BEATMAP, TWELVEHOURS, get_id_from_set, note
+    BEATMAP, TWELVEHOURS, USERS
 )
 
 @bot.event
@@ -35,10 +36,15 @@ async def on_ready():
         name = f"in {servers} Servers! | Supports Akatsuki & Bancho!")
     )
 
+get_user = {
+    'osu': Player.from_bancho,
+    'akatsuki': Player.from_akatsuki
+}
 @bot.event
 async def on_message(message: Message):
     await bot.wait_until_ready()
     await bot.process_commands(message)
+    start_time = time.time()
 
     m = f'{message.content}'
     if message.embeds:
@@ -52,42 +58,56 @@ async def on_message(message: Message):
         Fore.BLUE
     )
     
+    users = USERS.findall(message.content)
+    if users:
+        for u in users:
+            server, user = [x for x in u if x]
+            
+            if user.isdecimal():
+                user = int(user)
+
+            p = await get_user[server](user)
+            if not p:
+                continue
+
+            e = p.embed
+            e.colour = message.author.color
+
+            await message.channel.send(
+                content = f'{time.time()-start_time:.2f}s',
+                embed = e
+            )
+
     beatmapids = BEATMAP.match(message.content)
     if not beatmapids:
         return
     
-    bmapdict = beatmapids.groupdict()
-    for key, bid in bmapdict.items():
-        if not bid:
-            continue
-        
-        if key == 'setidd':
-            bid = await get_id_from_set(bid)
-            if not bid:
-                return
-        
-        bmap = await Beatmap.from_id(
-            int(bid)
-        )
+    setid, bid, setidd, id = beatmapids.groupdict().values()
+    
+    if (
+        any((setid, setidd)) and 
+        not any((bid, id))
+    ):
+        bmap = await Beatmap.get_id_from_set(setid or setidd)
+    else:
+        bmap_id = int(bid or id)
+        bmap = await Beatmap.from_id(bmap_id)
 
-        if not bmap:
-            continue
-
-        e = bmap.embed
-        e.colour = message.author.color
-
-        glob.cache.channel_beatmaps[message.channel.id] = (
-            bmap, time.time() + TWELVEHOURS
-        )
-
-        if (
-            bmap.id not in glob.cache.beatmaps and
-            bmap.status
-        ):
-            glob.cache.beatmaps[bmap.id] = bmap
-        
-        await message.channel.send(embed=e)
+    if not bmap:
         return
+    
+    e = bmap.embed
+    e.colour = message.author.color
+
+    glob.cache.channel_beatmaps[message.channel.id] = (
+        bmap, time.time() + TWELVEHOURS
+    )
+    
+    await message.channel.send(
+        content = f'{time.time()-start_time:.2f}s',
+        embed = e
+    )
+    return
 
 top = {
     Server.Bancho: Score.from_bancho_top,
@@ -161,7 +181,6 @@ async def on_reaction_add(reaction: Reaction, user: Member):
         score, _type, time.time() + TWELVEHOURS
     )
     glob.cache.channel_beatmaps[msg.channel.id] = score.bmap
-    glob.cache.beatmaps[score.bmap.id] = score.bmap
     
     e = score.embed
     e.colour = user.color

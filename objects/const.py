@@ -63,40 +63,6 @@ class Mods(IntFlag):
         :return: readable mods string, eg HDDT
         """
 
-        _mod_dict = {
-            Mods.NOFAIL: 'NF',
-            Mods.EASY: 'EZ',
-            Mods.TOUCHSCREEN: 'TD',
-            Mods.HIDDEN: 'HD',
-            Mods.HARDROCK: 'HR',
-            Mods.SUDDENDEATH: 'SD',
-            Mods.DOUBLETIME: 'DT',
-            Mods.RELAX: 'RX',
-            Mods.HALFTIME: 'HT',
-            Mods.NIGHTCORE: 'NC',
-            Mods.FLASHLIGHT: 'FL',
-            Mods.AUTOPLAY: 'AU',
-            Mods.SPUNOUT: 'SO',
-            Mods.AUTOPILOT: 'AP',
-            Mods.PERFECT: 'PF',
-            Mods.KEY4: 'K4',
-            Mods.KEY5: 'K5',
-            Mods.KEY6: 'K6',
-            Mods.KEY7: 'K7',
-            Mods.KEY8: 'K8',
-            Mods.FADEIN: 'FI',
-            Mods.RANDOM: 'RN',
-            Mods.CINEMA: 'CN',
-            Mods.TARGET: 'TP',
-            Mods.KEY9: 'K9',
-            Mods.KEYCOOP: 'CO',
-            Mods.KEY1: 'K1',
-            Mods.KEY3: 'K3',
-            Mods.KEY2: 'K2',
-            Mods.SCOREV2: 'V2',
-            Mods.MIRROR: 'MI'
-        }
-
         if not self:
             return 'NM'
 
@@ -106,6 +72,41 @@ class Mods(IntFlag):
             self &= ~Mods.DOUBLETIME
 
         return ''.join(v for k, v in _mod_dict.items() if self & k)
+
+
+_mod_dict = {
+    Mods.NOFAIL: 'NF',
+    Mods.EASY: 'EZ',
+    Mods.TOUCHSCREEN: 'TD',
+    Mods.HIDDEN: 'HD',
+    Mods.HARDROCK: 'HR',
+    Mods.SUDDENDEATH: 'SD',
+    Mods.DOUBLETIME: 'DT',
+    Mods.RELAX: 'RX',
+    Mods.HALFTIME: 'HT',
+    Mods.NIGHTCORE: 'NC',
+    Mods.FLASHLIGHT: 'FL',
+    Mods.AUTOPLAY: 'AU',
+    Mods.SPUNOUT: 'SO',
+    Mods.AUTOPILOT: 'AP',
+    Mods.PERFECT: 'PF',
+    Mods.KEY4: 'K4',
+    Mods.KEY5: 'K5',
+    Mods.KEY6: 'K6',
+    Mods.KEY7: 'K7',
+    Mods.KEY8: 'K8',
+    Mods.FADEIN: 'FI',
+    Mods.RANDOM: 'RN',
+    Mods.CINEMA: 'CN',
+    Mods.TARGET: 'TP',
+    Mods.KEY9: 'K9',
+    Mods.KEYCOOP: 'CO',
+    Mods.KEY1: 'K1',
+    Mods.KEY3: 'K3',
+    Mods.KEY2: 'K2',
+    Mods.SCOREV2: 'V2',
+    Mods.MIRROR: 'MI'
+}
 
 @unique
 class Server(IntEnum):
@@ -132,7 +133,7 @@ class Server(IntEnum):
             'akatsuki': cls.Akatsuki
         }[name.lower()]
 
-def num_simplifier(num: Union[int, float]) -> str:
+def magnitude_fmt(num: Union[int, float]) -> str:
     magnitude = 0
     while abs(num) >= 1000:
         magnitude += 1

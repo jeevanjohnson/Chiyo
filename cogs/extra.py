@@ -31,13 +31,6 @@ FAQ = '\n'.join([
     ';connect',
     "Connects a profile to your discord account.",
     "Args: name of player | -akatsuki",
-    '',
-    '**Osucard**',
-    ';osucard | ;oc | ;card',
-    'Shows your overall stats of certain skill sets on an embed.',
-    "**Bancho STD support only (for now :D)**",
-    "Args: player name | -std | -taiko | "
-    "-ctb | -mania | -rx | -akatsuki"
 ])
 
 @bot.command(aliases=['h', 'faq', 'commands'])
