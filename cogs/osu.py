@@ -3,13 +3,11 @@ from ext import glob
 from ext.glob import bot
 from objects import Score
 from discord import Embed
-from objects import Player
 from objects import Server
 from objects import Beatmap
 from typing import Optional
 from objects import MsgContent
 from helpers import TWELVEHOURS
-from discord.ext import commands
 from discord.message import Message
 from discord.ext.commands import Context
 
@@ -21,7 +19,8 @@ async def connect(ctx: Context) -> None:
     if not parsed:
         return
     
-    user = glob.db.find_one({'_id': ctx.author.id})
+    db = glob.db.users
+    user = db.find_one({'_id': ctx.author.id})
     server_name = parsed.server.name.lower()
     p = parsed.player
     
@@ -30,14 +29,14 @@ async def connect(ctx: Context) -> None:
             "_id": ctx.author.id,
             server_name: p.id
         }
-        glob.db.insert_one(post)
+        db.insert_one(post)
     else:
         new_values = {
             "$set": {
                 server_name: p.id
             }
         }
-        glob.db.update_one(user, new_values)
+        db.update_one(user, new_values)
 
     e = Embed(
         colour = ctx.author.color

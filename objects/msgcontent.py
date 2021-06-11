@@ -11,6 +11,7 @@ class MsgContent:
         self.mode: int = 0
         self.page: int = 0
         self.relax: int = 0
+        self.db = glob.db.users
         self.player: Optional[Player] = None
         self.server: Optional[Server] = None
         self.server_name: Optional[str] = None
@@ -82,24 +83,24 @@ class MsgContent:
         if not type:
             if ctx.message.mentions:
                 mentioned = ctx.message.mentions[0]
-                user = glob.db.find_one({"_id": mentioned.id})
+                user = content.db.find_one({"_id": mentioned.id})
                 if not user or server_name not in user:
                     await ctx.send(
                         "User couldn't be found in our database! "
                         f"{mentioned.name}, Try connecting a user "
-                        "to our database by doing `;connect (your username)`"
+                        f"to our database by doing `{await glob.bot.get_prefix(ctx.message)}connect (your username)`"
                     )
                     return
                 
                 name = user[server_name]
 
             elif not name:
-                user = glob.db.find_one({"_id": ctx.author.id})
+                user = content.db.find_one({"_id": ctx.author.id})
                 if not user or server_name not in user:
                     await ctx.send(
                         "User couldn't be found in our database! "
                         "Try connecting a user to our database"
-                        "by doing `;connect (your username)`"
+                        f"by doing `{await glob.bot.get_prefix(ctx.message)}connect (your username)`"
                     )
                     return
                 

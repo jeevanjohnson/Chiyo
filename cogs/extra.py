@@ -1,43 +1,81 @@
+from ext import glob
 from ext.glob import bot
 from discord import Embed
+from discord.ext.commands import has_permissions
 from discord.ext.commands.context import Context
 
 FAQ = '\n'.join([
     '**Top**',
-    ';t | ;top',
+    '{prefix}t | {prefix}top',
     "Shows a top play from a user's profile",
     'Args: name of player | -p (a whole number) | '
     '-std | -taiko | -ctb | -mania | -rx | -akatsuki',
     '',
     '**Recent**',
-    ';r | ;rs | ;rc | ;recent',
+    '{prefix}r | {prefix}rs | {prefix}rc | {prefix}recent',
     "Shows a recent score from a user's profile",
     'Args: name of player | -p (a whole number) | '
     '-std | -taiko | -ctb | -mania | -rx | -akatsuki',
     '',
     '**Profile**',
-    ';p | ;osu | ;profile',
+    '{prefix}p | {prefix}osu | {prefix}profile',
     "Shows a profile for a user.",
     'Args: name of player | -std | -taiko | '
     '-ctb | -mania | -rx | -akatsuki',
     '',
     '**Compare**',
-    ';c | ;compare',
+    '{prefix}c | {prefix}compare',
     "Compares a score from a recently posted beatmap.",
     'Args: name of player | -p (a whole number) | -std | -taiko | '
     '-ctb | -mania | -rx | -akatsuki',
     '',
     '**Connect**',
-    ';connect',
+    '{prefix}connect',
     "Connects a profile to your discord account.",
     "Args: name of player | -akatsuki",
 ])
 
+@bot.command(aliases=["changeprefix", "change_prefix"])
+@has_permissions(administrator=True)
+async def prefix(ctx: Context) -> None:
+    p = ''.join(ctx.message.content.split()[1:])
+    db = glob.db.prefixes
+
+    if not p:
+        await ctx.send(
+            'Please provide a prefix!'
+        )
+        return
+
+    pre = db.find_one({"_id": ctx.guild.id})
+    if pre is None:
+        post = {
+            "_id": ctx.guild.id,
+            "prefix": p
+        }
+        db.insert_one(post)
+    else:
+        new_values = {
+            "$set": {
+                "prefix": p
+            }
+        }
+        db.update_one(pre, new_values)
+    
+    glob.cache.prefixes[ctx.guild.id] = p
+    
+    await ctx.send(
+        f'Prefix has been changed to {p}'
+    )
+
+    return
+
 @bot.command(aliases=['h', 'faq', 'commands'])
 async def help(ctx: Context) -> None:
 
+    p = await glob.bot.get_prefix(ctx.message)
     e = Embed(
-        description = FAQ,
+        description = FAQ.format(prefix = p),
         color = ctx.author.color
     )
 

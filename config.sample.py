@@ -1,10 +1,10 @@
 # discord
-token = ''
-default_prefix = ''
+token: str = ''
+default_prefix: str = ''
 
 # Mongo DB
-connection_access = ""
-collection_path = []
+connection_access: str = ""
+db_path: list[str] = [""]
 
 # osu!
-api_key = ''
+api_key: str = ''

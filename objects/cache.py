@@ -4,3 +4,4 @@ class Cache:
         self.beatmap_sets = {}
         self.channel_beatmaps = {}
         self.scores = {}
+        self.prefixes = {}
