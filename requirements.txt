@@ -9,4 +9,3 @@ pyttanko
 uvloop
 coover
 varname
-json
