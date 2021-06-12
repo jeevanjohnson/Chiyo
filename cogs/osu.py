@@ -1,5 +1,7 @@
 import time
+import config
 from ext import glob
+from json import loads
 from ext.glob import bot
 from objects import Mods
 from objects import Score
@@ -266,13 +268,70 @@ async def ar(ctx: Context) -> None:
     else:
         ar_in_ms = AR5_MS - AR_MS_STEP2 * (aproach_rate - 5)
     
-    arms = min(AR0_MS, max(AR10_MS, ar_in_ms))
-    arms /= speed_multiplier
+    ar_in_ms = min(AR0_MS, max(AR10_MS, ar_in_ms))
+    ar_in_ms /= speed_multiplier
 
-    if arms > AR5_MS:
-        aproach_rate = (AR0_MS - arms) / AR_MS_STEP1
+    if ar_in_ms > AR5_MS:
+        aproach_rate = (AR0_MS - ar_in_ms) / AR_MS_STEP1
     else:
-        aproach_rate = 5.0 + (AR5_MS - arms) / AR_MS_STEP2
+        aproach_rate = 5.0 + (AR5_MS - ar_in_ms) / AR_MS_STEP2
     
     await ctx.send(f'Ar: {aproach_rate:.2f}')
+    return
+
+@bot.command(aliases=['rank_for_pp'])
+async def rfpp(ctx: Context) -> None:
+    mode = 0
+    msg = ctx.message.content.lower().split()[1:]
+    if not msg:
+        await ctx.send('Please provide a pp amount.')
+        return
+    
+    if '-m' in msg:
+        index = msg.index('-m') + 1
+        if index > len(msg) - 1:
+            await ctx.send('Please provide a mode. (as an integer)')
+            return
+        
+        m: str = msg[index]
+        if not m.isdecimal():
+            await ctx.send(
+                'Please provide the mode as a number\n'
+                '0 = osu!, 1 = taiko, 2 = ctb, 3 = osu!mania\n'
+            )
+            return
+        
+        mode = int(m)
+        del msg[index]
+        del msg[index - 1]
+    
+    pp = msg[0]
+    if not pp.isdecimal():
+        await ctx.send('PP amount needs to be a number.')
+        return
+    
+    url = f'https://osudaily.net/api/pp.php'
+    params = {
+        'k': config.osu_daily_api_key,
+        't': 'pp',
+        'v': pp,
+        'm': mode
+    }
+
+    async with glob.http.get(url, params=params) as resp:
+        if not resp or resp.status != 200:
+            await ctx.send("Couldn't get any values.")
+            return
+        
+        json = loads(await resp.text())
+        if not json:
+            await ctx.send("Couldn't get any values.")
+            return
+
+    mode_str = ('osu!std', 'osu!taiko', 'osu!ctb', 'osu!mania')[mode]
+    await ctx.send(
+        'You would be rank `{rank:,}` for `{pp:,.2f}PP` on {mode}.'.format(
+            **json, mode = mode_str
+        )
+    )
     return

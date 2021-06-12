@@ -33,6 +33,16 @@ FAQ = '\n'.join([
     '{prefix}connect',
     "Connects a profile to your discord account.",
     "Args: name of player | -akatsuki",
+    '',
+    '**Approach Rate**',
+    '{prefix}ar',
+    'Calculates ar depending on the mods given.',
+    'Args: original ar number | mod combination (ex. dthdhrfl)',
+    '',
+    '**Rank for pp**',
+    '{prefix}rfpp | {prefix}rank_for_pp',
+    'Gets rank for the pp amount given.',
+    'Args: pp number | -m (a whole number)'
 ])
 
 @bot.command(aliases=["changeprefix", "change_prefix"])
