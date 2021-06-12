@@ -249,6 +249,8 @@ async def ar(ctx: Context) -> None:
     
     if mods & Mods.HARDROCK:
         aproach_rate *= 1.4
+    elif mods & Mods.EASY:
+        aproach_rate /= 2
 
     AR0_MS = 1800
     AR5_MS = 1200
