@@ -2,6 +2,7 @@ from enum import unique
 from enum import IntEnum
 from enum import IntFlag
 from typing import Union
+from textwrap import wrap
 
 BOT_OWNER_ID = 828821094559514684
 
@@ -71,10 +72,51 @@ class Mods(IntFlag):
         if self & Mods.NIGHTCORE:
             self &= ~Mods.DOUBLETIME
 
-        return ''.join(v for k, v in _mod_dict.items() if self & k)
+        return ''.join(v for k, v in mod_to_str.items() if self & k)
 
+    @classmethod
+    def from_str(cls, s: str):
+        final_mods = 0
+        for m in wrap(s, 2):
+            final_mods += str_to_mod[m]
+        
+        return cls(final_mods)
 
-_mod_dict = {
+str_to_mod = {
+    'nm': Mods.NOMOD,
+    'ez': Mods.EASY,
+    'td': Mods.TOUCHSCREEN,
+    'hd': Mods.HIDDEN,
+    'hr': Mods.HARDROCK,
+    'sd': Mods.SUDDENDEATH,
+    'dt': Mods.DOUBLETIME,
+    'rx': Mods.RELAX,
+    'ht': Mods.HALFTIME,
+    'nc': Mods.NIGHTCORE,
+    'fl': Mods.FLASHLIGHT,
+    'au': Mods.AUTOPLAY,
+    'so': Mods.SPUNOUT,
+    'ap': Mods.AUTOPILOT,
+    'pf': Mods.PERFECT,
+    'k1': Mods.KEY1, 
+    'k2': Mods.KEY2, 
+    'k3': Mods.KEY3, 
+    'k4': Mods.KEY4, 
+    'k5': Mods.KEY5, 
+    'k6': Mods.KEY6, 
+    'k7': Mods.KEY7, 
+    'k8': Mods.KEY8, 
+    'k9': Mods.KEY9,
+    'fi': Mods.FADEIN,
+    'rn': Mods.RANDOM,
+    'cn': Mods.CINEMA,
+    'tp': Mods.TARGET,
+    'v2': Mods.SCOREV2,
+    'co': Mods.KEYCOOP,
+    'mi': Mods.MIRROR
+}
+
+mod_to_str = {
     Mods.NOFAIL: 'NF',
     Mods.EASY: 'EZ',
     Mods.TOUCHSCREEN: 'TD',

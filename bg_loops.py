@@ -3,6 +3,7 @@ import discord
 import asyncio
 from ext import glob
 from ext.glob import bot
+from varname import nameof
 from WebLamp import (Fore, log)
 
 cache = glob.cache
@@ -17,8 +18,9 @@ async def mainbgtask():
             
             for k, v in dictionary.copy().items():
                 if time.time() >= v[index]:
-                    del glob.cache.channel_beatmaps[k]
-                    log(f'Removed {v} from channel_beatmaps cache!', Fore.YELLOW)
+                    del dictionary[k]
+                    log(f'Removed {v} from {nameof(dictionary)} cache!', 
+                        Fore.YELLOW)
         
         servers = len(bot.guilds)
         await bot.change_presence(
