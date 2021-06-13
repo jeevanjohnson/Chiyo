@@ -300,7 +300,8 @@ async def m(ctx: Context) -> None:
             try: acc = float(m)
             except: pass
 
-    kwargs = {'mods': mods}
+    bmap.mods = mods
+    kwargs = {}
 
     if acc:
         kwargs['acc'] = (acc,)
@@ -312,6 +313,63 @@ async def m(ctx: Context) -> None:
     await ctx.send(
         content = f'{time.time()-start_time:.2f}s',
         embed = e
+    )
+    return
+
+@bot.command(aliases=['pp_for_rank'])
+async def ppfr(ctx: Context) -> None:
+    mode = 0
+    msg: list[str] = ctx.message.content.lower().split()[1:]
+    if not msg:
+        await ctx.send('Please provide a pp amount.')
+        return
+    
+    if '-m' in msg:
+        index = msg.index('-m') + 1
+        if index > len(msg) - 1:
+            await ctx.send('Please provide a mode. (as an integer)')
+            return
+        
+        m: str = msg[index]
+        if not m.isdecimal():
+            await ctx.send(
+                'Please provide the mode as a number\n'
+                '0 = osu!, 1 = taiko, 2 = ctb, 3 = osu!mania\n'
+            )
+            return
+        
+        mode = int(m)
+        del msg[index]
+        del msg[index - 1]
+    
+    rank: str = msg[0]
+    if not rank.isdecimal():
+        await ctx.send('PP amount needs to be a number.')
+        return
+    
+    url = f'https://osudaily.net/api/pp.php'
+    params = {
+        'k': config.osu_daily_api_key,
+        't': 'rank',
+        'v': rank,
+        'm': mode
+    }
+
+    async with glob.http.get(url, params=params) as resp:
+        if not resp or resp.status != 200:
+            await ctx.send("Couldn't get any values.")
+            return
+        
+        json = loads(await resp.text())
+        if not json:
+            await ctx.send("Couldn't get any values.")
+            return
+
+    mode_str = ('osu!std', 'osu!taiko', 'osu!ctb', 'osu!mania')[mode]
+    await ctx.send(
+        'You would need `{pp:,.2f}PP` to reach rank `{rank:,}` on {mode}.'.format(
+            **json, mode = mode_str
+        )
     )
     return
 

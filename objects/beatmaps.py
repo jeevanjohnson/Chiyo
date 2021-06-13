@@ -129,7 +129,7 @@ class Beatmap:
             if not self.embed_pp_values:
                 self.set_embed_pp()
             
-            v += '\n\n**Estimated PP if FC**\n'
+            v += f'\n\n**Estimated PP if FC** (with {repr(self.mods)})\n'
             for pp in self.embed_pp_values:
                 v += f'{pp}\n'
 
