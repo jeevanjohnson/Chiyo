@@ -321,7 +321,7 @@ async def ppfr(ctx: Context) -> None:
     mode = 0
     msg: list[str] = ctx.message.content.lower().split()[1:]
     if not msg:
-        await ctx.send('Please provide a pp amount.')
+        await ctx.send('Please provide a rank amount.')
         return
     
     if '-m' in msg:
@@ -344,7 +344,7 @@ async def ppfr(ctx: Context) -> None:
     
     rank: str = msg[0]
     if not rank.isdecimal():
-        await ctx.send('PP amount needs to be a number.')
+        await ctx.send('Ranking needs to be a number.')
         return
     
     url = f'https://osudaily.net/api/pp.php'
