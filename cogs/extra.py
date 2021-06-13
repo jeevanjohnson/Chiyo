@@ -48,7 +48,7 @@ FAQ = '\n'.join([
     '{prefix}m | {prefix}map',
     'Sends an embed with details of the given map.',
     '**These args only work on std**',
-    'Args: mod combination (ex. dthdhrfl) | acc (ex. 100 or 98.5)'
+    'Args: mod combination (ex. dthdhrfl) | acc (ex. 100 or 98.5)',
     '',
     '**PP for rank**',
     '{prefix}ppfr | {prefix}pp_for_rank',
