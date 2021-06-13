@@ -49,6 +49,11 @@ FAQ = '\n'.join([
     'Sends an embed with details of the given map.',
     '**These args only work on std**',
     'Args: mod combination (ex. dthdhrfl) | acc (ex. 100 or 98.5)'
+    '',
+    '**PP for rank**',
+    '{prefix}ppfr | {prefix}pp_for_rank',
+    'Gets pp for the rank given.',
+    'Args: rank number | -m (a whole number)',
 ])
 
 @bot.command(aliases=["changeprefix", "change_prefix"])
