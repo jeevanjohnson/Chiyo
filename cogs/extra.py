@@ -42,7 +42,13 @@ FAQ = '\n'.join([
     '**Rank for pp**',
     '{prefix}rfpp | {prefix}rank_for_pp',
     'Gets rank for the pp amount given.',
-    'Args: pp number | -m (a whole number)'
+    'Args: pp number | -m (a whole number)',
+    '',
+    '**Map**',
+    '{prefix}m | {prefix}map',
+    'Sends an embed with details of the given map.',
+    '**These args only work on std**',
+    'Args: mod combination (ex. dthdhrfl) | acc (ex. 100 or 98.5)'
 ])
 
 @bot.command(aliases=["changeprefix", "change_prefix"])

@@ -30,14 +30,15 @@ class Beatmap:
         self.status: int
         self.favs: int
         self.last_updated: str
-        self.mapfile: Optional[pyttanko.beatmap] = None
-        self._mapfile: Optional[BeatmapParser] = None
-        self.parser: pyttanko.parser = pyttanko.parser()
         self.mods: Mods = Mods.NOMOD
+        self._mapfile: Optional[BeatmapParser] = None
+        self.mapfile: Optional[pyttanko.beatmap] = None
+        self.parser: pyttanko.parser = pyttanko.parser()
+        self.embed_pp_values: list[str] = []
     
     def convert_difficulty_attrs(self) -> None:
         v = pyttanko.mods_apply(
-            mods = self.mods.value,
+            mods = self.mods._value_,
             ar = self.ar,
             od = self.od,
             cs = self.cs,
@@ -60,6 +61,34 @@ class Beatmap:
             star_rating = self.difficulty
         
         return star_rating
+
+    def set_embed_pp(
+        self, 
+        mods: Mods = None,
+        acc: tuple[Union[float, int]] = (95, 97.5, 100), 
+    ) -> None:
+
+        if self.mode != 0:
+            return
+        
+        if not mods:
+            mods = self.mods
+
+        self.embed_pp_values = []
+        
+        stars = pyttanko.diff_calc().calc(self.mapfile, mods._value_)
+        for a in acc:
+            n300, n100, n50 = pyttanko.acc_round(
+                a, len(self.mapfile.hitobjects), 0
+            )
+            pp = pyttanko.ppv2(
+                stars.aim, stars.speed,
+                n100 = n100, n50 = n50,
+                mods = mods._value_, 
+                bmap = self.mapfile,
+                n300 = n300, 
+            )[0]
+            self.embed_pp_values.append(f'{a}%-{pp:.2f}PP')
 
     @property
     def embed(self) -> Embed:
@@ -95,6 +124,14 @@ class Beatmap:
             f'OD: {self.od} | HP: {self.hp}\n'
             f'Max Combo: x{self.max_combo}'
         )
+
+        if self.mode == 0 and self.mapfile:
+            if not self.embed_pp_values:
+                self.set_embed_pp()
+            
+            v += '\n\n**Estimated PP if FC**\n'
+            for pp in self.embed_pp_values:
+                v += f'{pp}\n'
 
         e.add_field(
             name = 'Download Links:',
@@ -196,10 +233,9 @@ class Beatmap:
         
         async with glob.http.get(url) as resp:
             if not resp or resp.status != 200:
-                return
-            
-            if not (data := await resp.text()):
-                return
+                pass
+            else:
+                data = await resp.text()
 
         if data:
             bmap._mapfile = BeatmapParser(data)

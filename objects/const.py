@@ -78,6 +78,9 @@ class Mods(IntFlag):
     def from_str(cls, s: str):
         final_mods = 0
         for m in wrap(s, 2):
+            if m not in str_to_mod:
+                continue
+            
             final_mods += str_to_mod[m]
         
         return cls(final_mods)
@@ -160,13 +163,13 @@ class Server(IntEnum):
         return (
             'Bancho',
             'Akatsuki'
-        )[self.value]
+        )[self._value_]
 
     def __repr__(self) -> str:
         return (
             '<Bancho (osu.ppy.sh)>',
             '<Akatsuki (akatsuki.pw)>'
-        )[self.value]
+        )[self._value_]
     
     @classmethod
     def from_name(cls, name: str):

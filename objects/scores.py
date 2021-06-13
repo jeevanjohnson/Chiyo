@@ -98,11 +98,11 @@ class Score:
         
         n100 = round(self.n100 / 1.5)
         n50 = round(self.n50 / 1.5)
-        stars = pyttanko.diff_calc().calc(self.bmap.mapfile, self.mods.value)
+        stars = pyttanko.diff_calc().calc(self.bmap.mapfile, self.mods._value_)
         data = pyttanko.ppv2(
             stars.aim, stars.speed, 
             bmap = self.bmap.mapfile, 
-            mods = self.mods.value,
+            mods = self.mods._value_,
             n100 = n100, n50 = n50
         )
 

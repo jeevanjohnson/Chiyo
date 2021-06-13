@@ -31,14 +31,14 @@ class Player:
         return (
             f'https://a.ppy.sh/{self.id}',
             f'https://a.akatsuki.pw/{self.id}'
-        )[self.server.value]
+        )[self.server._value_]
     
     @property
     def url(self) -> str:
         return (
             f'https://osu.ppy.sh/u/{self.id}',
             f'https://akatsuki.pw/u/{self.id}'
-        )[self.server.value]
+        )[self.server._value_]
 
     @property
     def embed(self) -> Embed:

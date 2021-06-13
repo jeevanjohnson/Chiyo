@@ -279,10 +279,46 @@ async def ar(ctx: Context) -> None:
     await ctx.send(f'Ar: {aproach_rate:.2f}')
     return
 
+@bot.command(aliases=['map'])
+async def m(ctx: Context) -> None:
+    start_time = time.time()
+    mods = Mods.NOMOD
+    acc: Optional[float] = None
+    channel_id: int = ctx.message.channel.id
+    if channel_id not in glob.cache.channel_beatmaps:
+        await ctx.send("No map was found.")
+        return
+
+    bmap: Beatmap = glob.cache.channel_beatmaps[channel_id][0]
+    msg: list[str] = ctx.message.content.lower().replace('%', '').split()[1:]
+
+    for m in msg:
+        if m.isalpha():
+            mods = Mods.from_str(m)
+            continue
+        else:
+            try: acc = float(m)
+            except: pass
+
+    kwargs = {'mods': mods}
+
+    if acc:
+        kwargs['acc'] = (acc,)
+    
+    bmap.set_embed_pp(**kwargs)
+
+    e = bmap.embed
+    e.colour = ctx.author.color
+    await ctx.send(
+        content = f'{time.time()-start_time:.2f}s',
+        embed = e
+    )
+    return
+
 @bot.command(aliases=['rank_for_pp'])
 async def rfpp(ctx: Context) -> None:
     mode = 0
-    msg = ctx.message.content.lower().split()[1:]
+    msg: list[str] = ctx.message.content.lower().split()[1:]
     if not msg:
         await ctx.send('Please provide a pp amount.')
         return
@@ -305,7 +341,7 @@ async def rfpp(ctx: Context) -> None:
         del msg[index]
         del msg[index - 1]
     
-    pp = msg[0]
+    pp: str = msg[0]
     if not pp.isdecimal():
         await ctx.send('PP amount needs to be a number.')
         return
