@@ -9,7 +9,10 @@ from objects.players import Player
 from objects.beatmaps import Beatmap
 from objects.const import GRADE_URLS
 from functools import cached_property
+from objects.const import BeatmapStatus
 from objects.const import magnitude_fmt
+
+ignore = (BeatmapStatus.Pending, BeatmapStatus.WIP, BeatmapStatus.Graveyard)
 
 class Score:
     def __init__(self) -> None:
@@ -184,7 +187,8 @@ class Score:
     @classmethod
     async def from_akatsuki_top(
         cls, user: Player,
-        mode = 0, index = 0, relax = 0
+        mode = 0, index = 0, 
+        relax = 0
     ):
         s = cls()
         s.index = index
@@ -275,7 +279,8 @@ class Score:
     @classmethod
     async def from_akatsuki_recent(
         cls, user: Player,
-        mode = 0, index = 0, relax = 0
+        mode = 0, index = 0, 
+        relax = 0
     ):
         s = cls()
         s.index = index
@@ -447,7 +452,10 @@ class Score:
         s.pp = 0.0
         s.mode = mode
 
-        if s.completed and s.bmap.status:
+        if (
+            s.completed and 
+            s.bmap.status not in ignore
+        ):
             path = 'get_scores'
             params = {
                 'k': config.api_key,
@@ -482,7 +490,7 @@ class Score:
                     _json['rank'] == score['rank']
                 ):
                     s.id = int(score['score_id'])
-                    s.pp = float(score['pp'])
+                    s.pp = float(score['pp'] or 0)
                     break
         
         s.calc_acc()
@@ -570,7 +578,7 @@ class Score:
         s.completed = True
         s.bmap.mods = s.mods
         s.server = Server.Bancho
-        s.pp = float(json['pp'])
+        s.pp = float(json['pp'] or 0)
         s.mode = mode
 
         s.calc_acc()
@@ -728,7 +736,7 @@ class Score:
         s.bmap = bmap
         s.completed = True
         s.server = Server.Bancho
-        s.pp = float(json['pp'])
+        s.pp = float(json['pp'] or 0)
         s.bmap.mods = s.mods
         s.mode = mode
         

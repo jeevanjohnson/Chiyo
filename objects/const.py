@@ -178,6 +178,16 @@ class Server(IntEnum):
             'akatsuki': cls.Akatsuki
         }[name.lower()]
 
+@unique
+class BeatmapStatus(IntEnum):
+    Loved = 4
+    Qualified = 3
+    Approved = 2
+    Ranked = 1
+    Pending = 0
+    WIP = -1
+    Graveyard = -2
+
 def magnitude_fmt(num: Union[int, float]) -> str:
     magnitude = 0
     while abs(num) >= 1000:

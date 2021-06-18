@@ -6,6 +6,7 @@ from discord import Embed
 from typing import Optional
 from objects.const import Mods
 from objects.players import Player
+from objects.const import BeatmapStatus
 from coover import Beatmap as BeatmapParser
 
 class Beatmap:
@@ -27,7 +28,7 @@ class Beatmap:
         self.max_combo: int
         self.difficulty: float
         self.bpm: float
-        self.status: int
+        self.status: BeatmapStatus
         self.favs: int
         self.last_updated: str
         self.mods: Mods = Mods.NOMOD
@@ -224,7 +225,7 @@ class Beatmap:
         bmap.max_combo = int(dictionary['max_combo'])
         bmap.difficulty = float(dictionary['difficultyrating'])
         bmap.bpm = float(dictionary['bpm'])
-        bmap.status = int(dictionary['approved'])
+        bmap.status = BeatmapStatus(int(dictionary['approved']))
         bmap.favs = int(dictionary['favourite_count'])
         bmap.last_updated = dictionary['last_update']
 
@@ -293,7 +294,7 @@ class Beatmap:
         bmap.max_combo = int(json['max_combo'])
         bmap.difficulty = float(json['difficultyrating'])
         bmap.bpm = float(json['bpm'])
-        bmap.status = int(json['approved'])
+        bmap.status = BeatmapStatus(int(json['approved']))
         bmap.favs = int(json['favourite_count'])
         bmap.last_updated = json['last_update']
 

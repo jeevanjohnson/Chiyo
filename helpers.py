@@ -19,6 +19,9 @@ USERS = re.compile(
     r"https://(akatsuki)\.pw/u/([0-9A-Za-z]*)"
 )
 
+SCORE_FMT = re.compile(
+    r"https://osu\.ppy\.sh/scores/osu/(?P<id>[0-9]*)"
+)
 # Another word for log lol
 async def note(**kwargs: tuple[Any]) -> None:
     msg = ['None Type was found!', '```py\n']
