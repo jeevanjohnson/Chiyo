@@ -9,6 +9,7 @@ from discord import Embed
 from objects import Server
 from objects import Beatmap
 from typing import Optional
+from helpers import SCORE_FMT
 from objects import MsgContent
 from helpers import TWELVEHOURS
 from discord.message import Message
@@ -18,6 +19,10 @@ arrows = ('⬅️', '➡️')
 
 @bot.command()
 async def connect(ctx: Context) -> None:
+    """
+    Connects a profile to your discord account.
+    Args: name of player | -akatsuki
+    """
     parsed: Optional[MsgContent] = await MsgContent.from_discord_msg(ctx, 'connect')
     if not parsed:
         return
@@ -62,6 +67,10 @@ async def connect(ctx: Context) -> None:
 
 @bot.command(aliases=['c'])
 async def compare(ctx: Context) -> None:
+    """
+    Compares a score from a recently posted beatmap.
+    Args: name of player | -p (a whole number) | -std | -taiko | -ctb | -mania | -rx | -akatsuki
+    """
     if ctx.message.channel.id not in glob.cache.channel_beatmaps:
         await ctx.send("No map was found.")
         return
@@ -111,6 +120,10 @@ async def compare(ctx: Context) -> None:
 
 @bot.command(aliases=['t'])
 async def top(ctx: Context) -> None:
+    """
+    Shows a top play from a user's profile.
+    Args: name of player | -p (a whole number) | -std | -taiko | -ctb | -mania | -rx | -akatsuki
+    """
     parsed: Optional[MsgContent] = await MsgContent.from_discord_msg(ctx)
     if not parsed:
         return
@@ -157,6 +170,10 @@ async def top(ctx: Context) -> None:
 
 @bot.command(aliases=['r', 'rs', 'rc'])
 async def recent(ctx: Context) -> None:
+    """
+    Shows a recent score from a user's profile.
+    Args: name of player | -p (a whole number) | -std | -taiko | -ctb | -mania | -rx | -akatsuki
+    """
     parsed: Optional[MsgContent] = await MsgContent.from_discord_msg(ctx)
     if not parsed:
         return
@@ -203,6 +220,10 @@ async def recent(ctx: Context) -> None:
 
 @bot.command(aliases=['p', 'osu'])
 async def profile(ctx: Context) -> None:
+    """
+    Shows a profile for a user.
+    Args: name of player | -std | -taiko | -ctb | -mania | -rx | -akatsuki
+    """
     parsed: Optional[MsgContent] = await MsgContent.from_discord_msg(ctx)
     if not parsed:
         return
@@ -221,8 +242,12 @@ async def profile(ctx: Context) -> None:
     )
     return
 
-@bot.command()
-async def ar(ctx: Context) -> None:
+@bot.command(aliases=['ar'])
+async def approach_rate(ctx: Context) -> None:
+    """
+    Calculates ar depending on the mods given.
+    Args: original ar number | mod combination (ex. dthdhrfl)
+    """
     msg = ctx.message.content.lower().split()[1:]
     if not msg:
         await ctx.send(
@@ -279,8 +304,13 @@ async def ar(ctx: Context) -> None:
     await ctx.send(f'Ar: {aproach_rate:.2f}')
     return
 
-@bot.command(aliases=['map'])
-async def m(ctx: Context) -> None:
+@bot.command(aliases=['m'])
+async def map(ctx: Context) -> None:
+    """
+    Sends an embed with details of the given map.
+    `These args only work on std`
+    Args: mod combination (ex. dthdhrfl) | acc (ex. 100 or 98.5)
+    """
     start_time = time.time()
     mods = Mods.NOMOD
     acc: Optional[float] = None
@@ -316,8 +346,12 @@ async def m(ctx: Context) -> None:
     )
     return
 
-@bot.command(aliases=['pp_for_rank'])
-async def ppfr(ctx: Context) -> None:
+@bot.command(aliases=['ppfr'])
+async def pp_for_rank(ctx: Context) -> None:
+    """
+    Gets pp for the rank given.
+    Args: rank number | -m (a whole number)
+    """
     mode = 0
     msg: list[str] = ctx.message.content.lower().split()[1:]
     if not msg:
@@ -373,8 +407,12 @@ async def ppfr(ctx: Context) -> None:
     )
     return
 
-@bot.command(aliases=['rank_for_pp'])
-async def rfpp(ctx: Context) -> None:
+@bot.command(aliases=['rfpp'])
+async def rank_for_pp(ctx: Context) -> None:
+    """
+    Gets rank for the pp amount given.
+    Args: rank number | -m (a whole number)
+    """
     mode = 0
     msg: list[str] = ctx.message.content.lower().split()[1:]
     if not msg:
@@ -429,3 +467,96 @@ async def rfpp(ctx: Context) -> None:
         )
     )
     return
+
+'''
+score_fmt = "{player} - {song_name} ({mapper}, {sr}*){mods} {acc}% {fc} {combo}/{max}x | {cv} {ur} {pp} | #{lb}, {comment}"
+@bot.command(aliases=['score_fmt', 'sf'])
+async def score_format(ctx: Context) -> None:
+    """
+    Returns an osugame-scorepost like title for a score.
+    `Meant for osu!std scores, but you can try other modes.`
+    Args: score link | -fc | -fullcombo | 
+    -c | -choke | -sb (number) | -comment (comment)
+    """
+    is_fc: Optional[str] = None
+    sliderbreaks: Optional[str] = None
+    comment: Optional[str] = None
+
+    msg: list[str] = ctx.message.content.split()[1:]
+
+    if '-fc' in msg:
+        msg.remove('-fc')
+        is_fc = 'FC'
+    elif '-fullcombo' in msg:
+        msg.remove('-fullcombo')
+        is_fc = 'FC'
+    
+    if '-c' in msg:
+        msg.remove('-fc')
+        is_fc = 'Choke'
+    elif '-choke' in msg:
+        msg.remove('-choke')
+        is_fc = 'Choke'
+    
+    for arg in ('-sb', '-sliderbreak'):
+        if arg in msg:
+            index = msg.index(arg) + 1
+            if index > len(msg) - 1:
+                await ctx.send('Please provide a number for sliderbreaks.')
+                return
+            
+            m: str = msg[index]
+            if not m.isdecimal():
+                await ctx.send('Please provide a number for sliderbreaks.')
+                return
+            
+            sliderbreaks = f'{m}x SB'
+            del msg[index]
+            msg.remove(arg)
+    
+    if '-comment' in msg:
+        index = msg.index(arg) + 1
+        if index > len(msg) - 1:
+            await ctx.send('Please provide a message for comment.')
+            return
+        
+        m: str = msg[index]
+
+        comment = m
+        del msg[index]
+        msg.remove(arg)
+    
+    result = SCORE_FMT.match(''.join(msg))
+    if not result:
+        await ctx.send('Invalid link.')
+        return
+
+    s: Optional[Score] = await Score.from_id(int(result['id']))
+    s.bmap.convert_star_rating()
+
+    score_fmt.format(
+        player = s.player.name,
+        song_name = s.bmap.song_name,
+        mapper = s.bmap.creator.name,
+        sr = s.bmap.difficulty,
+        mods = f"+{s.mods!r}" if s.mods != Mods.NOMOD else '',
+        acc = f'{s.acc:.2f}',
+        fc = is_fc
+    )
+    title = ''
+    title += f'{s.player.name} | {s.bmap.song_name} '
+    title += f'{s.bmap.creator.name}, {s.bmap.difficulty:.2f}'
+    title += f'+{s.mods!r} {s.acc:.2f} '
+
+    x = ''
+    if (
+        s.max_combo == s.bmap.max_combo or
+        'FC' in etc
+    ):
+        title += 'FC'
+    else:
+        title += 'Choke'
+        x += f'xx{s.misses}'
+
+    title += f'{s.max_combo}/{s.bmap.max_combo}x | '
+'''

@@ -249,7 +249,7 @@ class Beatmap:
         return bmap
 
     @classmethod
-    async def from_id(cls, bmap_id: int, mode = 0):
+    async def from_id(cls, bmap_id: int, mode: int = 0):
         key = (bmap_id, mode)
         if key in glob.cache.beatmaps:
             return glob.cache.beatmaps[key]
@@ -291,7 +291,7 @@ class Beatmap:
         bmap.creator = await Player.from_bancho(
             user = json['creator']
         )
-        bmap.max_combo = int(json['max_combo'])
+        bmap.max_combo = int(json['max_combo'] or 0)
         bmap.difficulty = float(json['difficultyrating'])
         bmap.bpm = float(json['bpm'])
         bmap.status = BeatmapStatus(int(json['approved']))

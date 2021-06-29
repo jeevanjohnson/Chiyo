@@ -1,6 +1,7 @@
 import config
 import pyttanko
 from ext import glob
+from json import loads
 from helpers import note
 from discord import Embed
 from objects.const import Mods
@@ -8,6 +9,7 @@ from objects.const import Server
 from objects.players import Player
 from objects.beatmaps import Beatmap
 from objects.const import GRADE_URLS
+from helpers import JSON_SCORE_FINDER
 from functools import cached_property
 from objects.const import BeatmapStatus
 from objects.const import magnitude_fmt
@@ -183,6 +185,56 @@ class Score:
             hitobjects = len(self.bmap._mapfile.hit_objects)
 
         return (total_objects / hitobjects) * 100
+
+    @classmethod
+    async def from_id(
+        cls, score_id: int
+    ):
+        s = cls()
+        base = 'https://osu.ppy.sh'
+        path = f'scores/osu/{score_id}'
+        async with glob.http.get(
+            f'{base}/{path}'
+        ) as resp:
+            if not resp or resp.status != 200:
+                return
+            
+            _json: list[str] = JSON_SCORE_FINDER.findall(await resp.text())
+            if not _json:
+                return
+            
+            json = loads(_json[0].strip())
+        
+        statistics = json['statistics']
+        s.player = await Player.from_bancho(
+            user = json['user_id'],
+            mode = json['mode_int']
+        )
+        s.score = json['score']
+        s.nkatsu = statistics['count_katu']
+        s.ngeki = statistics['count_geki']
+        s.n300 = statistics['count_300']
+        s.n100 = statistics['count_100']
+        s.n50 = statistics['count_50']
+        s.misses = statistics['count_miss']
+        s.mods = Mods.from_str(''.join(json['mods'])) 
+        s.date = json['created_at']
+        s.rank = json['rank']
+        s.max_combo = json['max_combo']
+        s.bmap = await Beatmap.from_id(
+            bmap_id = json['beatmap']['id'],
+            mode = json['mode_int']
+        )
+        s.completed = True
+        s.server = Server.Bancho
+        s.pp = json['pp']
+        s.id = score_id
+        s.bmap.mods = s.mods
+        s.mode = json['mode_int']
+
+        s.calc_acc()
+
+        return s
 
     @classmethod
     async def from_akatsuki_top(

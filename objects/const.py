@@ -77,7 +77,7 @@ class Mods(IntFlag):
     @classmethod
     def from_str(cls, s: str):
         final_mods = 0
-        for m in wrap(s, 2):
+        for m in wrap(s.lower(), 2):
             if m not in str_to_mod:
                 continue
             

@@ -22,6 +22,11 @@ USERS = re.compile(
 SCORE_FMT = re.compile(
     r"https://osu\.ppy\.sh/scores/osu/(?P<id>[0-9]*)"
 )
+
+JSON_SCORE_FINDER = re.compile(
+    r"<script id=\"json-show\" type=\"application/json\">\n(.*)\n    </script>"
+)
+
 # Another word for log lol
 async def note(**kwargs: tuple[Any]) -> None:
     msg = ['None Type was found!', '```py\n']
